@@ -17,9 +17,22 @@ export default function CategorySection({ onSelectCategory, shopRef }) {
           <h2 style={{ fontFamily:"'Playfair Display',serif", fontSize:"clamp(2rem,5vw,3.5rem)", fontWeight:900, color:"#1A0500" }}>
             Shop By <em style={{ fontStyle:"italic", background:"linear-gradient(135deg,#E8391D,#C42E15)", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent" }}>Style</em>
           </h2>
-          {/* <div style={{ width:56, height:3, background:"linear-gradient(90deg,#E8391D,#C42E15)", margin:"1rem auto 0", borderRadius:2 }}/> */}
+          <div style={{ width:56, height:3, background:"linear-gradient(90deg,#E8391D,#C42E15)", margin:"1rem auto 0", borderRadius:2 }}/>
         </div>
-        
+        <div className="cat-grid">
+          {CATEGORIES.map((cat, i) => (
+            <div key={cat} className="cat-card" onClick={() => onSelectCategory(cat)}
+              style={{ animation:`fadeUp .6s ${i*.08}s ease forwards`, opacity:0 }}>
+              <div className="cat-img-wrap">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={CAT_IMAGES[cat]} alt={cat} className="cat-img"/>
+              </div>
+              <div style={{ padding:".85rem .75rem", textAlign:"center", background:"rgba(255,255,255,.92)" }}>
+                <span style={{ fontSize:".78rem", fontWeight:800, color:"#1A0500", letterSpacing:".03em" }}>{cat}</span>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );

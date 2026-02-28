@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { useCart } from "../context/CartContext";
 
-const BRAND = "#E8391D";
+const BRAND = "#e55d6a";
 
 export default function ProductModal({ product, onClose }) {
   const { addToCart } = useCart();
@@ -302,7 +302,7 @@ export default function ProductModal({ product, onClose }) {
 
                 {/* Price */}
                 <div style={{ display:"flex", alignItems:"baseline", gap:".75rem", marginBottom:"1.25rem", padding:"1rem", background:"rgba(232,57,29,.05)", borderRadius:12, border:"1px solid rgba(232,57,29,.15)" }}>
-                  <span style={{ fontSize:"2rem",fontWeight:900,color:"#E8391D" }}>₹{product.offerPrice.toLocaleString()}</span>
+                  <span style={{ fontSize:"2rem",fontWeight:900,color:"#e55d6a" }}>₹{product.offerPrice.toLocaleString()}</span>
                   <span style={{ fontSize:"1rem",color:"rgba(26,5,0,.4)",textDecoration:"line-through" }}>₹{product.price.toLocaleString()}</span>
                   <span style={{ fontSize:".8rem",color:"#16a34a",fontWeight:800,background:"rgba(22,163,74,.12)",padding:".2rem .6rem",borderRadius:20 }}>
                     Save ₹{(product.price-product.offerPrice).toLocaleString()} ({discount}%)
@@ -346,7 +346,7 @@ export default function ProductModal({ product, onClose }) {
                     <span style={{ fontWeight:800,fontSize:"1.1rem",color:"#1A0500",minWidth:"1.5rem",textAlign:"center" }}>{qty}</span>
                     <button className="qty-btn" onClick={() => setQty(q => q+1)}>+</button>
                     <span style={{ fontSize:".78rem",color:"#7A3020",marginLeft:".25rem" }}>
-                      Total: <strong style={{ color:"#E8391D" }}>₹{(product.offerPrice*qty).toLocaleString()}</strong>
+                      Total: <strong style={{ color:"#e55d6a" }}>₹{(product.offerPrice*qty).toLocaleString()}</strong>
                     </span>
                   </div>
                 </div>

@@ -6,7 +6,7 @@ import { useCart } from "../context/CartContext";
 import { useUser, SignOutButton } from "@clerk/nextjs";
 import PoppyPinkLogo from "./PoppyPinkLogo";
 
-const BRAND = "#E8391D";
+const BRAND = "#e55d6a";
 const BRAND_DARK = "#C42E15";
 
 export default function Navbar({ footerRef }) {
@@ -77,7 +77,7 @@ export default function Navbar({ footerRef }) {
 
         {/* Desktop nav */}
         <div className="desktop-nav" style={{ display:"flex", alignItems:"center", gap:".5rem" }}>
-          
+         
           <Link href="/track" className="nlink">Track Order</Link>
           <button className="nlink" onClick={scrollToFooter}>Contact</button>
           {isAdmin && <Link href="/admin" className="nlink" style={{ background:"rgba(255,255,255,.15)", borderRadius:8 }}>⚙ Admin</Link>}
@@ -158,7 +158,7 @@ export default function Navbar({ footerRef }) {
           background: BRAND_DARK, padding:"0 2.5rem 1.5rem",
           boxShadow:"0 10px 30px rgba(0,0,0,.2)", display:"flex", flexDirection:"column",
         }}>
-          <Link href="/"      className="mlink" onClick={() => setMenuOpen(false)}>Shop</Link>
+          
           <Link href="/track" className="mlink" onClick={() => setMenuOpen(false)}>Track Order</Link>
           <button className="mlink" onClick={scrollToFooter}>Contact</button>
           {isAdmin && <Link href="/admin" className="mlink" onClick={() => setMenuOpen(false)}>⚙ Admin Panel</Link>}

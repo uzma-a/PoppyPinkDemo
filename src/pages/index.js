@@ -9,7 +9,7 @@ import ProductCard from "../components/ProductCard";
 import Footer from "../components/Footer";
 import { PRODUCTS } from "../data/products";
 
-const BRAND = "#E8391D";
+const BRAND = "#e55d6a";
 
 export default function Home() {
   const [loaded,   setLoaded]   = useState(false);

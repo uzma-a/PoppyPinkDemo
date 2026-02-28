@@ -20,7 +20,6 @@ export default function ProductCard({ product, index }) {
 
   return (
     <>
-    
       <div
         className="glass-card"
         onClick={() => setModal(true)}
@@ -71,7 +70,7 @@ export default function ProductCard({ product, index }) {
               <div key={c.hex} style={{ width:13,height:13,borderRadius:"50%",background:c.hex,border:"1.5px solid rgba(44,10,0,.15)" }}/>
             ))}
           </div>
-          <span style={{ fontSize:".67rem",color:"#E8391D",fontWeight:800,letterSpacing:".1em",textTransform:"uppercase" }}>{product.category}</span>
+          <span style={{ fontSize:".67rem",color:"#e55d6a",fontWeight:800,letterSpacing:".1em",textTransform:"uppercase" }}>{product.category}</span>
           <h3 style={{ fontFamily:"'Playfair Display',serif",fontSize:".96rem",fontWeight:700,color:"#1A0500",lineHeight:1.3,flex:1 }}>{product.name}</h3>
           <div style={{ display:"flex",gap:".3rem",flexWrap:"wrap" }}>
             {product.sizes.slice(0,4).map(s => (
@@ -80,11 +79,11 @@ export default function ProductCard({ product, index }) {
             {product.sizes.length > 4 && <span style={{ fontSize:".6rem",color:"#B07060",fontWeight:600,alignSelf:"center" }}>+{product.sizes.length-4}</span>}
           </div>
           <div style={{ display:"flex",alignItems:"baseline",gap:".55rem",paddingTop:".3rem" }}>
-            <span style={{ fontSize:"1.1rem",fontWeight:800,color:"#E8391D" }}>₹{product.offerPrice.toLocaleString()}</span>
+            <span style={{ fontSize:"1.1rem",fontWeight:800,color:"#e55d6a" }}>₹{product.offerPrice.toLocaleString()}</span>
             <span style={{ fontSize:".78rem",color:"rgba(44,10,0,.35)",textDecoration:"line-through" }}>₹{product.price.toLocaleString()}</span>
             <span style={{ fontSize:".68rem",color:"#16a34a",fontWeight:700,marginLeft:"auto" }}>Save ₹{(product.price-product.offerPrice).toLocaleString()}</span>
           </div>
-          <button className={`add-cart-btn ${added?"done":"normal"}`} onClick={handleAdd}>
+          <button style={{ fontSize:"1.1rem",fontWeight:800,background:"#e83446" }} className={`add-cart-btn ${added?"done":"normal"}`} onClick={handleAdd}>
             {added ? "✓ Added!" : "Add to Cart"}
           </button>
         </div>

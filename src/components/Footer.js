@@ -2,14 +2,14 @@
 import { forwardRef } from "react";
 import PoppyPinkLogo from "./PoppyPinkLogo";
 
-const BRAND      = "#E8391D";
-const BRAND_DARK = "#C42E15";
+const BRAND      = "#e55d6a";
+const BRAND_DARK = "#b22836";
 
 const Footer = forwardRef(function Footer(_, ref) {
   return (
     <footer ref={ref} style={{
       background: BRAND_DARK,
-      padding: "4.5rem 2rem 2.5rem",
+      padding: "4rem 2rem 2.5rem", marginTop:"30px",
       position: "relative", overflow: "hidden",
     }}>
       <style>{`
@@ -38,7 +38,7 @@ const Footer = forwardRef(function Footer(_, ref) {
               Premium women's sandals crafted for elegance, confidence and everyday grace.
             </p>
             <div style={{ marginTop:"1.5rem", display:"flex", gap:".65rem", flexWrap:"wrap" }}>
-              {["♥ Instagram","✿ Pinterest","✦ Facebook"].map(s=>(
+              {["♥ Instagram"].map(s=>(
                 <button key={s} className="social-pill">{s}</button>
               ))}
             </div>
@@ -46,7 +46,7 @@ const Footer = forwardRef(function Footer(_, ref) {
 
           {/* Contact */}
           <div>
-            <h4 style={{ color:"rgba(255,255,255,.9)", fontWeight:800, letterSpacing:".12em", textTransform:"uppercase", fontSize:".75rem", marginBottom:"1.4rem" }}>
+            <h4 style={{ color:"rgb(255, 255, 255)", fontWeight:800, letterSpacing:".12em", textTransform:"uppercase", fontSize:".75rem", marginBottom:"1.4rem" }}>
               ✦ Contact Us
             </h4>
             <div style={{ display:"flex", flexDirection:"column", gap:"1rem" }}>
@@ -62,9 +62,7 @@ const Footer = forwardRef(function Footer(_, ref) {
             </div>
           </div>
 
-          
-
-          
+         
         </div>
 
         {/* Bottom bar */}

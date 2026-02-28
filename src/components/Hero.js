@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 
 const SLIDES = [
   {
-    img: "/assets/Rose Gold-12113/1.JPG",
+    img: "/assets/Gold-12151/1.JPG",
     angle: "Side Profile",
     title: "Step Into",
     highlight: "Elegance",
@@ -11,7 +11,7 @@ const SLIDES = [
     tag: "New Arrival",
   },
   {
-    img: "/assets/Silver-12113/1.JPG",
+    img: "/assets/Silver-12113/2.jpg",
     angle: "Top View",
     title: "Walk With",
     highlight: "Grace",
@@ -19,7 +19,7 @@ const SLIDES = [
     tag: "Best Seller",
   },
   {
-    img: "/assets/Rose Gold-12113/6.JPG",
+    img: "/assets/RoseGold-12113/1.JPG",
     angle: "Front Angle",
     title: "Feel The",
     highlight: "Difference",
@@ -27,7 +27,7 @@ const SLIDES = [
     tag: "Trending",
   },
   {
-    img: "/assets/Silver-12113/6.JPG",
+    img: "/assets/Silver-12151/1.JPG",
     angle: "3/4 View",
     title: "Born For",
     highlight: "You",
@@ -35,7 +35,7 @@ const SLIDES = [
     tag: "Limited Edition",
   },
   {
-    img: "/assets/Silver-12113/7.JPG",
+    img: "/assets/Gold-12151/1.JPG",
     angle: "Close-up Detail",
     title: "Crafted With",
     highlight: "Love",
@@ -44,8 +44,8 @@ const SLIDES = [
   },
 ];
 
-const BRAND      = "#E8391D";
-const BRAND_DARK = "#C42E15";
+const BRAND      = "#e55d6a";
+const BRAND_DARK = "#ef5438";
 const DURATION   = 4500;
 
 export default function Hero({ shopRef }) {
@@ -90,7 +90,7 @@ export default function Hero({ shopRef }) {
   return (
     <section style={{
       minHeight: "100vh", height: "100vh",
-      display: "flex", alignItems: "center",
+      display: "flex", alignItems: "center", marginTop:"50px",
       background: "linear-gradient(145deg, #FFF8F5 0%, #FFF0E8 45%, #FFF5F2 100%)",
       position: "relative", overflow: "hidden",
     }}>
@@ -237,7 +237,7 @@ export default function Hero({ shopRef }) {
           {/* Stats */}
           <div key={`st-${current}`} className={txtAnim==="in"?"txt-in":"txt-out"} style={{ animationDelay:".32s" }}>
             <div className="hero-stat-row" style={{ display:"flex",gap:".8rem",flexWrap:"wrap",marginBottom:"2rem" }}>
-              {[{ icon:"👟",num:"100+",lbl:"Styles" },{ icon:"⭐",num:"4.9",lbl:"Rating" },{ icon:"🚚",num:"Free",lbl:"Shipping" }].map(s=>(
+              {[{ icon:"👟",num:"500+",lbl:"Styles" },{ icon:"⭐",num:"4.9",lbl:"Rating" },{ icon:"🚚",num:"Free",lbl:"Shipping" }].map(s=>(
                 <div key={s.lbl} className="stat-pill">
                   <span style={{ fontSize:"1.25rem" }}>{s.icon}</span>
                   <div>
@@ -311,7 +311,7 @@ export default function Hero({ shopRef }) {
           {/* ── Floating card: Price ── */}
           <div className="float-card float-badge" style={{ bottom:"20%",left:"2%",padding:".78rem 1.1rem",minWidth:130,zIndex:8 }}>
             <div style={{ fontSize:".62rem",color:"#B07060",fontWeight:700,letterSpacing:".1em",textTransform:"uppercase",marginBottom:".18rem" }}>Starting from</div>
-            <div style={{ fontFamily:"'Playfair Display',serif",fontSize:"1.5rem",fontWeight:900,color:BRAND,lineHeight:1 }}>₹999</div>
+            <div style={{ fontFamily:"'Playfair Display',serif",fontSize:"1.5rem",fontWeight:900,color:BRAND,lineHeight:1 }}>₹799</div>
             <div style={{ fontSize:".62rem",color:"#16a34a",fontWeight:700,marginTop:".18rem" }}>🟢 Free Delivery</div>
           </div>
 
@@ -320,7 +320,7 @@ export default function Hero({ shopRef }) {
             <div style={{ width:32,height:32,borderRadius:"50%",background:`linear-gradient(135deg,${BRAND},${BRAND_DARK})`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:".9rem",flexShrink:0 }}>⭐</div>
             <div>
               <div style={{ fontWeight:800,color:"#1A0500",fontSize:".88rem",lineHeight:1 }}>4.9 / 5</div>
-              <div style={{ color:"#B07060",fontSize:".6rem",fontWeight:600 }}>1000+ Reviews</div>
+              <div style={{ color:"#B07060",fontSize:".6rem",fontWeight:600 }}>2,400+ Reviews</div>
             </div>
           </div>
 
@@ -330,23 +330,7 @@ export default function Hero({ shopRef }) {
             <div style={{ color:"#fff",fontSize:".86rem",fontWeight:800 }}>✨ 12 New Styles</div>
           </div>
 
-          {/* ── Next-up previews ── */}
-          <div style={{ position:"absolute",bottom:"12%",right:"3%",zIndex:8,display:"flex",gap:".4rem",alignItems:"flex-end" }}>
-            {[(current+1)%SLIDES.length,(current+2)%SLIDES.length].map((idx,i)=>(
-              <div key={idx} onClick={()=>transition(idx)} style={{
-                width:50,height:50,borderRadius:12,overflow:"hidden",
-                border:`2px solid ${i===0?BRAND:"rgba(232,57,29,.3)"}`,
-                cursor:"pointer",opacity:i===0?.85:.55,
-                transform:`translateY(${i*8}px)`,transition:"all .3s",
-                boxShadow:"0 4px 14px rgba(0,0,0,.1)",flexShrink:0,
-              }}
-              onMouseEnter={e=>{e.currentTarget.style.opacity="1";e.currentTarget.style.borderColor=BRAND;}}
-              onMouseLeave={e=>{e.currentTarget.style.opacity=i===0?".85":".55";e.currentTarget.style.borderColor=i===0?BRAND:"rgba(232,57,29,.3)";}}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={SLIDES[idx].img} alt="" style={{ width:"100%",height:"100%",objectFit:"cover",display:"block" }}/>
-              </div>
-            ))}
-          </div>
+         
 
           {/* Sparkle dots */}
           {[
@@ -379,7 +363,7 @@ export default function Hero({ shopRef }) {
         padding:".65rem 4vw",
         display:"flex",alignItems:"center",justifyContent:"center",gap:"2.5rem",flexWrap:"wrap",
       }}>
-        {["🚚 Free Delivery","💎 Premium Quality","🔒 Secure Payment","⭐ 4.9 Rated"].map(t=>(
+        {["🚚 Free Delivery","💎 Premium Quality","↩️ 7-Day Returns","🔒 Secure Payment","⭐ 4.9 Rated"].map(t=>(
           <span key={t} style={{ fontSize:".73rem",color:"#7A3020",fontWeight:600 }}>{t}</span>
         ))}
       </div>
