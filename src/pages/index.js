@@ -28,8 +28,8 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>POPPYPINK — Premium Women's Sandals</title>
-        <meta name="description" content="Step into elegance with POPPYPINK premium sandals." />
+        <title>Poppypink Shoes – Premium & Trendy Women Sandals Online in India</title>
+        <meta name="description" content="Shop premium and trendy women's sandals at Poppypink Shoes. Discover stylish, comfortable, and affordable footwear designed for modern women. " />
         <meta name="viewport"    content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content={BRAND} />
       </Head>
