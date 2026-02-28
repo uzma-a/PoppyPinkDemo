@@ -32,7 +32,6 @@ export const PRODUCTS = [
     ],
     sizes: ["35","36","37","38","39"],
     colorOptions: [
-      { name:"Wine Red",   hex:"#8B0000" },
       { name:"Rose Gold",  hex:"#C9956C" },
       { name:"Coral",      hex:"#E8391D" },
     ],
