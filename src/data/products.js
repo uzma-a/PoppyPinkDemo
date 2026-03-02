@@ -7,7 +7,7 @@ export const PRODUCTS = [
     name: "Women Embellished Wedge",
     category: "Wedges Sandal",
     price: 4499,
-    offerPrice: 1835,
+    offerPrice: 1953,
     image: "/assets/Gold-12151/1.JPG",
     images: [
       "/assets/Gold-12151/2.JPG",
@@ -28,7 +28,7 @@ export const PRODUCTS = [
     name: "Women Embellished Wedge",
     category: "Wedges Sandals",
     price: 4999,
-    offerPrice: 1835,
+    offerPrice: 1953,
     image: "/assets/Rose-Gold-12151/1.JPG",
     images: [
       "/assets/Rose-Gold-12151/2.JPG",
@@ -92,7 +92,7 @@ export const PRODUCTS = [
     name: "Women mbellished Wedge",
     category: "Heel Sandals",
     price: 4999,
-    offerPrice: 1835,
+    offerPrice: 1953,
     image: "/assets/Silver-12151/1.JPG",
     images: [
       "/assets/Silver-12151/2.JPG",
