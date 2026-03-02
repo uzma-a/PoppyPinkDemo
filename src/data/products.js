@@ -50,7 +50,7 @@ export const PRODUCTS = [
     name: "Women Embellished Strappy",
     category: "Wedge Heel Sandals",
     price: 4999,
-    offerPrice: 1382,
+    offerPrice: 1835,
     image: "/assets/RoseGold-12113/1.JPG",
     images: [
       "/assets/RoseGold-12113/2.JPG",
@@ -71,7 +71,7 @@ export const PRODUCTS = [
     name: "Women Embellished Strappy",
     category: "Wedge Heel Sandals",
     price: 4999,
-    offerPrice: 1382,
+    offerPrice: 1835,
     image: "/assets/Silver-12113/1.jpg",
     images: [
       "/assets/Silver-12113/2.jpg",
