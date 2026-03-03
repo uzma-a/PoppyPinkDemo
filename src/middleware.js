@@ -1,30 +1,24 @@
 // src/middleware.js
-// ─────────────────────────────────────────────────────────
-// IMPORTANT: This file lives in src/ because the project uses src/ directory
-// Clerk v5 Pages Router — async middleware with proper protect() call
-// ─────────────────────────────────────────────────────────
+// IMPORTANT: Must be in src/ directory (not project root) when using src/ layout
+// FIX: Exclude /api/orders (public) from Clerk middleware to avoid HTML error responses
 
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-const isAdminRoute = createRouteMatcher(["/admin(.*)"]);
+// ONLY protect the admin dashboard page — NOT public API routes
+const isAdminPage = createRouteMatcher(["/admin(.*)"]);
 
 export default clerkMiddleware(async (auth, req) => {
-  // Protect /admin routes — unauthenticated users get redirected to sign-in
-  if (isAdminRoute(req)) {
+  if (isAdminPage(req)) {
     await auth.protect();
   }
+  // All other routes (including /api/orders) pass through freely
 });
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths EXCEPT:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico
-     * - public files with extensions
-     */
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|css|js|woff|woff2|ttf)$).*)",
+    // Skip static files and images entirely
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|woff|woff2|ttf)$).*)",
+    // Always run for API routes
     "/(api|trpc)(.*)",
   ],
 };

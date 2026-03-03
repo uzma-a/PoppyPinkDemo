@@ -2,5 +2,9 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/": "pages/index.js"
+  "/": "pages/index.js",
+  "/track": "pages/track.js",
+  "/cart": "pages/cart.js",
+  "/api/track/[orderId]": "pages/api/track/[orderId].js",
+  "/api/orders": "pages/api/orders.js"
 }

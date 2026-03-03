@@ -50,7 +50,7 @@ export default function ProductCard({ product, index }) {
 
           <span style={{
             position:"absolute",top:10,left:10,
-            background:"linear-gradient(135deg,#E8391D,#C42E15)",
+            background:"#e55d6a",
             color:"#fff",fontSize:".65rem",fontWeight:800,
             padding:".2rem .55rem",borderRadius:20,
           }}>{discount}% OFF</span>
@@ -83,7 +83,7 @@ export default function ProductCard({ product, index }) {
             <span style={{ fontSize:".78rem",color:"rgba(44,10,0,.35)",textDecoration:"line-through" }}>₹{product.price.toLocaleString()}</span>
             <span style={{ fontSize:".68rem",color:"#16a34a",fontWeight:700,marginLeft:"auto" }}>Save ₹{(product.price-product.offerPrice).toLocaleString()}</span>
           </div>
-          <button style={{ fontSize:"1.1rem",fontWeight:800,background:"#e83446" }} className={`add-cart-btn ${added?"done":"normal"}`} onClick={handleAdd}>
+          <button style={{ fontSize:"1.1rem",fontWeight:800,background:"#e55d6a" }} className={`add-cart-btn ${added?"done":"normal"}`} onClick={handleAdd}>
             {added ? "✓ Added!" : "Add to Cart"}
           </button>
         </div>

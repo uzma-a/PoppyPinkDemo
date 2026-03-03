@@ -10,7 +10,7 @@
 // gap between squares matches box
 
 export default function PoppyPinkLogo({ size = 36, showText = true, textSize = "1.5rem", onDark = false }) {
-  const fill = "rgba(255,255,255,0.93)";
+  const fill = "#e55d6a";
   const W = size;
   const H = size;
   const gap = W * 0.08;
@@ -52,7 +52,7 @@ export default function PoppyPinkLogo({ size = 36, showText = true, textSize = "
           fontSize: textSize,
           fontWeight: 700,
           letterSpacing: "0.06em",
-          color: "#ffffff",
+          color: "#e55d6a ",
           lineHeight: 1,
         }}>
           POPPY<span style={{ fontWeight: 400, opacity: 0.82 }}>PINK</span>

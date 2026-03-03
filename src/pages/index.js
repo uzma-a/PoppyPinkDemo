@@ -9,7 +9,7 @@ import ProductCard from "../components/ProductCard";
 import Footer from "../components/Footer";
 import { PRODUCTS } from "../data/products";
 
-const BRAND = "#e55d6a";
+const BRAND = "#e7d2d4";
 
 export default function Home() {
   const [loaded,   setLoaded]   = useState(false);
@@ -28,8 +28,8 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Poppypink Shoes – Premium & Trendy Women Sandals Online in India</title>
-        <meta name="description" content="Shop premium and trendy women's sandals at Poppypink Shoes. Discover stylish, comfortable, and affordable footwear designed for modern women. " />
+        <title>POPPYPINK — Premium Women's Sandals</title>
+        <meta name="description" content="Step into elegance with POPPYPINK premium sandals." />
         <meta name="viewport"    content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content={BRAND} />
       </Head>
@@ -51,10 +51,10 @@ export default function Home() {
                   <h2 style={{ fontFamily:"'Playfair Display',serif", fontSize:"clamp(1.8rem,4vw,3rem)", fontWeight:900, color:"#1A0500" }}>
                     {filter
                       ? <em style={{ fontStyle:"italic", background:`linear-gradient(135deg,${BRAND},#C42E15)`, WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent" }}>{filter}</em>
-                      : <>All <em style={{ fontStyle:"italic", background:`linear-gradient(135deg,${BRAND},#C42E15)`, WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent" }}>Sandals</em></>
+                      : <>All <em style={{ fontStyle:"italic", background:`linear-gradient(135deg,${BRAND},#e55d6a)`, WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent" }}>Sandals</em></>
                     }
                   </h2>
-                  <p style={{ color:"#B07060", fontSize:".85rem", marginTop:".4rem" }}>{filtered.length} style{filtered.length!==1?"s":""} — Click any to view details</p>
+                  <p style={{ color:"#d0a69c", fontSize:".85rem", marginTop:".4rem" }}>{filtered.length} style{filtered.length!==1?"s":""} — Click any to view details</p>
                 </div>
                 {filter && (
                   <button className="btn-outline-dark" onClick={() => setFilter(null)} style={{ padding:".5rem 1.3rem", fontSize:".8rem" }}>
@@ -79,11 +79,7 @@ export default function Home() {
               <p style={{ color:"rgba(255,255,255,.7)", lineHeight:1.8, fontSize:"1rem", marginBottom:"2rem" }}>
                 Every POPPYPINK sandal is designed with passion, precision, and love. From sunrise walks to midnight parties — we have a pair for every moment.
               </p>
-              <button style={{ background:"#fff", color:BRAND, border:"none", padding:".75rem 2.2rem", borderRadius:50, fontFamily:"'DM Sans',sans-serif", fontWeight:800, fontSize:".9rem", cursor:"pointer", letterSpacing:".05em", boxShadow:"0 8px 28px rgba(0,0,0,.2)", transition:"all .3s" }}
-                onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-3px)";e.currentTarget.style.boxShadow="0 14px 36px rgba(0,0,0,.3)"}}
-                onMouseLeave={e=>{e.currentTarget.style.transform="translateY(0)";e.currentTarget.style.boxShadow="0 8px 28px rgba(0,0,0,.2)"}}>
-                Discover Our Story ✦
-              </button>
+              
             </div>
           </section>
 

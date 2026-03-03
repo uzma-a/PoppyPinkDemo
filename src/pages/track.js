@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
-const BRAND = "#E8391D";
+const BRAND = "#d3a49d";
 
 const STATUS_STEPS = [
   { key:"Processing",       icon:"🛒", label:"Order Placed",      desc:"Your order has been received" },
@@ -282,8 +282,8 @@ export default function TrackPage() {
               {/* Help note */}
               <p style={{ marginTop:"1.5rem", color:"#B07060", fontSize:".78rem", textAlign:"center" }}>
                 Need help? Contact us at{" "}
-                <a href="mailto:support@poppypink.com" style={{ color:BRAND, fontWeight:700 }}>support@poppypink.com</a>
-                {" "}or call <strong>+91-9876543210</strong>
+                <a href="mailto:Poppypink001@gmail.com" style={{ color:BRAND, fontWeight:700 }}>Poppypink001@gmail.com</a>
+                {" "}or call <strong>+91-9773948133</strong>
               </p>
             </div>
           </section>

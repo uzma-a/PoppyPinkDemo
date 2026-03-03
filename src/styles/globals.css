@@ -15,19 +15,9 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --brand:       #E8391D;
-  --brand-dark:  #C42E15;
-  --brand-light: #FF5533;
-  --brand-pale:  #FFD5C8;
-  --bg-1:        #FFF8F5;
-  --bg-2:        #FFF0E8;
-  --bg-3:        #FFF5F2;
-  --card:        rgba(255,255,255,0.90);
-  --text:        #1A0500;
-  --text-mid:    #7A3020;
-  --text-soft:   #B07060;
-  --border:      rgba(232,57,29,0.18);
-  --shadow:      rgba(232,57,29,0.2);
+  --brand:       #e55d6a;
+  --brand-dark:  #f9f9f9;
+  
 }
 
 html { scroll-behavior: smooth; }

@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import PoppyPinkLogo from "./PoppyPinkLogo";
 
-const BRAND = "#E8391D";
+const BRAND = "#e55d6a";
 
 export default function LoadingScreen({ onDone }) {
   const [fade, setFade] = useState(false);
