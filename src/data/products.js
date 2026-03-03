@@ -177,4 +177,5 @@ export const PRODUCTS = [
       { name: "Rose Gold", hex: "#C9956C" },
     ],
   }, 
+
 ];

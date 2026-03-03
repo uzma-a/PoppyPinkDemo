@@ -3,6 +3,6 @@
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
   "/": "pages/index.js",
-  "/track": "pages/track.js",
-  "/cart": "pages/cart.js"
+  "/cart": "pages/cart.js",
+  "/track": "pages/track.js"
 }
