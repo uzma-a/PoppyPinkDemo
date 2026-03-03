@@ -1,0 +1,22 @@
+"use strict";
+/*
+ * ATTENTION: An "eval-source-map" devtool has been used.
+ * This devtool is neither made for production nor for readable output files.
+ * It uses "eval()" calls to create a separate source file with attached SourceMaps in the browser devtools.
+ * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
+ * or disable the default devtool with "devtool: false".
+ * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
+ */
+self["webpackHotUpdate_N_E"]("src/middleware",{
+
+/***/ "(middleware)/./src/middleware.js":
+/*!***************************!*\
+  !*** ./src/middleware.js ***!
+  \***************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   config: () => (/* binding */ config),\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n/* harmony import */ var _clerk_nextjs_server__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @clerk/nextjs/server */ \"(middleware)/./node_modules/@clerk/nextjs/dist/esm/server/index.js\");\n// src/middleware.js\n// IMPORTANT: Must be in src/ directory (not project root) when using src/ layout\n// FIX: Exclude /api/orders (public) from Clerk middleware to avoid HTML error responses\n\n// ONLY protect the admin dashboard page — NOT public API routes\nconst isAdminPage = (0,_clerk_nextjs_server__WEBPACK_IMPORTED_MODULE_0__.createRouteMatcher)([\n    \"/admin(.*)\"\n]);\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ((0,_clerk_nextjs_server__WEBPACK_IMPORTED_MODULE_0__.clerkMiddleware)(async (auth, req)=>{\n    if (isAdminPage(req)) {\n        await auth.protect();\n    }\n// All other routes (including /api/orders) pass through freely\n}));\nconst config = {\n    matcher: [\n        // Skip static files and images entirely\n        \"/((?!_next/static|_next/image|favicon.ico|.*\\\\.(?:svg|png|jpg|jpeg|gif|webp|ico|woff|woff2|ttf)$).*)\",\n        // Always run for API routes\n        \"/(api|trpc)(.*)\"\n    ]\n};\n//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiKG1pZGRsZXdhcmUpLy4vc3JjL21pZGRsZXdhcmUuanMiLCJtYXBwaW5ncyI6Ijs7Ozs7O0FBQUEsb0JBQW9CO0FBQ3BCLGlGQUFpRjtBQUNqRix3RkFBd0Y7QUFFYjtBQUUzRSxnRUFBZ0U7QUFDaEUsTUFBTUUsY0FBY0Qsd0VBQWtCQSxDQUFDO0lBQUM7Q0FBYTtBQUVyRCxpRUFBZUQscUVBQWVBLENBQUMsT0FBT0csTUFBTUM7SUFDMUMsSUFBSUYsWUFBWUUsTUFBTTtRQUNwQixNQUFNRCxLQUFLRSxPQUFPO0lBQ3BCO0FBQ0EsK0RBQStEO0FBQ2pFLEVBQUUsRUFBQztBQUVJLE1BQU1DLFNBQVM7SUFDcEJDLFNBQVM7UUFDUCx3Q0FBd0M7UUFDeEM7UUFDQSw0QkFBNEI7UUFDNUI7S0FDRDtBQUNILEVBQUUiLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly9fTl9FLy4vc3JjL21pZGRsZXdhcmUuanM/YTQ5YSJdLCJzb3VyY2VzQ29udGVudCI6WyIvLyBzcmMvbWlkZGxld2FyZS5qc1xyXG4vLyBJTVBPUlRBTlQ6IE11c3QgYmUgaW4gc3JjLyBkaXJlY3RvcnkgKG5vdCBwcm9qZWN0IHJvb3QpIHdoZW4gdXNpbmcgc3JjLyBsYXlvdXRcclxuLy8gRklYOiBFeGNsdWRlIC9hcGkvb3JkZXJzIChwdWJsaWMpIGZyb20gQ2xlcmsgbWlkZGxld2FyZSB0byBhdm9pZCBIVE1MIGVycm9yIHJlc3BvbnNlc1xyXG5cclxuaW1wb3J0IHsgY2xlcmtNaWRkbGV3YXJlLCBjcmVhdGVSb3V0ZU1hdGNoZXIgfSBmcm9tIFwiQGNsZXJrL25leHRqcy9zZXJ2ZXJcIjtcclxuXHJcbi8vIE9OTFkgcHJvdGVjdCB0aGUgYWRtaW4gZGFzaGJvYXJkIHBhZ2Ug4oCUIE5PVCBwdWJsaWMgQVBJIHJvdXRlc1xyXG5jb25zdCBpc0FkbWluUGFnZSA9IGNyZWF0ZVJvdXRlTWF0Y2hlcihbXCIvYWRtaW4oLiopXCJdKTtcclxuXHJcbmV4cG9ydCBkZWZhdWx0IGNsZXJrTWlkZGxld2FyZShhc3luYyAoYXV0aCwgcmVxKSA9PiB7XHJcbiAgaWYgKGlzQWRtaW5QYWdlKHJlcSkpIHtcclxuICAgIGF3YWl0IGF1dGgucHJvdGVjdCgpO1xyXG4gIH1cclxuICAvLyBBbGwgb3RoZXIgcm91dGVzIChpbmNsdWRpbmcgL2FwaS9vcmRlcnMpIHBhc3MgdGhyb3VnaCBmcmVlbHlcclxufSk7XHJcblxyXG5leHBvcnQgY29uc3QgY29uZmlnID0ge1xyXG4gIG1hdGNoZXI6IFtcclxuICAgIC8vIFNraXAgc3RhdGljIGZpbGVzIGFuZCBpbWFnZXMgZW50aXJlbHlcclxuICAgIFwiLygoPyFfbmV4dC9zdGF0aWN8X25leHQvaW1hZ2V8ZmF2aWNvbi5pY298LipcXFxcLig/OnN2Z3xwbmd8anBnfGpwZWd8Z2lmfHdlYnB8aWNvfHdvZmZ8d29mZjJ8dHRmKSQpLiopXCIsXHJcbiAgICAvLyBBbHdheXMgcnVuIGZvciBBUEkgcm91dGVzXHJcbiAgICBcIi8oYXBpfHRycGMpKC4qKVwiLFxyXG4gIF0sXHJcbn07XHJcbiJdLCJuYW1lcyI6WyJjbGVya01pZGRsZXdhcmUiLCJjcmVhdGVSb3V0ZU1hdGNoZXIiLCJpc0FkbWluUGFnZSIsImF1dGgiLCJyZXEiLCJwcm90ZWN0IiwiY29uZmlnIiwibWF0Y2hlciJdLCJzb3VyY2VSb290IjoiIn0=\n//# sourceURL=webpack-internal:///(middleware)/./src/middleware.js\n");
+
+/***/ })
+
+});
