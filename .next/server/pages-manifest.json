@@ -3,8 +3,8 @@
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
   "/": "pages/index.js",
+  "/api/orders": "pages/api/orders.js",
   "/track": "pages/track.js",
   "/cart": "pages/cart.js",
-  "/api/track/[orderId]": "pages/api/track/[orderId].js",
-  "/api/orders": "pages/api/orders.js"
+  "/api/track/[orderId]": "pages/api/track/[orderId].js"
 }

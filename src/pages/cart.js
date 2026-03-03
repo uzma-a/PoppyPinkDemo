@@ -6,18 +6,21 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { useCart } from "../context/CartContext";
 
-const BRAND = "#E8391D";
-const BRAND_DARK = "#C42E15";
+const BRAND      = "#e55d6a";
+const BRAND_DARK = "#c9404d";
 
 export default function CartPage() {
   const footerRef = useRef(null);
   const { cart, removeFromCart, updateQty, total, clearCart } = useCart();
 
-  // Checkout modal state
-  const [checkoutOpen, setCheckoutOpen] = useState(false);
-  const [sending,      setSending]      = useState(false);
-  const [sent,         setSent]         = useState(false);
-  const [placedOrderId, setPlacedOrderId] = useState("");
+  // ✅ FIX 1: Snapshot cart & total BEFORE clearing, so success screen still shows them
+  const [snapCart,  setSnapCart]  = useState([]);
+  const [snapTotal, setSnapTotal] = useState(0);
+
+  const [checkoutOpen,   setCheckoutOpen]   = useState(false);
+  const [sending,        setSending]        = useState(false);
+  const [sent,           setSent]           = useState(false);
+  const [placedOrderId,  setPlacedOrderId]  = useState("");
 
   const [form, setForm] = useState({
     name:"", phone:"", address:"", city:"", state:"", pincode:"",
@@ -42,12 +45,10 @@ export default function CartPage() {
     setSending(true);
 
     try {
-      // Build order items description
       const itemsText = cart.map(i =>
         `${i.name} (Size:${i.size||"N/A"}, Qty:${i.qty}) = ₹${(i.offerPrice*i.qty).toLocaleString()}`
       ).join("\n");
 
-      // Use first cart item as primary product for DB (multi-item support)
       const firstItem = cart[0];
 
       const apiRes = await fetch("/api/orders", {
@@ -78,7 +79,6 @@ export default function CartPage() {
         }),
       });
 
-      // Safe JSON parse
       const contentType = apiRes.headers.get("content-type") || "";
       if (!contentType.includes("application/json")) {
         throw new Error(`Server error (${apiRes.status}). Check MongoDB connection.`);
@@ -122,8 +122,11 @@ export default function CartPage() {
         } catch (_) {}
       }
 
+      // ✅ FIX 1: Snapshot BEFORE clearing so success screen has correct data
+      setSnapCart([...cart]);
+      setSnapTotal(total);
       setSent(true);
-      clearCart?.(); // clear cart after successful order
+      clearCart?.();
 
     } catch (e) {
       alert("Order failed: " + e.message);
@@ -132,67 +135,71 @@ export default function CartPage() {
     }
   };
 
+  // Use snapshot when showing success, live data otherwise
+  const displayCart  = sent ? snapCart  : cart;
+  const displayTotal = sent ? snapTotal : total;
+
   return (
     <>
       <Head><title>Cart — POPPYPINK</title></Head>
 
-      <style>{`
+      {/* ✅ FIX 2: suppressHydrationWarning prevents Next.js hydration mismatch for inline styles */}
+      <style suppressHydrationWarning>{`
         @keyframes fadeIn  { from{opacity:0} to{opacity:1} }
         @keyframes fadeUp  { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
         @keyframes spin    { to{transform:rotate(360deg)} }
         @keyframes popIn   { 0%{transform:scale(0);opacity:0} 80%{transform:scale(1.1)} 100%{transform:scale(1)} }
 
-        .qty-btn { width:32px;height:32px;border-radius:8px;background:rgba(232,57,29,.1);border:1.5px solid rgba(232,57,29,.3);display:flex;align-items:center;justify-content:center;cursor:pointer;color:#1A0500;font-weight:700;font-size:1.1rem;transition:all .2s; }
-        .qty-btn:hover { background:rgba(232,57,29,.22); }
-        .rm-btn { background:none;border:none;color:rgba(26,5,0,.22);cursor:pointer;font-size:1.2rem;transition:color .2s;padding:.25rem; }
+        .qty-btn { width:32px;height:32px;border-radius:8px;background:rgba(229,93,106,.1);border:1.5px solid rgba(229,93,106,.25);display:flex;align-items:center;justify-content:center;cursor:pointer;color:#1a1a1a;font-weight:700;font-size:1.1rem;transition:all .2s; }
+        .qty-btn:hover { background:rgba(229,93,106,.2); }
+        .rm-btn { background:none;border:none;color:#ccc;cursor:pointer;font-size:1.2rem;transition:color .2s;padding:.25rem; }
         .rm-btn:hover { color:${BRAND}; }
-        .cart-row { border-radius:18px;padding:1.25rem 1.5rem;display:flex;gap:1.25rem;align-items:center;flex-wrap:wrap;background:rgba(255,255,255,.82);backdrop-filter:blur(16px);border:1.5px solid rgba(232,57,29,.18);box-shadow:0 4px 20px rgba(232,57,29,.06);transition:all .2s; }
-        .cart-row:hover { box-shadow:0 8px 32px rgba(232,57,29,.12);border-color:rgba(232,57,29,.35); }
+        .cart-row { border-radius:18px;padding:1.25rem 1.5rem;display:flex;gap:1.25rem;align-items:center;flex-wrap:wrap;background:#fff;border:1.5px solid rgba(229,93,106,.12);box-shadow:0 4px 16px rgba(229,93,106,.06);transition:all .25s; }
+        .cart-row:hover { box-shadow:0 8px 28px rgba(229,93,106,.12);border-color:rgba(229,93,106,.28); transform:translateY(-1px); }
 
-        /* Checkout modal */
-        .co-overlay { position:fixed;inset:0;background:rgba(26,5,0,.65);backdrop-filter:blur(6px);z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem;animation:fadeIn .3s ease; }
-        .co-box { background:#fff;border-radius:20px;width:100%;max-width:760px;max-height:92vh;overflow-y:auto;animation:fadeUp .4s ease;box-shadow:0 30px 80px rgba(0,0,0,.28);padding:2rem 2.5rem; }
+        .co-overlay { position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(6px);z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem;animation:fadeIn .3s ease; }
+        .co-box { background:#fff;border-radius:20px;width:100%;max-width:760px;max-height:92vh;overflow-y:auto;animation:fadeUp .4s ease;box-shadow:0 30px 80px rgba(0,0,0,.18);padding:2rem 2.5rem; }
         .co-box::-webkit-scrollbar{width:4px}.co-box::-webkit-scrollbar-thumb{background:${BRAND};border-radius:2px}
 
-        .co-input { width:100%;padding:.65rem .9rem;border:1.5px solid rgba(232,57,29,.25);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.88rem;color:#1A0500;outline:none;transition:border-color .2s;background:#fff;box-sizing:border-box; }
-        .co-input:focus { border-color:${BRAND}; }
+        .co-input { width:100%;padding:.65rem .9rem;border:1.5px solid rgba(229,93,106,.22);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.88rem;color:#1a1a1a;outline:none;transition:border-color .2s,box-shadow .2s;background:#fff;box-sizing:border-box; }
+        .co-input:focus { border-color:${BRAND};box-shadow:0 0 0 3px rgba(229,93,106,.1); }
         .co-input.err { border-color:#dc2626; }
         .co-err { color:#dc2626;font-size:.7rem;margin-top:.2rem; }
 
-        .pay-card { flex:1;border:2px solid rgba(232,57,29,.25);border-radius:14px;padding:.8rem 1rem;cursor:pointer;transition:all .25s;display:flex;align-items:center;gap:.75rem; }
-        .pay-card:hover { border-color:${BRAND};background:rgba(232,57,29,.04); }
-        .pay-card.on { border-color:${BRAND};background:rgba(232,57,29,.07);box-shadow:0 0 0 3px rgba(232,57,29,.12); }
+        .pay-card { flex:1;border:2px solid rgba(229,93,106,.2);border-radius:14px;padding:.8rem 1rem;cursor:pointer;transition:all .25s;display:flex;align-items:center;gap:.75rem; }
+        .pay-card:hover { border-color:${BRAND};background:rgba(229,93,106,.04); }
+        .pay-card.on { border-color:${BRAND};background:rgba(229,93,106,.07);box-shadow:0 0 0 3px rgba(229,93,106,.1); }
         .radio-c { width:20px;height:20px;border-radius:50%;border:2.5px solid ${BRAND};display:flex;align-items:center;justify-content:center;flex-shrink:0; }
         .radio-d { width:10px;height:10px;border-radius:50%;background:${BRAND}; }
 
         .co-btn { width:100%;padding:.9rem;font-family:'DM Sans',sans-serif;font-weight:700;font-size:.96rem;border:none;border-radius:12px;cursor:pointer;transition:all .3s;letter-spacing:.04em; }
-        .co-btn-primary { background:linear-gradient(135deg,${BRAND},${BRAND_DARK});color:#fff;box-shadow:0 8px 24px rgba(232,57,29,.35); }
-        .co-btn-primary:hover { transform:translateY(-2px);box-shadow:0 12px 32px rgba(232,57,29,.5); }
+        .co-btn-primary { background:${BRAND};color:#fff;box-shadow:0 8px 24px rgba(229,93,106,.3); }
+        .co-btn-primary:hover { transform:translateY(-2px);box-shadow:0 14px 32px rgba(229,93,106,.4); }
         .co-btn-primary:disabled { opacity:.65;cursor:not-allowed;transform:none; }
-        .co-btn-outline { background:rgba(232,57,29,.06);border:2px solid rgba(232,57,29,.3);color:${BRAND}; }
-        .co-btn-outline:hover { background:rgba(232,57,29,.12); }
+        .co-btn-outline { background:rgba(229,93,106,.06);border:2px solid rgba(229,93,106,.25);color:${BRAND}; }
+        .co-btn-outline:hover { background:rgba(229,93,106,.12);border-color:${BRAND}; }
 
         @media(max-width:640px) { .co-2col { grid-template-columns:1fr!important; } }
       `}</style>
 
       <Navbar footerRef={footerRef} />
 
-      {cart.length === 0 ? (
-        <div style={{ minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",background:"linear-gradient(160deg,#FFF8F5,#FFE5D0)",padding:"2rem",textAlign:"center" }}>
+      {cart.length === 0 && !sent ? (
+        <div style={{ minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",background:"#f9f9f9",padding:"2rem",textAlign:"center" }}>
           <div style={{ fontSize:"5rem",marginBottom:"1.5rem" }}>🛍️</div>
-          <h2 style={{ fontFamily:"'Playfair Display',serif",fontSize:"2.2rem",color:"#1A0500",marginBottom:".75rem" }}>Your cart is empty</h2>
-          <p style={{ color:"#7A3020",marginBottom:"2.5rem" }}>Discover gorgeous sandals and add them to your cart!</p>
-          <Link href="/" className="btn-primary">Continue Shopping</Link>
+          <h2 style={{ fontFamily:"'Playfair Display',serif",fontSize:"2.2rem",color:"#1a1a1a",marginBottom:".75rem" }}>Your cart is empty</h2>
+          <p style={{ color:"#888",marginBottom:"2.5rem" }}>Discover gorgeous sandals and add them to your cart!</p>
+          <Link href="/" style={{ background:BRAND,color:"#fff",padding:".8rem 2rem",borderRadius:50,fontWeight:700,textDecoration:"none",boxShadow:`0 8px 24px rgba(229,93,106,.3)` }}>Continue Shopping</Link>
         </div>
       ) : (
-        <div style={{ minHeight:"100vh",background:"linear-gradient(160deg,#FFF8F5,#FFE5D0 55%,#FFF5F0)",padding:"100px 2rem 5rem" }}>
+        <div style={{ minHeight:"100vh",background:"#f9f9f9",padding:"100px 2rem 5rem" }}>
           <div style={{ maxWidth:960,margin:"0 auto" }}>
             <div style={{ marginBottom:"2.5rem" }}>
               <p style={{ color:BRAND,fontSize:".75rem",fontWeight:800,letterSpacing:".22em",textTransform:"uppercase",marginBottom:".4rem" }}>✦ MY CART ✦</p>
-              <h1 style={{ fontFamily:"'Playfair Display',serif",fontSize:"clamp(2rem,5vw,3rem)",fontWeight:900,color:"#1A0500" }}>
-                Your <em style={{ fontStyle:"italic",background:`linear-gradient(135deg,${BRAND},${BRAND_DARK})`,WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent" }}>Selection</em>
+              <h1 style={{ fontFamily:"'Playfair Display',serif",fontSize:"clamp(2rem,5vw,3rem)",fontWeight:900,color:"#1a1a1a" }}>
+                Your <em style={{ fontStyle:"italic",color:BRAND }}>Selection</em>
               </h1>
-              <p style={{ color:"#7A3020",marginTop:".4rem",fontWeight:500 }}>{cart.length} item{cart.length>1?"s":""} in your cart</p>
+              <p style={{ color:"#888",marginTop:".4rem",fontWeight:500 }}>{cart.length} item{cart.length>1?"s":""} in your cart</p>
             </div>
 
             {/* Cart items */}
@@ -201,63 +208,65 @@ export default function CartPage() {
                 <div key={item.id} className="cart-row">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={item.image || item.images?.[0]} alt={item.name}
-                    style={{ width:78,height:78,borderRadius:14,objectFit:"cover",flexShrink:0,border:`2px solid rgba(232,57,29,.2)` }}/>
+                    style={{ width:78,height:78,borderRadius:14,objectFit:"cover",flexShrink:0,border:`2px solid rgba(229,93,106,.15)` }}/>
                   <div style={{ flex:1,minWidth:140 }}>
-                    <div style={{ fontFamily:"'Playfair Display',serif",fontWeight:700,color:"#1A0500",fontSize:"1rem" }}>{item.name}</div>
+                    <div style={{ fontFamily:"'Playfair Display',serif",fontWeight:700,color:"#1a1a1a",fontSize:"1rem" }}>{item.name}</div>
                     <div style={{ color:BRAND,fontSize:".7rem",fontWeight:800,letterSpacing:".08em",textTransform:"uppercase",marginTop:".15rem" }}>{item.category}</div>
-                    {item.size && <div style={{ color:"#B07060",fontSize:".75rem",marginTop:".1rem" }}>Size: {item.size}</div>}
+                    {item.size && <div style={{ color:"#aaa",fontSize:".75rem",marginTop:".1rem" }}>Size: {item.size}</div>}
                     <div style={{ color:BRAND,fontWeight:800,fontSize:"1rem",marginTop:".3rem" }}>₹{item.offerPrice.toLocaleString()}</div>
                   </div>
                   <div style={{ display:"flex",alignItems:"center",gap:".55rem" }}>
                     <div className="qty-btn" onClick={()=>updateQty(item.id,item.qty-1)}>−</div>
-                    <span style={{ fontWeight:700,color:"#1A0500",minWidth:"1.5rem",textAlign:"center" }}>{item.qty}</span>
+                    <span style={{ fontWeight:700,color:"#1a1a1a",minWidth:"1.5rem",textAlign:"center" }}>{item.qty}</span>
                     <div className="qty-btn" onClick={()=>updateQty(item.id,item.qty+1)}>+</div>
                   </div>
-                  <div style={{ fontWeight:800,color:"#1A0500",minWidth:90,textAlign:"right" }}>₹{(item.offerPrice*item.qty).toLocaleString()}</div>
+                  <div style={{ fontWeight:800,color:"#1a1a1a",minWidth:90,textAlign:"right" }}>₹{(item.offerPrice*item.qty).toLocaleString()}</div>
                   <button className="rm-btn" onClick={()=>removeFromCart(item.id)}>✕</button>
                 </div>
               ))}
             </div>
 
             {/* Order Summary */}
-            <div style={{ maxWidth:440,marginLeft:"auto",borderRadius:22,padding:"2rem",background:"rgba(255,255,255,.88)",backdropFilter:"blur(20px)",border:`1.5px solid rgba(232,57,29,.2)`,boxShadow:"0 12px 40px rgba(232,57,29,.1)" }}>
-              <h3 style={{ fontFamily:"'Playfair Display',serif",fontSize:"1.3rem",color:"#1A0500",marginBottom:"1.25rem",fontWeight:700 }}>Order Summary</h3>
-              {[["Subtotal",`₹${total.toLocaleString()}`,"#7A3020"],["Shipping","Free ✓","#16a34a"],["Discount","Applied 🏷️",BRAND]].map(([k,v,col])=>(
+            <div style={{ maxWidth:440,marginLeft:"auto",borderRadius:22,padding:"2rem",background:"#fff",border:`1.5px solid rgba(229,93,106,.15)`,boxShadow:"0 12px 40px rgba(229,93,106,.08)" }}>
+              <h3 style={{ fontFamily:"'Playfair Display',serif",fontSize:"1.3rem",color:"#1a1a1a",marginBottom:"1.25rem",fontWeight:700 }}>Order Summary</h3>
+              {[
+                ["Subtotal",  `₹${total.toLocaleString()}`, "#1a1a1a"],
+                ["Shipping",  "Free ✓",                     "#16a34a"],
+                ["Discount",  "Applied 🏷️",                 BRAND],
+              ].map(([k,v,col])=>(
                 <div key={k} style={{ display:"flex",justifyContent:"space-between",marginBottom:".75rem",fontSize:".88rem" }}>
-                  <span style={{ color:"#7A3020" }}>{k}</span>
+                  <span style={{ color:"#888" }}>{k}</span>
                   <span style={{ fontWeight:700,color:col }}>{v}</span>
                 </div>
               ))}
-              <div style={{ borderTop:`1.5px solid rgba(232,57,29,.2)`,paddingTop:"1rem",display:"flex",justifyContent:"space-between",marginBottom:"1.4rem" }}>
-                <span style={{ fontFamily:"'Playfair Display',serif",fontWeight:800,fontSize:"1.1rem",color:"#1A0500" }}>Total</span>
+              <div style={{ borderTop:`1.5px solid rgba(229,93,106,.12)`,paddingTop:"1rem",display:"flex",justifyContent:"space-between",marginBottom:"1.4rem" }}>
+                <span style={{ fontFamily:"'Playfair Display',serif",fontWeight:800,fontSize:"1.1rem",color:"#1a1a1a" }}>Total</span>
                 <span style={{ fontWeight:800,fontSize:"1.2rem",color:BRAND }}>₹{total.toLocaleString()}</span>
               </div>
 
-              {/* ✅ FIX: onClick now opens checkout form */}
               <button
-                className="btn-primary"
-                style={{ width:"100%",padding:".95rem",fontSize:".94rem",borderRadius:12 }}
+                style={{ width:"100%",padding:".95rem",fontSize:".94rem",borderRadius:12,background:BRAND,border:"none",color:"#fff",fontFamily:"'DM Sans',sans-serif",fontWeight:700,cursor:"pointer",boxShadow:`0 8px 24px rgba(229,93,106,.3)`,transition:"all .3s",letterSpacing:".04em" }}
+                onMouseOver={e=>e.currentTarget.style.transform="translateY(-2px)"}
+                onMouseOut={e=>e.currentTarget.style.transform="none"}
                 onClick={() => setCheckoutOpen(true)}
               >
                 Proceed to Checkout →
               </button>
               <div style={{ display:"flex",gap:".5rem",justifyContent:"center",marginTop:".75rem" }}>
                 {["🔒 Secure","💳 All Cards","🚚 Free Ship"].map(t=>(
-                  <span key={t} style={{ fontSize:".68rem",color:"#B07060",fontWeight:600 }}>{t}</span>
+                  <span key={t} style={{ fontSize:".68rem",color:"#aaa",fontWeight:600 }}>{t}</span>
                 ))}
               </div>
             </div>
 
-            <Link href="/" className="btn-outline-dark" style={{ display:"inline-block",marginTop:"2rem" }}>← Continue Shopping</Link>
+            <Link href="/" style={{ display:"inline-block",marginTop:"2rem",color:BRAND,fontWeight:600,textDecoration:"none",fontSize:".9rem" }}>← Continue Shopping</Link>
           </div>
         </div>
       )}
 
       <Footer ref={footerRef} />
 
-      {/* ═══════════════════════════════════════════
-          CHECKOUT MODAL
-      ═══════════════════════════════════════════ */}
+      {/* ═══ CHECKOUT MODAL ═══ */}
       {checkoutOpen && (
         <div className="co-overlay" onClick={() => { if (!sending) setCheckoutOpen(false); }}>
           <div className="co-box" onClick={e => e.stopPropagation()}>
@@ -266,33 +275,33 @@ export default function CartPage() {
               /* ── Checkout Success ── */
               <div style={{ textAlign:"center", padding:"1.5rem 0" }}>
                 <div style={{ fontSize:"3.5rem",marginBottom:"1rem",animation:"popIn .5s ease" }}>✅</div>
-                <h2 style={{ fontFamily:"'Playfair Display',serif",fontSize:"1.8rem",color:"#1A0500",marginBottom:".6rem" }}>Order Placed!</h2>
-                <p style={{ color:"#7A3020",marginBottom:"1rem" }}>Thank you <strong>{form.name}</strong>!</p>
+                <h2 style={{ fontFamily:"'Playfair Display',serif",fontSize:"1.8rem",color:"#1a1a1a",marginBottom:".6rem" }}>Order Placed!</h2>
+                <p style={{ color:"#666",marginBottom:"1rem" }}>Thank you <strong>{form.name}</strong>!</p>
 
-                <div style={{ display:"inline-block",margin:".4rem 0 1.2rem",padding:".85rem 1.5rem",background:"rgba(232,57,29,.07)",borderRadius:14,border:"1.5px solid rgba(232,57,29,.25)" }}>
-                  <div style={{ fontSize:".68rem",color:"#B07060",fontWeight:700,letterSpacing:".12em",textTransform:"uppercase",marginBottom:".18rem" }}>Order ID</div>
+                <div style={{ display:"inline-block",margin:".4rem 0 1.2rem",padding:".85rem 1.5rem",background:"rgba(229,93,106,.07)",borderRadius:14,border:`1.5px solid rgba(229,93,106,.2)` }}>
+                  <div style={{ fontSize:".68rem",color:"#aaa",fontWeight:700,letterSpacing:".12em",textTransform:"uppercase",marginBottom:".18rem" }}>Order ID</div>
                   <div style={{ fontFamily:"monospace",fontWeight:900,fontSize:"1.4rem",color:BRAND,letterSpacing:".1em" }}>{placedOrderId}</div>
-                  <div style={{ fontSize:".7rem",color:"#B07060",marginTop:".12rem" }}>Save to track your order</div>
+                  <div style={{ fontSize:".7rem",color:"#aaa",marginTop:".12rem" }}>Save to track your order</div>
                 </div>
 
-                {/* Items summary */}
-                <div style={{ maxWidth:380,margin:"0 auto 1.2rem",background:"#FFF5F2",borderRadius:14,padding:"1rem 1.4rem",textAlign:"left",border:"1px solid rgba(232,57,29,.15)" }}>
-                  {cart.map(item => (
-                    <div key={item.id} style={{ display:"flex",justifyContent:"space-between",fontSize:".84rem",color:"#7A3020",marginBottom:".35rem" }}>
+                {/* ✅ FIX 1: Uses snapCart & snapTotal — always shows correct values */}
+                <div style={{ maxWidth:380,margin:"0 auto 1.2rem",background:"#fdf5f6",borderRadius:14,padding:"1rem 1.4rem",textAlign:"left",border:`1px solid rgba(229,93,106,.12)` }}>
+                  {displayCart.map(item => (
+                    <div key={item.id} style={{ display:"flex",justifyContent:"space-between",fontSize:".84rem",color:"#666",marginBottom:".35rem" }}>
                       <span>{item.name} ×{item.qty}</span>
-                      <strong style={{ color:"#1A0500" }}>₹{(item.offerPrice*item.qty).toLocaleString()}</strong>
+                      <strong style={{ color:"#1a1a1a" }}>₹{(item.offerPrice*item.qty).toLocaleString()}</strong>
                     </div>
                   ))}
-                  <div style={{ borderTop:"1px solid rgba(232,57,29,.15)",paddingTop:".4rem",marginTop:".4rem",display:"flex",justifyContent:"space-between",fontWeight:800 }}>
-                    <span style={{ color:"#1A0500" }}>Total</span>
-                    <span style={{ color:BRAND }}>₹{total.toLocaleString()}</span>
+                  <div style={{ borderTop:`1px solid rgba(229,93,106,.12)`,paddingTop:".4rem",marginTop:".4rem",display:"flex",justifyContent:"space-between",fontWeight:800 }}>
+                    <span style={{ color:"#1a1a1a" }}>Total</span>
+                    <span style={{ color:BRAND }}>₹{displayTotal.toLocaleString()}</span>
                   </div>
-                  <div style={{ marginTop:".5rem",fontSize:".8rem",color:"#7A3020" }}>
+                  <div style={{ marginTop:".5rem",fontSize:".8rem",color:"#666" }}>
                     Payment: <strong>{form.paymentMethod === "COD" ? "💵 Cash on Delivery" : "💳 Online Payment"}</strong>
                   </div>
                 </div>
 
-                <p style={{ color:"#7A3020",fontSize:".83rem",marginBottom:"1.5rem" }}>
+                <p style={{ color:"#888",fontSize:".83rem",marginBottom:"1.5rem" }}>
                   We'll call/WhatsApp <strong>{form.phone}</strong> to confirm.
                 </p>
 
@@ -312,26 +321,25 @@ export default function CartPage() {
               /* ── Checkout Form ── */
               <>
                 <div style={{ display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"1.5rem" }}>
-                  <h2 style={{ fontFamily:"'Playfair Display',serif",fontSize:"1.7rem",color:"#1A0500",margin:0 }}>
-                    Checkout
-                  </h2>
+                  <h2 style={{ fontFamily:"'Playfair Display',serif",fontSize:"1.7rem",color:"#1a1a1a",margin:0 }}>Checkout</h2>
                   <button onClick={() => setCheckoutOpen(false)}
-                    style={{ background:"none",border:"none",cursor:"pointer",color:"#B07060",fontSize:"1.4rem",lineHeight:1 }}>✕</button>
+                    style={{ background:"none",border:"none",cursor:"pointer",color:"#aaa",fontSize:"1.4rem",lineHeight:1,transition:"color .2s" }}
+                    onMouseOver={e=>e.currentTarget.style.color=BRAND} onMouseOut={e=>e.currentTarget.style.color="#aaa"}>✕</button>
                 </div>
 
                 {/* Cart summary */}
-                <div style={{ background:"rgba(232,57,29,.05)",border:"1px solid rgba(232,57,29,.15)",borderRadius:14,padding:"1rem",marginBottom:"1.5rem" }}>
-                  <div style={{ fontSize:".75rem",fontWeight:700,color:"#B07060",textTransform:"uppercase",letterSpacing:".1em",marginBottom:".6rem" }}>
+                <div style={{ background:"rgba(229,93,106,.04)",border:`1px solid rgba(229,93,106,.12)`,borderRadius:14,padding:"1rem",marginBottom:"1.5rem" }}>
+                  <div style={{ fontSize:".75rem",fontWeight:700,color:"#aaa",textTransform:"uppercase",letterSpacing:".1em",marginBottom:".6rem" }}>
                     Your Items ({cart.length})
                   </div>
                   {cart.map(item => (
-                    <div key={item.id} style={{ display:"flex",justifyContent:"space-between",fontSize:".84rem",color:"#7A3020",marginBottom:".3rem" }}>
+                    <div key={item.id} style={{ display:"flex",justifyContent:"space-between",fontSize:".84rem",color:"#666",marginBottom:".3rem" }}>
                       <span>{item.name} ×{item.qty}</span>
                       <strong style={{ color:BRAND }}>₹{(item.offerPrice*item.qty).toLocaleString()}</strong>
                     </div>
                   ))}
-                  <div style={{ borderTop:"1px solid rgba(232,57,29,.15)",paddingTop:".5rem",marginTop:".5rem",display:"flex",justifyContent:"space-between",fontWeight:800,fontSize:"1rem" }}>
-                    <span style={{ color:"#1A0500" }}>Total</span>
+                  <div style={{ borderTop:`1px solid rgba(229,93,106,.12)`,paddingTop:".5rem",marginTop:".5rem",display:"flex",justifyContent:"space-between",fontWeight:800,fontSize:"1rem" }}>
+                    <span style={{ color:"#1a1a1a" }}>Total</span>
                     <span style={{ color:BRAND }}>₹{total.toLocaleString()}</span>
                   </div>
                 </div>
@@ -339,61 +347,54 @@ export default function CartPage() {
                 {/* Form grid */}
                 <div className="co-2col" style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:".85rem",marginBottom:"1.25rem" }}>
 
-                  {/* Name */}
                   <div style={{ gridColumn:"1/-1" }}>
-                    <label style={{ fontSize:".8rem",fontWeight:700,color:"#1A0500",display:"block",marginBottom:".3rem" }}>Full Name *</label>
+                    <label style={{ fontSize:".8rem",fontWeight:700,color:"#1a1a1a",display:"block",marginBottom:".3rem" }}>Full Name *</label>
                     <input className={`co-input ${formErr.name?"err":""}`} placeholder="Your full name"
                       value={form.name} onChange={e=>{setForm(p=>({...p,name:e.target.value}));setFormErr(p=>({...p,name:""}))}}/>
                     {formErr.name && <div className="co-err">{formErr.name}</div>}
                   </div>
 
-                  {/* Phone */}
                   <div style={{ gridColumn:"1/-1" }}>
-                    <label style={{ fontSize:".8rem",fontWeight:700,color:"#1A0500",display:"block",marginBottom:".3rem" }}>Phone Number *</label>
+                    <label style={{ fontSize:".8rem",fontWeight:700,color:"#1a1a1a",display:"block",marginBottom:".3rem" }}>Phone Number *</label>
                     <input className={`co-input ${formErr.phone?"err":""}`} placeholder="10-digit mobile number" type="tel" maxLength={10}
                       value={form.phone} onChange={e=>{setForm(p=>({...p,phone:e.target.value.replace(/\D/g,"")}));setFormErr(p=>({...p,phone:""}))}}/>
                     {formErr.phone && <div className="co-err">{formErr.phone}</div>}
                   </div>
 
-                  {/* Address */}
                   <div style={{ gridColumn:"1/-1" }}>
-                    <label style={{ fontSize:".8rem",fontWeight:700,color:"#1A0500",display:"block",marginBottom:".3rem" }}>Delivery Address *</label>
+                    <label style={{ fontSize:".8rem",fontWeight:700,color:"#1a1a1a",display:"block",marginBottom:".3rem" }}>Delivery Address *</label>
                     <input className={`co-input ${formErr.address?"err":""}`} placeholder="House no, street, area"
                       value={form.address} onChange={e=>{setForm(p=>({...p,address:e.target.value}));setFormErr(p=>({...p,address:""}))}}/>
                     {formErr.address && <div className="co-err">{formErr.address}</div>}
                   </div>
 
-                  {/* City */}
                   <div>
-                    <label style={{ fontSize:".8rem",fontWeight:700,color:"#1A0500",display:"block",marginBottom:".3rem" }}>City *</label>
+                    <label style={{ fontSize:".8rem",fontWeight:700,color:"#1a1a1a",display:"block",marginBottom:".3rem" }}>City *</label>
                     <input className={`co-input ${formErr.city?"err":""}`} placeholder="City"
                       value={form.city} onChange={e=>{setForm(p=>({...p,city:e.target.value}));setFormErr(p=>({...p,city:""}))}}/>
                     {formErr.city && <div className="co-err">{formErr.city}</div>}
                   </div>
 
-                  {/* State */}
                   <div>
-                    <label style={{ fontSize:".8rem",fontWeight:700,color:"#1A0500",display:"block",marginBottom:".3rem" }}>State *</label>
+                    <label style={{ fontSize:".8rem",fontWeight:700,color:"#1a1a1a",display:"block",marginBottom:".3rem" }}>State *</label>
                     <input className={`co-input ${formErr.state?"err":""}`} placeholder="State"
                       value={form.state} onChange={e=>{setForm(p=>({...p,state:e.target.value}));setFormErr(p=>({...p,state:""}))}}/>
                     {formErr.state && <div className="co-err">{formErr.state}</div>}
                   </div>
 
-                  {/* Pincode */}
                   <div style={{ gridColumn:"1/-1" }}>
-                    <label style={{ fontSize:".8rem",fontWeight:700,color:"#1A0500",display:"block",marginBottom:".3rem" }}>Pincode *</label>
+                    <label style={{ fontSize:".8rem",fontWeight:700,color:"#1a1a1a",display:"block",marginBottom:".3rem" }}>Pincode *</label>
                     <input className={`co-input ${formErr.pincode?"err":""}`} placeholder="6-digit pincode" maxLength={6}
                       value={form.pincode} onChange={e=>{setForm(p=>({...p,pincode:e.target.value.replace(/\D/g,"")}));setFormErr(p=>({...p,pincode:""}))}}/>
                     {formErr.pincode && <div className="co-err">{formErr.pincode}</div>}
                   </div>
 
-                  {/* Payment Method */}
                   <div style={{ gridColumn:"1/-1" }}>
-                    <div style={{ fontSize:".8rem",fontWeight:700,color:"#1A0500",marginBottom:".6rem" }}>Payment Method *</div>
+                    <div style={{ fontSize:".8rem",fontWeight:700,color:"#1a1a1a",marginBottom:".6rem" }}>Payment Method *</div>
                     <div style={{ display:"flex",gap:".75rem" }}>
                       {[
-                        { val:"COD",    icon:"💵", title:"Cash on Delivery",  sub:"Pay when order arrives" },
-                        { val:"Online", icon:"💳", title:"Online Payment",    sub:"UPI / Card / Net Banking" },
+                        { val:"COD",    icon:"💵", title:"Cash on Delivery", sub:"Pay when order arrives"    },
+                        { val:"Online", icon:"💳", title:"Online Payment",   sub:"UPI / Card / Net Banking"  },
                       ].map(opt => (
                         <div key={opt.val} className={`pay-card ${form.paymentMethod===opt.val?"on":""}`}
                           onClick={() => setForm(p=>({...p,paymentMethod:opt.val}))}>
@@ -401,8 +402,8 @@ export default function CartPage() {
                             {form.paymentMethod===opt.val && <div className="radio-d"/>}
                           </div>
                           <div>
-                            <div style={{ fontWeight:700,color:"#1A0500",fontSize:".88rem" }}>{opt.icon} {opt.title}</div>
-                            <div style={{ color:"#B07060",fontSize:".7rem" }}>{opt.sub}</div>
+                            <div style={{ fontWeight:700,color:"#1a1a1a",fontSize:".88rem" }}>{opt.icon} {opt.title}</div>
+                            <div style={{ color:"#aaa",fontSize:".7rem" }}>{opt.sub}</div>
                           </div>
                         </div>
                       ))}
@@ -415,18 +416,17 @@ export default function CartPage() {
                   </div>
                 </div>
 
-                {/* Submit */}
                 <button className="co-btn co-btn-primary" onClick={handleCheckoutOrder} disabled={sending}>
                   {sending ? (
                     <span style={{ display:"flex",alignItems:"center",justifyContent:"center",gap:".5rem" }}>
-                      <span style={{ width:18,height:18,borderRadius:"50%",border:"2.5px solid transparent",borderTop:"2.5px solid #fff",animation:"spin 1s linear infinite",display:"inline-block" }}/>
+                      <span style={{ width:18,height:18,borderRadius:"50%",border:"2.5px solid rgba(255,255,255,.35)",borderTop:"2.5px solid #fff",animation:"spin 1s linear infinite",display:"inline-block" }}/>
                       Placing Order…
                     </span>
                   ) : (
                     `🛍️ Place Order — ₹${total.toLocaleString()}`
                   )}
                 </button>
-                <p style={{ textAlign:"center",color:"#B07060",fontSize:".7rem",marginTop:".5rem" }}>
+                <p style={{ textAlign:"center",color:"#aaa",fontSize:".7rem",marginTop:".5rem" }}>
                   By placing order you agree to our terms. We'll contact you to confirm.
                 </p>
               </>
