@@ -78,6 +78,7 @@ export default function Navbar({ footerRef }) {
         {/* Desktop nav */}
         <div className="desktop-nav" style={{ display:"flex", alignItems:"center", gap:".5rem" }}>
          
+          <Link href="/about" className="nlink">About us</Link>
           <Link href="/track" className="nlink">Track Order</Link>
           <button className="nlink" onClick={scrollToFooter}>Contact</button>
           {isAdmin && <Link href="/admin" className="nlink" style={{ background:"rgba(229,93,106,.1)", borderRadius:8 }}>⚙ Admin</Link>}
@@ -158,7 +159,8 @@ export default function Navbar({ footerRef }) {
           background: BRAND_DARK, padding:"0 2.5rem 1.5rem",
           boxShadow:"0 10px 30px rgba(0,0,0,.08)", display:"flex", flexDirection:"column",
         }}>
-          
+
+          <Link href="/about" className="nlink">About us</Link>
           <Link href="/track" className="mlink" onClick={() => setMenuOpen(false)}>Track Order</Link>
           <button className="mlink" onClick={scrollToFooter}>Contact</button>
           {isAdmin && <Link href="/admin" className="mlink" onClick={() => setMenuOpen(false)}>⚙ Admin Panel</Link>}
