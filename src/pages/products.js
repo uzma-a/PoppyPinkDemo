@@ -115,7 +115,7 @@ export default function ProductsPage({ allProducts }) {
         }}>
           <div style={{ maxWidth: 1200, margin: "0 auto" }}>
             <p style={{ color: BRAND, fontSize: ".72rem", fontWeight: 800, letterSpacing: ".22em", textTransform: "uppercase", marginBottom: ".5rem" }}>
-              ✦ COLLECTION ✦
+              COLLECTION ✦
             </p>
             <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(1.8rem, 4vw, 3rem)", fontWeight: 900, color: "#1A0500", marginBottom: ".5rem" }}>
               All{" "}
