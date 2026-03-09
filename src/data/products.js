@@ -27,7 +27,7 @@ export const PRODUCTS = [
   {
     id: 2,
     name: "Women Embellished Wedge",
-    category: "Wedges Sandals",
+    category: "Wedges Sandal",
     price: 4999,
     offerPrice: 1835,
     image: "/assets/Rose-Gold-12151/1.JPG",
@@ -93,8 +93,8 @@ export const PRODUCTS = [
 
   {
     id: 5,
-    name: "Women mbellished Wedge",
-    category: "Heel Sandals",
+    name: "Women Embellished Wedge",
+    category: "Wedges Sandal",
     price: 4999,
     offerPrice: 1835,
     image: "/assets/Silver-12151/1.JPG",
