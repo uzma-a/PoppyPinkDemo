@@ -5,35 +5,11 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import ProductCard from "../components/ProductCard";
 import { PRODUCTS } from "../data/products";
-import dbConnect from "../lib/dbConnect";
-import ProductModel from "../models/Product";
 
 const BRAND = "#e55d6a";
 
 export async function getServerSideProps() {
-  try {
-    await dbConnect();
-    const dbProducts = await ProductModel.find({ isActive: true }).sort({ createdAt: -1 }).lean();
-
-    const normalized = dbProducts.map(p => ({
-      id:           p._id.toString(),
-      name:         p.name,
-      category:     p.category,
-      price:        p.price,
-      offerPrice:   p.offerPrice,
-      sizes:        p.sizes        || [],
-      images:       p.images       || [],
-      image:        p.images?.[0]  || "",
-      colorOptions: p.colorOptions || [],
-      badge:        p.badge        || "",
-    }));
-
-    const allProducts = [...normalized, ...PRODUCTS];
-    return { props: { allProducts: JSON.parse(JSON.stringify(allProducts)) } };
-  } catch (e) {
-    console.error("products getServerSideProps error:", e.message);
-    return { props: { allProducts: PRODUCTS } };
-  }
+  return { props: { allProducts: PRODUCTS } };
 }
 
 export default function ProductsPage({ allProducts }) {
@@ -57,7 +33,6 @@ export default function ProductsPage({ allProducts }) {
       <Head>
         <title>Products — POPPYPINK</title>
         <meta name="description" content="Browse all POPPYPINK premium women's sandals." />
-        {/* ✅ Styles in <Head> avoids hydration mismatch */}
         <style suppressHydrationWarning>{`
           .products-grid {
             display: grid;
@@ -115,7 +90,7 @@ export default function ProductsPage({ allProducts }) {
         }}>
           <div style={{ maxWidth: 1200, margin: "0 auto" }}>
             <p style={{ color: BRAND, fontSize: ".72rem", fontWeight: 800, letterSpacing: ".22em", textTransform: "uppercase", marginBottom: ".5rem" }}>
-              COLLECTION ✦
+              ✦ COLLECTION ✦
             </p>
             <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(1.8rem, 4vw, 3rem)", fontWeight: 900, color: "#1A0500", marginBottom: ".5rem" }}>
               All{" "}
