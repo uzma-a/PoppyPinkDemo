@@ -43,7 +43,7 @@ export default function Navbar({ footerRef }) {
 
   return (
     <>
-      <style>{`
+      <style suppressHydrationWarning>{`
         .nlink { color:${BRAND}; font-size:.9rem; font-weight:600; letter-spacing:.05em; cursor:pointer; background:none; border:none; font-family:'DM Sans',sans-serif; transition:all .2s; text-decoration:none; padding:.3rem .6rem; border-radius:6px; }
         .nlink:hover { color:${BRAND}; background:rgba(229,93,106,.1); }
         .cart-btn { position:relative; background:none; border:none; cursor:pointer; color:${BRAND}; padding:.4rem; display:flex; align-items:center; transition:all .2s; border-radius:8px; }
@@ -64,31 +64,38 @@ export default function Navbar({ footerRef }) {
       `}</style>
 
       <nav style={{
-        position:"fixed", top:0, left:0, right:0, zIndex:200, height:68,
+        position: "fixed", top: 0, left: 0, right: 0, zIndex: 200, height: 68,
         background: "#ffffff",
         boxShadow: shadow ? "0 4px 24px rgba(0,0,0,.10)" : "0 2px 10px rgba(0,0,0,.07)",
-        display:"flex", alignItems:"center", justifyContent:"space-between",
-        padding:"0 2.5rem", transition:"box-shadow .3s",
+        display: "flex", alignItems: "center", justifyContent: "space-between",
+        padding: "0 2.5rem", transition: "box-shadow .3s",
       }}>
         {/* Logo */}
-        <Link href="/" style={{ textDecoration:"none" }}>
+        <Link href="/" style={{ textDecoration: "none" }}>
           <PoppyPinkLogo size={38} textSize="1.45rem" />
         </Link>
 
         {/* Desktop nav */}
-        <div className="desktop-nav" style={{ display:"flex", alignItems:"center", gap:".5rem" }}>
-         
-          <Link href="/about" className="nlink">About us</Link>
-          <Link href="/track" className="nlink">Track Order</Link>
+        <div className="desktop-nav" style={{ display: "flex", alignItems: "center", gap: ".5rem" }}>
+
+          <Link href="/about" className="nlink">
+            About us
+          </Link>
+          <Link href="/products" className="nlink">
+            Products
+          </Link>
+          <Link href="/track" className="nlink">
+            Track Order
+          </Link>
           <button className="nlink" onClick={scrollToFooter}>Contact</button>
-          {isAdmin && <Link href="/admin" className="nlink" style={{ background:"rgba(229,93,106,.1)", borderRadius:8 }}>⚙ Admin</Link>}
+          {isAdmin && <Link href="/admin" className="nlink" style={{ background: "rgba(229,93,106,.1)", borderRadius: 8 }}>⚙ Admin</Link>}
 
           {/* Cart */}
-          <Link href="/cart" style={{ textDecoration:"none", marginLeft:".5rem" }}>
+          <Link href="/cart" style={{ textDecoration: "none", marginLeft: ".5rem" }}>
             <button className="cart-btn">
               <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/>
-                <path d="M16 10a4 4 0 01-8 0"/>
+                <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" /><line x1="3" y1="6" x2="21" y2="6" />
+                <path d="M16 10a4 4 0 01-8 0" />
               </svg>
               {count > 0 && <span className="cbadge">{count}</span>}
             </button>
@@ -96,7 +103,7 @@ export default function Navbar({ footerRef }) {
 
           {/* User avatar / auth */}
           {isLoaded && (
-            <div style={{ position:"relative", marginLeft:".5rem" }}>
+            <div style={{ position: "relative", marginLeft: ".5rem" }}>
               {isSignedIn ? (
                 <>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -108,12 +115,12 @@ export default function Navbar({ footerRef }) {
                   />
                   {userMenuOpen && (
                     <>
-                      <div style={{ position:"fixed", inset:0, zIndex:299 }} onClick={() => setUserMenuOpen(false)}/>
+                      <div style={{ position: "fixed", inset: 0, zIndex: 299 }} onClick={() => setUserMenuOpen(false)} />
                       <div className="user-menu">
-                        <div style={{ padding:".6rem .85rem .4rem", borderBottom:"1px solid rgba(229,93,106,.1)", marginBottom:".3rem" }}>
-                          <div style={{ fontWeight:700, color:"#1A0500", fontSize:".88rem", lineHeight:1.2 }}>{user.fullName}</div>
-                          <div style={{ color:"#B07060", fontSize:".72rem", marginTop:".15rem" }}>{user.primaryEmailAddress?.emailAddress}</div>
-                          {isAdmin && <span style={{ fontSize:".65rem", fontWeight:800, background:"rgba(229,93,106,.1)", color:BRAND, padding:".15rem .5rem", borderRadius:10, display:"inline-block", marginTop:".35rem", letterSpacing:".08em" }}>ADMIN</span>}
+                        <div style={{ padding: ".6rem .85rem .4rem", borderBottom: "1px solid rgba(229,93,106,.1)", marginBottom: ".3rem" }}>
+                          <div style={{ fontWeight: 700, color: "#1A0500", fontSize: ".88rem", lineHeight: 1.2 }}>{user.fullName}</div>
+                          <div style={{ color: "#B07060", fontSize: ".72rem", marginTop: ".15rem" }}>{user.primaryEmailAddress?.emailAddress}</div>
+                          {isAdmin && <span style={{ fontSize: ".65rem", fontWeight: 800, background: "rgba(229,93,106,.1)", color: BRAND, padding: ".15rem .5rem", borderRadius: 10, display: "inline-block", marginTop: ".35rem", letterSpacing: ".08em" }}>ADMIN</span>}
                         </div>
                         {isAdmin && (
                           <Link href="/admin" className="umitem" onClick={() => setUserMenuOpen(false)}>
@@ -123,7 +130,7 @@ export default function Navbar({ footerRef }) {
                         <Link href="/track" className="umitem" onClick={() => setUserMenuOpen(false)}>
                           📦 Track Order
                         </Link>
-                        <div className="um-divider"/>
+                        <div className="um-divider" />
                         <SignOutButton>
                           <button className="umitem danger">🚪 Sign Out</button>
                         </SignOutButton>
@@ -132,7 +139,7 @@ export default function Navbar({ footerRef }) {
                   )}
                 </>
               ) : (
-                <Link href="/sign-in" className="nlink" style={{ background:"rgba(229,93,106,.1)", color:BRAND, borderRadius:8, padding:".3rem .85rem" }}>
+                <Link href="/sign-in" className="nlink" style={{ background: "rgba(229,93,106,.1)", color: BRAND, borderRadius: 8, padding: ".3rem .85rem" }}>
                   Sign In
                 </Link>
               )}
@@ -142,12 +149,12 @@ export default function Navbar({ footerRef }) {
 
         {/* Hamburger */}
         <button className="hamburger" onClick={() => setMenuOpen(!menuOpen)}
-          style={{ background:"none", border:"none", cursor:"pointer", flexDirection:"column", gap:5, padding:".5rem" }}>
-          {[0,1,2].map(i => (
+          style={{ background: "none", border: "none", cursor: "pointer", flexDirection: "column", gap: 5, padding: ".5rem" }}>
+          {[0, 1, 2].map(i => (
             <span key={i} className="hline" style={{
-              opacity: menuOpen && i===1 ? 0 : 1,
-              transform: menuOpen ? (i===0 ? "rotate(45deg) translate(5px,5px)" : i===2 ? "rotate(-45deg) translate(5px,-5px)" : "none") : "none",
-            }}/>
+              opacity: menuOpen && i === 1 ? 0 : 1,
+              transform: menuOpen ? (i === 0 ? "rotate(45deg) translate(5px,5px)" : i === 2 ? "rotate(-45deg) translate(5px,-5px)" : "none") : "none",
+            }} />
           ))}
         </button>
       </nav>
@@ -155,20 +162,23 @@ export default function Navbar({ footerRef }) {
       {/* Mobile menu */}
       {menuOpen && (
         <div className="mobile-menu" style={{
-          position:"fixed", top:68, left:0, right:0, zIndex:199,
-          background: BRAND_DARK, padding:"0 2.5rem 1.5rem",
-          boxShadow:"0 10px 30px rgba(0,0,0,.08)", display:"flex", flexDirection:"column",
+          position: "fixed", top: 68, left: 0, right: 0, zIndex: 199,
+          background: BRAND_DARK, padding: "0 2.5rem 1.5rem",
+          boxShadow: "0 10px 30px rgba(0,0,0,.08)", display: "flex", flexDirection: "column",
         }}>
 
           <Link href="/about" className="nlink">About us</Link>
+           <Link href="/products" className="nlink">
+            Products
+          </Link>
           <Link href="/track" className="mlink" onClick={() => setMenuOpen(false)}>Track Order</Link>
           <button className="mlink" onClick={scrollToFooter}>Contact</button>
           {isAdmin && <Link href="/admin" className="mlink" onClick={() => setMenuOpen(false)}>⚙ Admin Panel</Link>}
-          <Link href="/cart"  className="mlink" onClick={() => setMenuOpen(false)}>Cart{count > 0 ? ` (${count})` : ""}</Link>
+          <Link href="/cart" className="mlink" onClick={() => setMenuOpen(false)}>Cart{count > 0 ? ` (${count})` : ""}</Link>
           {isLoaded && !isSignedIn && <Link href="/sign-in" className="mlink" onClick={() => setMenuOpen(false)}>Sign In</Link>}
           {isLoaded && isSignedIn && (
             <SignOutButton>
-              <button className="mlink" style={{ borderBottom:"none" }}>Sign Out</button>
+              <button className="mlink" style={{ borderBottom: "none" }}>Sign Out</button>
             </SignOutButton>
           )}
         </div>
