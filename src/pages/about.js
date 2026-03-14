@@ -138,7 +138,7 @@ export default function AboutPage() {
                 </em>
               </h1>
               <p style={{ color:"#666",fontSize:"1.05rem",lineHeight:1.85,maxWidth:480,marginBottom:"2.5rem" }}>
-                Welcome to <strong style={{ color:"#1a1a1a" }}>Poppypink Shoes</strong> — a modern women's footwear brand dedicated to bringing style, comfort, and confidence together. We specialize in premium sandals designed for today's fashion-forward women in India.
+                Welcome to <strong style={{ color:"#1a1a1a" }}>Poppypink Shoes</strong> - a premium brand offering stylish women's sandals designed for comfort and elegance. Our collection of trendy sandals is perfect for modern women who want both fashion and comfort.
               </p>
               <div style={{ display:"flex",gap:"1rem",flexWrap:"wrap" }}>
                 <Link href="/" className="cta-btn">Shop Collection ✦</Link>

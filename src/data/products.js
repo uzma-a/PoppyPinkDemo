@@ -4,6 +4,7 @@
 export const PRODUCTS = [
   {
     id: 1,
+    article: 'Gold-12151',
     name: "Women Embellished Wedge",
     category: "Wedges Sandal",
     price: 4499,
@@ -26,8 +27,9 @@ export const PRODUCTS = [
 
   {
     id: 2,
+    article: 'Rose-Gold-12151',
     name: "Women Embellished Wedge",
-    category: "Wedges Sandals",
+    category: "Wedges Sandal",
     price: 4999,
     offerPrice: 1835,
     image: "/assets/Rose-Gold-12151/1.JPG",
@@ -49,6 +51,7 @@ export const PRODUCTS = [
 
   {
     id: 3,
+    article: 'RoseGold-12113',
     name: "Women Embellished Strappy",
     category: "Wedge Heel Sandals",
     price: 4999,
@@ -71,6 +74,7 @@ export const PRODUCTS = [
 
   {
     id: 4,
+    article: 'Silver-12113',
     name: "Women Embellished Strappy",
     category: "Wedge Heel Sandals",
     price: 4999,
@@ -93,8 +97,9 @@ export const PRODUCTS = [
 
   {
     id: 5,
-    name: "Women mbellished Wedge",
-    category: "Heel Sandals",
+    article: 'Silver-12151',
+    name: "Women Embellished Wedge",
+    category: "Wedges Sandal",
     price: 4999,
     offerPrice: 1835,
     image: "/assets/Silver-12151/1.JPG",
@@ -114,6 +119,7 @@ export const PRODUCTS = [
   },
    {
     id: 6,
+    article: 'Gold-12133',
     name: "Women Embellished Regular",
     category: "Party Block Heel Sandals",
     price: 3299,
@@ -136,6 +142,7 @@ export const PRODUCTS = [
   },
   {
     id: 7,
+    article: 'Silver-12133',
     name: "Women Embellished Regular",
     category: "Party Block Heel Sandals",
     price: 3299,
@@ -157,6 +164,7 @@ export const PRODUCTS = [
   },
   {
     id: 8,
+    article: 'RoseGold-12133',
     name: "Women Embellished Regular",
     category: "Party Block Heel Sandals",
     price: 3299,

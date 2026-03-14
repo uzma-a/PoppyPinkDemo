@@ -20,10 +20,10 @@ export default function ProductsPage({ allProducts }) {
   const categories = [...new Set(allProducts.map(p => p.category).filter(Boolean))];
 
   const filtered = allProducts.filter(p => {
-    const matchCat    = filter ? p.category === filter : true;
+    const matchCat = filter ? p.category === filter : true;
     const matchSearch = search
       ? p.name.toLowerCase().includes(search.toLowerCase()) ||
-        p.category.toLowerCase().includes(search.toLowerCase())
+      p.category.toLowerCase().includes(search.toLowerCase())
       : true;
     return matchCat && matchSearch;
   });
@@ -75,6 +75,19 @@ export default function ProductsPage({ allProducts }) {
             .pp-search-input { width: 100%; }
             .pp-top-bar { flex-direction: column !important; align-items: flex-start !important; }
           }
+            @media (max-width: 640px) {
+  .products-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+}
+ 
+/* Tablet: 3 columns */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .products-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
         `}</style>
       </Head>
 
@@ -124,7 +137,7 @@ export default function ProductsPage({ allProducts }) {
                 style={{ position: "absolute", left: ".85rem", top: "50%", transform: "translateY(-50%)", color: "#aaa" }}
                 width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"
               >
-                <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+                <circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" />
               </svg>
               <input
                 className="pp-search-input"

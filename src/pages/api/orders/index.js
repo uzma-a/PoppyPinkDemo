@@ -1,87 +1,62 @@
 // src/pages/api/orders/index.js
-// POST → create new order (PUBLIC - no auth needed)
-// GET  → list all orders  (admin only)
-
-import connectDB from "../../../lib/mongodb";
+import dbConnect from "../../../lib/dbConnect";
 import Order from "../../../models/Order";
 
-function generateOrderId() {
-  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-  let id = "PP-";
-  for (let i = 0; i < 6; i++) {
-    id += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return id;
-}
-
 export default async function handler(req, res) {
+  await dbConnect();
 
-  // ── POST: Create order (public, no auth) ────────────────────────
-  if (req.method === "POST") {
+  // ── GET: fetch orders (admin gets all, user gets their own via ?userId=)
+  if (req.method === "GET") {
     try {
-      await connectDB();
+      const { userId } = req.query;
 
-      const { customerName, customerPhone, customerEmail, address, product, totalAmount, paymentMethod } = req.body;
+      // If userId param provided → return only that user's orders
+      const filter = userId ? { userId } : {};
 
-      if (!customerName || !product || !totalAmount) {
-        return res.status(400).json({ error: "Missing required fields" });
-      }
-
-      // Generate unique order ID
-      let orderId;
-      for (let i = 0; i < 5; i++) {
-        const candidate = generateOrderId();
-        const exists = await Order.findOne({ orderId: candidate }).lean();
-        if (!exists) { orderId = candidate; break; }
-      }
-      if (!orderId) orderId = generateOrderId(); // fallback
-
-      const order = await Order.create({
-        orderId,
-        userId: "",
-        customerName:  customerName.trim(),
-        customerPhone: customerPhone?.trim()  || "",
-        customerEmail: customerEmail?.trim()  || "",
-        address:       address                || {},
-        product,
-        totalAmount,
-        paymentMethod: paymentMethod          || "COD",
-        status:        "Processing",
-      });
-
-      return res.status(201).json({ success: true, orderId: order.orderId });
-
-    } catch (err) {
-      console.error("POST /api/orders:", err.message);
-      return res.status(500).json({ error: err.message || "Server error" });
+      const orders = await Order.find(filter).sort({ createdAt: -1 });
+      return res.status(200).json({ orders });
+    } catch (e) {
+      return res.status(500).json({ error: e.message });
     }
   }
 
-  // ── GET: List all orders (admin only) ───────────────────────────
-  if (req.method === "GET") {
+  // ── POST: create new order
+  if (req.method === "POST") {
     try {
-      // Lazy-import Clerk only for admin route so it doesn't break public POST
-      const { getAuth }     = await import("@clerk/nextjs/server");
-      const { clerkClient } = await import("@clerk/nextjs/server");
-      const { isAdmin }     = await import("../../../lib/adminCheck");
+      const {
+        customerName, customerPhone, customerEmail,
+        userId, address, product, totalAmount, paymentMethod,
+      } = req.body;
 
-      await connectDB();
+      if (!customerName || !customerPhone || !address || !product) {
+        return res.status(400).json({ error: "Missing required fields" });
+      }
 
-      const { userId } = getAuth(req);
-      if (!userId) return res.status(401).json({ error: "Unauthorized" });
+      // Generate unique order ID: PP-XXXXX
+      const orderId =
+        "PP-" +
+        Math.random().toString(36).toUpperCase().slice(2, 7) +
+        Math.random().toString(36).toUpperCase().slice(2, 4);
 
-      const user = await clerkClient.users.getUser(userId);
-      if (!isAdmin(user)) return res.status(403).json({ error: "Forbidden" });
+      const order = await Order.create({
+        orderId,
+        customerName,
+        customerPhone,
+        customerEmail: customerEmail || "",
+        userId:        userId        || "",
+        address,
+        product,
+        totalAmount,
+        paymentMethod: paymentMethod || "COD",
+        status: "pending",   // ✅ matches enum in Order model
+      });
 
-      const orders = await Order.find({}).sort({ createdAt: -1 }).lean();
-      return res.status(200).json({ success: true, orders });
-
-    } catch (err) {
-      console.error("GET /api/orders:", err.message);
-      return res.status(500).json({ error: err.message || "Server error" });
+      return res.status(201).json({ orderId: order.orderId, order });
+    } catch (e) {
+      return res.status(500).json({ error: e.message });
     }
   }
 
   res.setHeader("Allow", ["GET", "POST"]);
-  return res.status(405).json({ error: `Method ${req.method} not allowed` });
+  res.status(405).json({ error: `Method ${req.method} not allowed` });
 }

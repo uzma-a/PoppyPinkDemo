@@ -1,29 +1,62 @@
 // src/pages/index.js
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState } from "react";
 import Head from "next/head";
 import LoadingScreen from "../components/LoadingScreen";
 import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
-// import CategorySection from "../components/CategorySection";
 import ProductCard from "../components/ProductCard";
 import Footer from "../components/Footer";
 import { PRODUCTS } from "../data/products";
+import dbConnect from "../lib/dbConnect";
+import ProductModel from "../models/Product";
 
 const BRAND = "#e7d2d4";
 
-export default function Home() {
-  const [loaded,   setLoaded]   = useState(false);
-  const [filter,   setFilter]   = useState(null);
-  const shopRef    = useRef(null);
-  const footerRef  = useRef(null);
-  const productsRef= useRef(null);
+export async function getServerSideProps() {
+  try {
+    await dbConnect();
+    const dbProducts = await ProductModel.find({ isActive: true }).sort({ createdAt: -1 }).lean();
+
+    const normalized = dbProducts.map(p => ({
+      id:           p._id.toString(),
+      name:         p.name,
+      category:     p.category,
+      price:        p.price,
+      offerPrice:   p.offerPrice,
+      sizes:        p.sizes  || [],
+      images:       p.images || [],
+      image:        p.images?.[0] || "",
+      colorOptions: p.colorOptions || [],
+      badge:        p.badge || "",
+    }));
+
+    // DB products first (newest), then static products
+    const allProducts = [...normalized, ...PRODUCTS];
+
+    return { props: { dbProducts: JSON.parse(JSON.stringify(allProducts)) } };
+  } catch (e) {
+    console.error("index getServerSideProps error:", e.message);
+    // Fallback to static only if DB unavailable
+    return { props: { dbProducts: [] } };
+  }
+}
+
+export default function Home({ dbProducts }) {
+  const [loaded,      setLoaded]   = useState(false);
+  const [filter,      setFilter]   = useState(null);
+  const shopRef     = useRef(null);
+  const footerRef   = useRef(null);
+  const productsRef = useRef(null);
+
+  // Merge: DB products + static, deduplicate by id just in case
+  const allProducts = dbProducts.length > 0 ? dbProducts : PRODUCTS;
 
   const handleCategory = (cat) => {
     setFilter(cat);
     setTimeout(() => productsRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
   };
 
-  const filtered = filter ? PRODUCTS.filter(p => p.category === filter) : PRODUCTS;
+  const filtered = filter ? allProducts.filter(p => p.category === filter) : allProducts;
 
   return (
     <>
@@ -40,7 +73,6 @@ export default function Home() {
         <main>
           <Navbar footerRef={footerRef} />
           <Hero shopRef={shopRef} />
-          {/* <CategorySection onSelectCategory={handleCategory} shopRef={shopRef} /> */}
 
           {/* ── PRODUCTS ── */}
           <section ref={productsRef} style={{ padding:"5rem 2rem 7rem", background:"#FFF8F5" }}>
@@ -54,7 +86,9 @@ export default function Home() {
                       : <>All <em style={{ fontStyle:"italic", background:`linear-gradient(135deg,${BRAND},#e55d6a)`, WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent" }}>Sandals</em></>
                     }
                   </h2>
-                  <p style={{ color:"#d0a69c", fontSize:".85rem", marginTop:".4rem" }}>{filtered.length} style{filtered.length!==1?"s":""} — Click any to view details</p>
+                  <p style={{ color:"#d0a69c", fontSize:".85rem", marginTop:".4rem" }}>
+                    {filtered.length} style{filtered.length !== 1 ? "s" : ""} — Click any to view details
+                  </p>
                 </div>
                 {filter && (
                   <button className="btn-outline-dark" onClick={() => setFilter(null)} style={{ padding:".5rem 1.3rem", fontSize:".8rem" }}>
@@ -62,8 +96,9 @@ export default function Home() {
                   </button>
                 )}
               </div>
+
               <div className="product-grid">
-                {filtered.map((p,i) => <ProductCard key={p.id} product={p} index={i}/>)}
+                {filtered.map((p, i) => <ProductCard key={p.id} product={p} index={i} />)}
               </div>
             </div>
           </section>
@@ -79,7 +114,6 @@ export default function Home() {
               <p style={{ color:"rgba(255,255,255,.7)", lineHeight:1.8, fontSize:"1rem", marginBottom:"2rem" }}>
                 Every POPPYPINK sandal is designed with passion, precision, and love. From sunrise walks to midnight parties — we have a pair for every moment.
               </p>
-              
             </div>
           </section>
 

@@ -1,9 +1,6 @@
-// src/pages/api/orders/[id].js
-// PUT  /api/orders/:id  — update status
-// DELETE /api/orders/:id — delete order
-
+// src/pages/api/products/[id].js
 import dbConnect from "../../../lib/dbConnect";
-import Order from "../../../models/Order";
+import Product from "../../../models/Product";
 
 export default async function handler(req, res) {
   await dbConnect();
@@ -11,9 +8,9 @@ export default async function handler(req, res) {
 
   if (req.method === "PUT") {
     try {
-      const updated = await Order.findByIdAndUpdate(id, req.body, { new: true });
-      if (!updated) return res.status(404).json({ error: "Order not found" });
-      return res.status(200).json({ order: updated });
+      const updated = await Product.findByIdAndUpdate(id, req.body, { new: true });
+      if (!updated) return res.status(404).json({ error: "Product not found" });
+      return res.status(200).json({ product: updated });
     } catch (e) {
       return res.status(500).json({ error: e.message });
     }
@@ -21,8 +18,9 @@ export default async function handler(req, res) {
 
   if (req.method === "DELETE") {
     try {
-      const deleted = await Order.findByIdAndDelete(id);
-      if (!deleted) return res.status(404).json({ error: "Order not found" });
+      // Soft delete — just mark inactive
+      const updated = await Product.findByIdAndUpdate(id, { isActive: false }, { new: true });
+      if (!updated) return res.status(404).json({ error: "Product not found" });
       return res.status(200).json({ success: true });
     } catch (e) {
       return res.status(500).json({ error: e.message });

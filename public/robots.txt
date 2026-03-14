@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /cart
+Disallow: /sign-in
+
+Sitemap: https://poppypinkshoes.com/sitemap.xml

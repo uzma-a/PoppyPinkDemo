@@ -355,7 +355,7 @@ export default function Hero({ shopRef }) {
           <div key={`st-${current}`} className={txtAnim==="in"?"txt-in":"txt-out"} style={{ animationDelay:".32s" }}>
             <div className="hero-stat-row" style={{ display:"flex", gap:".8rem", flexWrap:"wrap", marginBottom:"2rem" }}>
               {[
-                { icon:"👟", num:"500+", lbl:"Styles" },
+                { icon:"👟", num:"100+", lbl:"Styles" },
                 { icon:"⭐", num:"4.9",  lbl:"Rating" },
                 { icon:"🚚", num:"Free", lbl:"Shipping" },
               ].map(s => (
@@ -447,7 +447,7 @@ export default function Hero({ shopRef }) {
           {/* ── Floating card: Price ── */}
           <div className="float-card float-badge" style={{ bottom:"20%", left:"2%", padding:".78rem 1.1rem", minWidth:130, zIndex:8 }}>
             <div style={{ fontSize:".62rem", color:"#aaa", fontWeight:700, letterSpacing:".1em", textTransform:"uppercase", marginBottom:".18rem" }}>Starting from</div>
-            <div style={{ fontFamily:"'Playfair Display',serif", fontSize:"1.5rem", fontWeight:900, color:BRAND, lineHeight:1 }}>₹799</div>
+            <div style={{ fontFamily:"'Playfair Display',serif", fontSize:"1.5rem", fontWeight:900, color:BRAND, lineHeight:1 }}>₹999</div>
             <div style={{ fontSize:".62rem", color:"#16a34a", fontWeight:700, marginTop:".18rem" }}>🟢 Free Delivery</div>
           </div>
 

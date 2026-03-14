@@ -16,6 +16,7 @@ const OrderSchema = new mongoose.Schema({
   product: {
     id:       { type: Number,  required: true },
     name:     { type: String,  required: true },
+    article:  { type: String,  default: "" },     // ← added
     category: { type: String,  default: "" },
     size:     { type: String,  default: "" },
     color:    { type: String,  default: "" },
@@ -25,14 +26,21 @@ const OrderSchema = new mongoose.Schema({
   },
   totalAmount: { type: Number, required: true },
   paymentMethod: {
-    type: String,
-    enum: ["COD", "Online"],
-    default: "COD",
+    type:    String,
+    enum:    ["COD", "Online"],
+    default: "Online",
   },
+  paymentStatus: {
+    type:    String,
+    enum:    ["pending", "paid", "failed"],
+    default: "pending",
+  },
+  razorpayOrderId:   { type: String, default: "" },
+  razorpayPaymentId: { type: String, default: "" },
   status: {
     type: String,
-    enum: ["Processing","Confirmed","Shipped","Out for Delivery","Delivered","Cancelled"],
-    default: "Processing",
+    enum: ["pending", "processing", "confirmed", "shipped", "out_for_delivery", "delivered", "cancelled"],
+    default: "pending",
   },
   adminNote: { type: String, default: "" },
 }, { timestamps: true });
