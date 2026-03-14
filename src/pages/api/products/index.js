@@ -1,10 +1,6 @@
 // src/pages/api/products/index.js
-import dbConnect from "../../../lib/dbConnect";
-import Product from "../../../models/Product";
-
-export const config = {
-  api: { bodyParser: { sizeLimit: "10mb" } },
-};
+import dbConnect from "../../../../lib/dbConnect";
+import Product from "../../../../models/Product";
 
 export default async function handler(req, res) {
   await dbConnect();
@@ -20,17 +16,27 @@ export default async function handler(req, res) {
 
   if (req.method === "POST") {
     try {
-      const { name, category, price, offerPrice, sizes, images, colorOptions, badge } = req.body;
-      if (!name || !category || !price || !offerPrice)
+      const {
+        name, category, price, offerPrice,
+        sizes, images, colorOptions, badge,
+      } = req.body;
+
+      if (!name || !category || !price || !offerPrice) {
         return res.status(400).json({ error: "name, category, price, offerPrice are required" });
+      }
 
       const product = await Product.create({
-        name, category,
-        price: Number(price), offerPrice: Number(offerPrice),
-        sizes: sizes || [], images: images || [],
-        colorOptions: colorOptions || [], badge: badge || "",
-        isActive: true,
+        name,
+        category,
+        price:       Number(price),
+        offerPrice:  Number(offerPrice),
+        sizes:       sizes || [],
+        images:      images || [],
+        colorOptions: colorOptions || [],
+        badge:       badge || "",
+        isActive:    true,
       });
+
       return res.status(201).json({ product });
     } catch (e) {
       return res.status(500).json({ error: e.message });
