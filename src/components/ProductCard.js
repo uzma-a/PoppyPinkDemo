@@ -118,7 +118,7 @@ export default function ProductCard({ product, index = 0 }) {
 .pp-brand{
   font-size:10px;
   font-weight:700;
-  color:#999;
+  color:#1a1a1a;
   text-transform:uppercase;
   line-height:1.2;
   margin-bottom:1px;
@@ -127,7 +127,7 @@ export default function ProductCard({ product, index = 0 }) {
 .pp-name{
   font-size:12px;
   font-weight:600;
-  color:#1a1a1a;
+  color:#999;
   line-height:1.3;
   margin-bottom:4px;
   display:-webkit-box;
@@ -204,7 +204,8 @@ export default function ProductCard({ product, index = 0 }) {
   }
 
   .pp-offer{
-    font-size:11px;
+    font-size:9px;
+    margin-bottom:1px;
   }
 
   .pp-orig{
