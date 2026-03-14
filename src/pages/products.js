@@ -34,66 +34,119 @@ export default function ProductsPage({ allProducts }) {
         <title>Products — POPPYPINK</title>
         <meta name="description" content="Browse all POPPYPINK premium women's sandals." />
         <style suppressHydrationWarning>{`
-          .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            gap: 1.75rem;
-          }
-          .filter-chip {
-            padding: .45rem 1.1rem;
-            border-radius: 50px;
-            border: 1.5px solid rgba(229,93,106,.3);
-            background: transparent;
-            color: #1a1a1a;
-            font-family: 'DM Sans', sans-serif;
-            font-size: .8rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all .2s;
-            white-space: nowrap;
-          }
-          .filter-chip:hover { border-color: #e55d6a; background: rgba(229,93,106,.06); }
-          .filter-chip.active { background: #e55d6a; border-color: #e55d6a; color: #fff; }
-          .pp-search-input {
-            padding: .6rem 1.1rem .6rem 2.6rem;
-            border: 1.5px solid rgba(229,93,106,.25);
-            border-radius: 50px;
-            font-family: 'DM Sans', sans-serif;
-            font-size: .88rem;
-            color: #1a1a1a;
-            outline: none;
-            background: #fff;
-            transition: border-color .2s, box-shadow .2s;
-            width: 240px;
-          }
-          .pp-search-input:focus { border-color: #e55d6a; box-shadow: 0 0 0 3px rgba(229,93,106,.1); }
-          .glass-card { background: #fff; box-shadow: 0 4px 20px rgba(0,0,0,.07); transition: transform .25s, box-shadow .25s; }
-          .glass-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(229,93,106,.15); }
-          @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
-          .pp-page-enter { animation: fadeUp .4s ease; }
-          @media (max-width: 600px) {
-            .pp-search-input { width: 100%; }
-            .pp-top-bar { flex-direction: column !important; align-items: flex-start !important; }
-          }
-            @media (max-width: 640px) {
-  .products-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 10px !important;
+
+        .products-page *,
+.products-page *::before,
+.products-page *::after{
+  box-sizing:border-box;
+}
+
+.products-section{
+  padding:10px 4px 4rem;
+  width:100%;
+  box-sizing:border-box;
+}
+
+@media (min-width:700px){
+  .products-section{
+    padding:16px 16px 40px;
   }
 }
- 
-/* Tablet: 3 columns */
-@media (min-width: 641px) and (max-width: 1024px) {
-  .products-grid {
-    grid-template-columns: repeat(3, 1fr) !important;
+
+.products-grid{
+  display:grid;
+  grid-template-columns:repeat(2, minmax(0,1fr));
+  gap:6px;
+  width:100%;
+  box-sizing:border-box;
+}
+
+@media (min-width:700px){
+  .products-grid{
+    grid-template-columns:repeat(3, minmax(0,1fr));
+    gap:10px;
   }
+}
+
+@media (min-width:1024px){
+  .products-grid{
+    grid-template-columns:repeat(4, minmax(0,1fr));
+    gap:12px;
+  }
+}
+
+.pp-grid-container{
+  max-width:1200px;
+  margin:0 auto;
+  width:100%;
+  min-width:0;
+  box-sizing:border-box;
+  padding:0;
+}
+
+.filter-chip{
+  padding:.45rem 1.1rem;
+  border-radius:50px;
+  border:1.5px solid rgba(229,93,106,.3);
+  background:transparent;
+  color:#1a1a1a;
+  font-family:'DM Sans',sans-serif;
+  font-size:.8rem;
+  font-weight:600;
+  cursor:pointer;
+  transition:all .2s;
+  white-space:nowrap;
+}
+
+.filter-chip:hover{
+  border-color:#e55d6a;
+  background:rgba(229,93,106,.06);
+}
+
+.filter-chip.active{
+  background:#e55d6a;
+  border-color:#e55d6a;
+  color:#fff;
+}
+
+.pp-search-input{
+  padding:.6rem 1.1rem .6rem 2.6rem;
+  border:1.5px solid rgba(229,93,106,.25);
+  border-radius:50px;
+  font-family:'DM Sans',sans-serif;
+  font-size:.88rem;
+  color:#1a1a1a;
+  outline:none;
+  background:#fff;
+  transition:border-color .2s,box-shadow .2s;
+  width:220px;
+  max-width:100%;
+}
+
+.pp-search-input:focus{
+  border-color:#e55d6a;
+  box-shadow:0 0 0 3px rgba(229,93,106,.1);
+}
+
+@keyframes fadeUp{
+  from{
+    opacity:0;
+    transform:translateY(16px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+.pp-page-enter{
+  animation:fadeUp .4s ease;
 }
         `}</style>
       </Head>
 
-      <Navbar footerRef={footerRef} />
-
-      <main style={{ minHeight: "100vh", background: "#FFF8F5", paddingTop: "68px" }}>
+      {/* ✅ Add products-page class so box-sizing scoping works */}
+      <main className="products-page" style={{ minHeight:"100vh", background:"#FFF8F5", paddingTop:"68px" }}>
 
         {/* ── Hero strip ── */}
         <div style={{
@@ -101,7 +154,7 @@ export default function ProductsPage({ allProducts }) {
           padding: "3rem 2rem 2.5rem",
           borderBottom: "1px solid rgba(229,93,106,.1)",
         }}>
-          <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+         <div className="pp-grid-container pp-page-enter">
             <p style={{ color: BRAND, fontSize: ".72rem", fontWeight: 800, letterSpacing: ".22em", textTransform: "uppercase", marginBottom: ".5rem" }}>
               ✦ COLLECTION ✦
             </p>
@@ -178,8 +231,8 @@ export default function ProductsPage({ allProducts }) {
         </div>
 
         {/* ── Product Grid ── */}
-        <section style={{ padding: "2.5rem 2rem 5rem" }}>
-          <div style={{ maxWidth: 1200, margin: "0 auto" }} className="pp-page-enter">
+        <section className="products-section">
+          <div className="pp-grid-container pp-page-enter">
             {filtered.length === 0 ? (
               <div style={{ textAlign: "center", padding: "5rem 0" }}>
                 <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>🔍</div>

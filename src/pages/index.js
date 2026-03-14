@@ -30,25 +30,21 @@ export async function getServerSideProps() {
       badge:        p.badge || "",
     }));
 
-    // DB products first (newest), then static products
     const allProducts = [...normalized, ...PRODUCTS];
-
     return { props: { dbProducts: JSON.parse(JSON.stringify(allProducts)) } };
   } catch (e) {
     console.error("index getServerSideProps error:", e.message);
-    // Fallback to static only if DB unavailable
     return { props: { dbProducts: [] } };
   }
 }
 
 export default function Home({ dbProducts }) {
-  const [loaded,      setLoaded]   = useState(false);
-  const [filter,      setFilter]   = useState(null);
+  const [loaded,    setLoaded] = useState(false);
+  const [filter,    setFilter] = useState(null);
   const shopRef     = useRef(null);
   const footerRef   = useRef(null);
   const productsRef = useRef(null);
 
-  // Merge: DB products + static, deduplicate by id just in case
   const allProducts = dbProducts.length > 0 ? dbProducts : PRODUCTS;
 
   const handleCategory = (cat) => {
@@ -75,11 +71,56 @@ export default function Home({ dbProducts }) {
           <Hero shopRef={shopRef} />
 
           {/* ── PRODUCTS ── */}
-          <section ref={productsRef} style={{ padding:"5rem 2rem 7rem", background:"#FFF8F5" }}>
-            <div style={{ maxWidth:1200, margin:"0 auto" }}>
-              <div style={{ display:"flex", alignItems:"flex-end", justifyContent:"space-between", marginBottom:"3rem", flexWrap:"wrap", gap:"1rem" }}>
+          <section ref={productsRef} style={{ padding:"3rem 0.5rem 5rem", background:"#FFF8F5" }}>
+            <style>{`
+              .home-products-inner{
+                max-width:1200px;
+                margin:0 auto;
+                width:100%;
+                box-sizing:border-box;
+                padding:0 4px;
+              }
+
+              .home-products-inner *,
+              .home-products-inner *::before,
+              .home-products-inner *::after{
+                box-sizing:border-box;
+              }
+
+              .product-grid{
+                display:grid;
+                grid-template-columns:repeat(2, minmax(0,1fr));
+                gap:6px;
+                width:100%;
+                box-sizing:border-box;
+              }
+
+              @media (min-width:700px){
+                .product-grid{
+                  grid-template-columns:repeat(3, minmax(0,1fr));
+                  gap:10px;
+                }
+                .home-products-inner{
+                  padding:0 16px;
+                }
+              }
+
+              @media (min-width:1024px){
+                .product-grid{
+                  grid-template-columns:repeat(4, minmax(0,1fr));
+                  gap:12px;
+                }
+              }
+            `}</style>
+
+            <div className="home-products-inner">
+
+              {/* ── Header row ── */}
+              <div style={{ display:"flex", alignItems:"flex-end", justifyContent:"space-between", marginBottom:"1.5rem", flexWrap:"wrap", gap:"1rem", padding:"0 4px" }}>
                 <div>
-                  <p style={{ color:BRAND, fontSize:".75rem", fontWeight:800, letterSpacing:".22em", textTransform:"uppercase", marginBottom:".5rem" }}>✦ COLLECTION ✦</p>
+                  <p style={{ color:BRAND, fontSize:".75rem", fontWeight:800, letterSpacing:".22em", textTransform:"uppercase", marginBottom:".5rem" }}>
+                    ✦ COLLECTION ✦
+                  </p>
                   <h2 style={{ fontFamily:"'Playfair Display',serif", fontSize:"clamp(1.8rem,4vw,3rem)", fontWeight:900, color:"#1A0500" }}>
                     {filter
                       ? <em style={{ fontStyle:"italic", background:`linear-gradient(135deg,${BRAND},#C42E15)`, WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent" }}>{filter}</em>
@@ -91,15 +132,22 @@ export default function Home({ dbProducts }) {
                   </p>
                 </div>
                 {filter && (
-                  <button className="btn-outline-dark" onClick={() => setFilter(null)} style={{ padding:".5rem 1.3rem", fontSize:".8rem" }}>
+                  <button
+                    onClick={() => setFilter(null)}
+                    style={{ padding:".5rem 1.3rem", fontSize:".8rem", background:"none", border:"1.5px solid #e55d6a", color:"#e55d6a", borderRadius:50, cursor:"pointer", fontWeight:700, fontFamily:"'DM Sans',sans-serif" }}
+                  >
                     ✕ Clear Filter
                   </button>
                 )}
               </div>
 
+              {/* ── Grid ── */}
               <div className="product-grid">
-                {filtered.map((p, i) => <ProductCard key={p.id} product={p} index={i} />)}
+                {filtered.map((p, i) => (
+                  <ProductCard key={p.id} product={p} index={i} />
+                ))}
               </div>
+
             </div>
           </section>
 
@@ -107,7 +155,9 @@ export default function Home({ dbProducts }) {
           <section style={{ padding:"5rem 2rem", background:`linear-gradient(135deg,${BRAND} 0%,#A82410 100%)`, position:"relative", overflow:"hidden" }}>
             <div style={{ position:"absolute", inset:0, backgroundImage:"radial-gradient(circle,rgba(255,255,255,.07) 1.5px,transparent 1.5px)", backgroundSize:"36px 36px" }}/>
             <div style={{ maxWidth:700, margin:"0 auto", textAlign:"center", position:"relative" }}>
-              <p style={{ color:"rgba(255,255,255,.7)", fontSize:".75rem", fontWeight:800, letterSpacing:".22em", textTransform:"uppercase", marginBottom:"1rem" }}>✦ OUR STORY ✦</p>
+              <p style={{ color:"rgba(255,255,255,.7)", fontSize:".75rem", fontWeight:800, letterSpacing:".22em", textTransform:"uppercase", marginBottom:"1rem" }}>
+                ✦ OUR STORY ✦
+              </p>
               <h2 style={{ fontFamily:"'Playfair Display',serif", fontStyle:"italic", fontSize:"clamp(2rem,5vw,3.5rem)", fontWeight:900, color:"#fff", marginBottom:"1.5rem", lineHeight:1.2 }}>
                 Crafted for the Modern Woman
               </h2>
