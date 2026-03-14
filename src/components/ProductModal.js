@@ -573,7 +573,8 @@ export default function ProductModal({ product, onClose }) {
                 <div style={{ marginBottom:".85rem" }}>
                   <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:".45rem" }}>
                     <span style={{ fontSize:".76rem", fontWeight:700, color:"#1a1a1a" }}>
-                      Size: <span style={{ color:BRAND }}>UK {selSize}</span>
+                      Select Size (UK Size): <span style={{ color:BRAND }}>{selSize}</span>
+                      
                     </span>
                     <button onClick={() => setShowSizeGuide(true)}
                       style={{ background:"none", border:"none", cursor:"pointer", color:BRAND, fontSize:".72rem", fontWeight:700, padding:0, display:"flex", alignItems:"center", gap:".25rem" }}>
@@ -582,7 +583,7 @@ export default function ProductModal({ product, onClose }) {
                   </div>
                   <div style={{ display:"flex", gap:".4rem", flexWrap:"wrap" }}>
                     {product.sizes.map(s => (
-                      <button key={s} className={`sz-btn${selSize===s?" active":""}`} onClick={() => setSelSize(s)}>UK {s}</button>
+                      <button key={s} className={`sz-btn${selSize===s?" active":""}`} onClick={() => setSelSize(s)}>{s}</button>
                     ))}
                   </div>
                 </div>

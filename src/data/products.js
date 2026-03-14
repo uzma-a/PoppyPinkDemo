@@ -17,7 +17,7 @@ export const PRODUCTS = [
       "/assets/Gold-12151/5.JPG",
       "/assets/Gold-12151/6.JPG",
     ],
-    sizes: ["36", "37", "38", "39", "40", "41"],
+    sizes: ["3", "4", "5", "6", "7", "8"],
     colorOptions: [
       { name: "Rose Gold", hex: "#C9956C" },
       { name: "Silver", hex: "#C0C0C0" },
@@ -40,7 +40,7 @@ export const PRODUCTS = [
       "/assets/Rose-Gold-12151/6.JPG",
       "/assets/Rose-Gold-12151/7.JPG",
     ],
-    sizes: ["36", "37", "38", "39", "40", "41"],
+    sizes: ["3", "4", "5", "6", "7", "8"],
     colorOptions: [
       { name: "Gold", hex: "#FFB300" },
       { name: "Silver", hex: "#C0C0C0" },
@@ -63,7 +63,7 @@ export const PRODUCTS = [
       "/assets/RoseGold-12113/6.JPG",
       "/assets/RoseGold-12113/7.JPG",
     ],
-    sizes: ["36", "37", "38", "39", "40", "41"],
+    sizes: ["3", "4", "5", "6", "7", "8"],
     colorOptions: [
       { name: "Silver", hex: "#C0C0C0" },
     ],
@@ -85,7 +85,7 @@ export const PRODUCTS = [
       "/assets/Silver-12113/6.jpg",
       "/assets/Silver-12113/7.jpg",
     ],
-    sizes: ["36", "37", "38", "39", "40", "41"],
+    sizes: ["3", "4", "5", "6", "7", "8"],
     colorOptions: [
       { name: "Rose Gold", hex: "#C9956C" },
     ],
@@ -106,7 +106,7 @@ export const PRODUCTS = [
       "/assets/Silver-12151/5.JPG",
       "/assets/Silver-12151/6.JPG",
     ],
-    sizes: ["36", "37", "38", "39", "40", "41"],
+    sizes: ["3", "4", "5", "6", "7", "8"],
     colorOptions: [
       { name: "Gold", hex: "#FFB300" },
       { name: "Rose Gold", hex: "#C9956C" },
@@ -128,7 +128,7 @@ export const PRODUCTS = [
       "/assets/Gold-12133/6.JPG",
       "/assets/Gold-12133/7.JPG",
     ],
-    sizes: ["36", "37", "38", "39", "40", "41"],
+    sizes: ["3", "4", "5", "6", "7", "8"],
     colorOptions: [
       { name: "Gold", hex: "#FFB300" },
       { name: "Rose Gold", hex: "#C9956C" },
@@ -149,7 +149,7 @@ export const PRODUCTS = [
       "/assets/Silver-12133/5.JPG",
       "/assets/Silver-12133/6.JPG",
     ],
-    sizes: ["36", "37", "38", "39", "40", "41"],
+    sizes: ["3", "4", "5", "6", "7", "8"],
     colorOptions: [
       { name: "Gold", hex: "#FFB300" },
       { name: "Rose Gold", hex: "#C9956C" },
@@ -171,7 +171,7 @@ export const PRODUCTS = [
       "/assets/RoseGold-12133/5.JPG",
       "/assets/RoseGold-12133/6.JPG",
     ],
-    sizes: ["36", "37", "38", "39", "40", "41"],
+    sizes: ["3", "4", "5", "6", "7", "8"],
     colorOptions: [
       { name: "Gold", hex: "#FFB300" },
       { name: "Rose Gold", hex: "#C9956C" },
