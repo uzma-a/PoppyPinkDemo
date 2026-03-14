@@ -1,6 +1,6 @@
 // src/pages/api/products/[id].js
-import dbConnect from "../../../../lib/dbConnect";
-import Product from "../../../../models/Order";
+import dbConnect from "../../../lib/dbConnect";
+import Product from "../../../models/Order";
 
 export default async function handler(req, res) {
   await dbConnect();
