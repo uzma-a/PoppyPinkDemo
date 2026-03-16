@@ -1,5 +1,5 @@
 // src/data/products.js
-// Each product has: images[] (multiple angles), colorOptions[], sizes[]
+// Each product has: images[] (multiple angles), colorOptions[] with productId links, sizes[]
 
 export const PRODUCTS = [
   {
@@ -19,8 +19,9 @@ export const PRODUCTS = [
     ],
     sizes: ["3", "4", "5", "6", "7", "8"],
     colorOptions: [
-      { name: "Rose Gold", hex: "#C9956C" },
-      { name: "Silver", hex: "#C0C0C0" },
+      { name: "Gold",      hex: "#FFB300", productId: 1 }, // self
+      { name: "Rose Gold", hex: "#C9956C", productId: 2 }, // links to id:2
+      { name: "Silver",    hex: "#C0C0C0", productId: 5 }, // links to id:5
     ],
   },
 
@@ -42,8 +43,9 @@ export const PRODUCTS = [
     ],
     sizes: ["3", "4", "5", "6", "7", "8"],
     colorOptions: [
-      { name: "Gold", hex: "#FFB300" },
-      { name: "Silver", hex: "#C0C0C0" },
+      { name: "Gold",      hex: "#FFB300", productId: 1 }, // links to id:1
+      { name: "Rose Gold", hex: "#C9956C", productId: 2 }, // self
+      { name: "Silver",    hex: "#C0C0C0", productId: 5 }, // links to id:5
     ],
   },
 
@@ -65,7 +67,8 @@ export const PRODUCTS = [
     ],
     sizes: ["3", "4", "5", "6", "7", "8"],
     colorOptions: [
-      { name: "Silver", hex: "#C0C0C0" },
+      { name: "Rose Gold", hex: "#C9956C", productId: 3 }, // self
+      { name: "Silver",    hex: "#C0C0C0", productId: 4 }, // links to id:4
     ],
   },
 
@@ -87,7 +90,8 @@ export const PRODUCTS = [
     ],
     sizes: ["3", "4", "5", "6", "7", "8"],
     colorOptions: [
-      { name: "Rose Gold", hex: "#C9956C" },
+      { name: "Rose Gold", hex: "#C9956C", productId: 3 }, // links to id:3
+      { name: "Silver",    hex: "#C0C0C0", productId: 4 }, // self
     ],
   },
 
@@ -108,11 +112,13 @@ export const PRODUCTS = [
     ],
     sizes: ["3", "4", "5", "6", "7", "8"],
     colorOptions: [
-      { name: "Gold", hex: "#FFB300" },
-      { name: "Rose Gold", hex: "#C9956C" },
+      { name: "Gold",      hex: "#FFB300", productId: 1 }, // links to id:1
+      { name: "Rose Gold", hex: "#C9956C", productId: 2 }, // links to id:2
+      { name: "Silver",    hex: "#C0C0C0", productId: 5 }, // self
     ],
   },
-   {
+
+  {
     id: 6,
     name: "Women Embellished Regular",
     category: "Party Block Heel Sandals",
@@ -130,10 +136,12 @@ export const PRODUCTS = [
     ],
     sizes: ["3", "4", "5", "6", "7", "8"],
     colorOptions: [
-      { name: "Gold", hex: "#FFB300" },
-      { name: "Rose Gold", hex: "#C9956C" },
+      { name: "Gold",      hex: "#FFB300", productId: 6 }, // self
+      { name: "Silver",    hex: "#C0C0C0", productId: 7 }, // links to id:7
+      { name: "Rose Gold", hex: "#C9956C", productId: 8 }, // links to id:8
     ],
   },
+
   {
     id: 7,
     name: "Women Embellished Regular",
@@ -151,10 +159,12 @@ export const PRODUCTS = [
     ],
     sizes: ["3", "4", "5", "6", "7", "8"],
     colorOptions: [
-      { name: "Gold", hex: "#FFB300" },
-      { name: "Rose Gold", hex: "#C9956C" },
+      { name: "Gold",      hex: "#FFB300", productId: 6 }, // links to id:6
+      { name: "Silver",    hex: "#C0C0C0", productId: 7 }, // self
+      { name: "Rose Gold", hex: "#C9956C", productId: 8 }, // links to id:8
     ],
   },
+
   {
     id: 8,
     name: "Women Embellished Regular",
@@ -173,9 +183,9 @@ export const PRODUCTS = [
     ],
     sizes: ["3", "4", "5", "6", "7", "8"],
     colorOptions: [
-      { name: "Gold", hex: "#FFB300" },
-      { name: "Rose Gold", hex: "#C9956C" },
+      { name: "Gold",      hex: "#FFB300", productId: 6 }, // links to id:6
+      { name: "Silver",    hex: "#C0C0C0", productId: 7 }, // links to id:7
+      { name: "Rose Gold", hex: "#C9956C", productId: 8 }, // self
     ],
-  }, 
-
+  },
 ];

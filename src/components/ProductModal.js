@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useUser, SignInButton } from "@clerk/nextjs";
 import { useCart } from "../context/CartContext";
+import { PRODUCTS } from "../data/products";
 
 const BRAND = "#e55d6a";
 
@@ -11,16 +12,22 @@ const SIZE_GUIDE = [
   { euro: 38, uk: 5, us: 7,  cm: 24.0, inch: 9.4  },
   { euro: 39, uk: 6, us: 8,  cm: 24.7, inch: 9.7  },
   { euro: 40, uk: 7, us: 9,  cm: 25.3, inch: 10.0 },
-  { euro: 41, uk: 8, us: 10,  cm: 26.0, inch: 10.2 },
+  { euro: 41, uk: 8, us: 10, cm: 26.0, inch: 10.2 },
 ];
 
-export default function ProductModal({ product, onClose }) {
+export default function ProductModal({ product: initialProduct, onClose }) {
   const { addToCart } = useCart();
   const { isSignedIn, user } = useUser();
 
+  // ── Active product (can switch on color click) ──
+  const [product, setProduct] = useState(initialProduct);
+
   const [activeImg,     setActiveImg]     = useState(0);
   const [selSize,       setSelSize]       = useState(product.sizes[2] || product.sizes[0]);
-  const [selColor,      setSelColor]      = useState(product.colorOptions?.[0] || null);
+  const [selColor,      setSelColor]      = useState(
+    // highlight the color dot that matches this product
+    product.colorOptions?.find(c => c.productId === product.id) || product.colorOptions?.[0] || null
+  );
   const [qty,           setQty]           = useState(1);
   const [added,         setAdded]         = useState(false);
   const [orderForm,     setOrderForm]     = useState(false);
@@ -29,9 +36,8 @@ export default function ProductModal({ product, onClose }) {
   const [placedOrderId, setPlacedOrderId] = useState(null);
   const [showSizeGuide, setShowSizeGuide] = useState(false);
   const [sizeUnit,      setSizeUnit]      = useState("cm");
-  const [isMobile,      setIsMobile]      = useState(false);
 
-  const [form,    setForm]    = useState({ name:"", phone:"", address:"", pincode:"", city:"", state:"" });
+  const [form,    setForm]    = useState({ name: "", phone: "", address: "", pincode: "", city: "", state: "" });
   const [formErr, setFormErr] = useState({});
 
   const imgs     = product.images || [product.image];
@@ -39,17 +45,36 @@ export default function ProductModal({ product, onClose }) {
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
-    const check = () => setIsMobile(window.innerWidth < 700);
-    check();
-    window.addEventListener("resize", check);
+    const check = () => {};
     if (!document.getElementById("razorpay-script")) {
       const s = document.createElement("script");
-      s.id = "razorpay-script";
+      s.id  = "razorpay-script";
       s.src = "https://checkout.razorpay.com/v1/checkout.js";
       document.body.appendChild(s);
     }
-    return () => { document.body.style.overflow = ""; window.removeEventListener("resize", check); };
+    return () => { document.body.style.overflow = ""; };
   }, []);
+
+  // ── When product changes (color switch) reset gallery ──
+  useEffect(() => {
+    setActiveImg(0);
+  }, [product.id]);
+
+  // ── Color variant switch ──
+  const handleColorClick = (colorOption) => {
+    if (!colorOption.productId || colorOption.productId === product.id) {
+      // Same product, just update selected color display
+      setSelColor(colorOption);
+      return;
+    }
+    // Switch to a different product variant
+    const nextProduct = PRODUCTS.find(p => p.id === colorOption.productId);
+    if (!nextProduct) return;
+    setProduct(nextProduct);
+    // Set the active color dot to the one matching the new product
+    const matchingColor = nextProduct.colorOptions?.find(c => c.productId === nextProduct.id) || nextProduct.colorOptions?.[0] || null;
+    setSelColor(matchingColor);
+  };
 
   const handleOpenOrderForm = () => {
     setForm(prev => ({
@@ -93,7 +118,7 @@ export default function ProductModal({ product, onClose }) {
         product: { id: product.id, name: product.name, article: product.article || "", category: product.category, size: selSize, color: colorName, qty, price: product.offerPrice, image: product.images?.[0] || product.image || "" },
         totalAmount: orderTotal,
       };
-      const rzRes  = await fetch("/api/razorpay/create-order", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ amount: orderTotal, receipt: `modal_${Date.now()}` }) });
+      const rzRes  = await fetch("/api/razorpay/create-order", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ amount: orderTotal, receipt: `modal_${Date.now()}` }) });
       const rzData = await rzRes.json();
       if (!rzRes.ok) throw new Error(rzData.error || "Could not initiate payment");
       setSending(false);
@@ -107,7 +132,7 @@ export default function ProductModal({ product, onClose }) {
         handler: async (response) => {
           setSending(true);
           try {
-            const verifyRes  = await fetch("/api/razorpay/verify", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ razorpay_order_id: response.razorpay_order_id, razorpay_payment_id: response.razorpay_payment_id, razorpay_signature: response.razorpay_signature, orderData }) });
+            const verifyRes  = await fetch("/api/razorpay/verify", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ razorpay_order_id: response.razorpay_order_id, razorpay_payment_id: response.razorpay_payment_id, razorpay_signature: response.razorpay_signature, orderData }) });
             const verifyData = await verifyRes.json();
             if (!verifyRes.ok) throw new Error(verifyData.error || "Payment verification failed");
             const newOrderId = verifyData.orderId;
@@ -119,8 +144,8 @@ export default function ProductModal({ product, onClose }) {
                 payload.append("access_key", w3fKey);
                 payload.append("subject", `🛍️ Paid Order ${newOrderId}: ${product.name} — POPPYPINK`);
                 payload.append("from_name", "POPPYPINK Store");
-                payload.append("message", [`━━━━━━━━━━━━━━━━━━━━━━━━━`,"💳  PAID ORDER — POPPYPINK",`━━━━━━━━━━━━━━━━━━━━━━━━━`,`Order ID : ${newOrderId}`,`Product  : ${product.name}`,`Article  : ${article}`,`Color    : ${colorName}`,`Size     : ${selSize}`,`Qty      : ${qty}`,`Total    : ₹${orderTotal.toLocaleString()}`,`Payment  : Online (Razorpay) ✅`,"",`📦 CUSTOMER`,`━━━━━━━━━━━━━━━━━━━━━━━━━`,`Name    : ${form.name}`,`Phone   : ${form.phone}`,`Address : ${form.address}, ${form.city}, ${form.state} - ${form.pincode}`,"",`Time    : ${new Date().toLocaleString("en-IN")}`].join("\n"));
-                await fetch("https://api.web3forms.com/submit", { method:"POST", body:payload });
+                payload.append("message", [`━━━━━━━━━━━━━━━━━━━━━━━━━`, "💳  PAID ORDER — POPPYPINK", `━━━━━━━━━━━━━━━━━━━━━━━━━`, `Order ID : ${newOrderId}`, `Product  : ${product.name}`, `Article  : ${article}`, `Color    : ${colorName}`, `Size     : ${selSize}`, `Qty      : ${qty}`, `Total    : ₹${orderTotal.toLocaleString()}`, `Payment  : Online (Razorpay) ✅`, "", `📦 CUSTOMER`, `━━━━━━━━━━━━━━━━━━━━━━━━━`, `Name    : ${form.name}`, `Phone   : ${form.phone}`, `Address : ${form.address}, ${form.city}, ${form.state} - ${form.pincode}`, "", `Time    : ${new Date().toLocaleString("en-IN")}`].join("\n"));
+                await fetch("https://api.web3forms.com/submit", { method: "POST", body: payload });
               } catch (_) {}
             }
             setSent(true);
@@ -147,7 +172,6 @@ export default function ProductModal({ product, onClose }) {
           padding: 0;
           animation: mFadeIn .25s ease;
         }
-        /* ── MODAL BOX ── */
         .m-box {
           background: #fff;
           width: 100%; height: 100%;
@@ -170,7 +194,6 @@ export default function ProductModal({ product, onClose }) {
         .m-box::-webkit-scrollbar { width: 3px; }
         .m-box::-webkit-scrollbar-thumb { background: ${BRAND}; border-radius: 2px; }
 
-        /* ── CLOSE BTN ── */
         .m-close {
           position: fixed;
           top: 10px; right: 10px;
@@ -186,7 +209,6 @@ export default function ProductModal({ product, onClose }) {
         }
         .m-close:hover { background: ${BRAND}; color: #fff; }
 
-        /* ── LAYOUT: mobile = single col, desktop = 2 col ── */
         .m-layout {
           display: flex;
           flex-direction: column;
@@ -198,7 +220,6 @@ export default function ProductModal({ product, onClose }) {
           }
         }
 
-        /* ── GALLERY (left) ── */
         .m-gallery {
           background: #fdf5f6;
           padding: 1rem;
@@ -237,7 +258,6 @@ export default function ProductModal({ product, onClose }) {
         }
         .m-thumb.active { border-color: ${BRAND}; }
 
-        /* ── INFO (right) ── */
         .m-info {
           padding: 1.25rem 1rem 1.5rem;
           overflow-y: auto;
@@ -246,7 +266,6 @@ export default function ProductModal({ product, onClose }) {
           .m-info { padding: 2rem 1.75rem; }
         }
 
-        /* Size buttons */
         .sz-btn {
           padding: .38rem .65rem;
           border-radius: 6px;
@@ -262,15 +281,42 @@ export default function ProductModal({ product, onClose }) {
         .sz-btn:hover { border-color: ${BRAND}; background: rgba(229,93,106,.06); }
         .sz-btn.active { background: ${BRAND}; border-color: ${BRAND}; color: #fff; }
 
-        /* Color dots */
-        .c-dot {
-          width: 26px; height: 26px; border-radius: 50%;
-          cursor: pointer; border: 3px solid transparent;
-          transition: all .18s; flex-shrink: 0;
+        /* ── Color dot with thumbnail ── */
+        .c-swatch {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: .3rem;
+          cursor: pointer;
+          transition: transform .18s;
         }
-        .c-dot.active { border-color: #1a1a1a; transform: scale(1.12); }
+        .c-swatch:hover { transform: translateY(-2px); }
+        .c-swatch-img {
+          width: 48px; height: 48px;
+          border-radius: 8px;
+          object-fit: cover;
+          border: 2.5px solid transparent;
+          transition: border-color .18s, box-shadow .18s;
+        }
+        .c-swatch.active .c-swatch-img {
+          border-color: ${BRAND};
+          box-shadow: 0 0 0 2px rgba(229,93,106,.25);
+        }
+        .c-swatch-dot {
+          width: 10px; height: 10px;
+          border-radius: 50%;
+          flex-shrink: 0;
+        }
+        .c-swatch-label {
+          font-size: .6rem;
+          font-weight: 700;
+          color: #888;
+          font-family: 'DM Sans', sans-serif;
+          text-align: center;
+          line-height: 1;
+        }
+        .c-swatch.active .c-swatch-label { color: ${BRAND}; }
 
-        /* Qty */
         .qty-btn {
           width: 32px; height: 32px; border-radius: 7px;
           border: 1.5px solid rgba(229,93,106,.3);
@@ -280,7 +326,6 @@ export default function ProductModal({ product, onClose }) {
         }
         .qty-btn:hover { background: rgba(229,93,106,.08); border-color: ${BRAND}; }
 
-        /* Buttons */
         .btn-atc {
           width: 100%; padding: .85rem;
           background: ${BRAND}; border: none; color: #fff;
@@ -310,7 +355,6 @@ export default function ProductModal({ product, onClose }) {
           display: flex; align-items: center; justify-content: center; gap: .5rem;
         }
 
-        /* Form inputs */
         .f-input {
           width: 100%; padding: .6rem .85rem;
           border: 1.5px solid rgba(229,93,106,.25);
@@ -324,7 +368,6 @@ export default function ProductModal({ product, onClose }) {
         .f-input.err { border-color: #dc2626; }
         .f-err { color: #dc2626; font-size: .68rem; margin-top: .18rem; }
 
-        /* Size guide */
         .sg-overlay {
           position: fixed; inset: 0;
           background: rgba(0,0,0,.45); backdrop-filter: blur(4px);
@@ -357,52 +400,51 @@ export default function ProductModal({ product, onClose }) {
           transition: background .15s; cursor: pointer;
         }
         .sg-row:hover { background: rgba(229,93,106,.04); }
-        .sg-row.sg-header { background: rgba(229,93,106,.06); font-weight:700; color:#666; font-size:.7rem; letter-spacing:.08em; text-transform:uppercase; cursor:default; }
+        .sg-row.sg-header { background: rgba(229,93,106,.06); font-weight: 700; color: #666; font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; cursor: default; }
         .sg-row.sg-sel { background: rgba(229,93,106,.08); border-left: 3px solid ${BRAND}; }
 
         .star { color: #f59e0b; font-size: .85rem; }
 
-        @keyframes mFadeIn  { from{opacity:0} to{opacity:1} }
-        @keyframes mFadeUp  { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
-        @keyframes mSlideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
-        @keyframes spin     { to{transform:rotate(360deg)} }
-        @keyframes succPop  { 0%{transform:scale(0);opacity:0} 80%{transform:scale(1.1)} 100%{transform:scale(1);opacity:1} }
+        @keyframes mFadeIn  { from { opacity: 0 } to { opacity: 1 } }
+        @keyframes mFadeUp  { from { opacity: 0; transform: translateY(20px) } to { opacity: 1; transform: translateY(0) } }
+        @keyframes mSlideUp { from { transform: translateY(100%) } to { transform: translateY(0) } }
+        @keyframes spin     { to { transform: rotate(360deg) } }
+        @keyframes succPop  { 0% { transform: scale(0); opacity: 0 } 80% { transform: scale(1.1) } 100% { transform: scale(1); opacity: 1 } }
       `}</style>
 
       {/* ══ SIZE GUIDE SHEET ══ */}
       {showSizeGuide && (
         <div className="sg-overlay" onClick={() => setShowSizeGuide(false)}>
           <div className="sg-box" onClick={e => e.stopPropagation()}>
-            <div style={{ padding:"1.2rem 1.1rem .8rem", borderBottom:"1px solid rgba(229,93,106,.1)", display:"flex", alignItems:"center", justifyContent:"space-between" }}>
-              <span style={{ fontWeight:800, fontSize:"1rem", color:"#1a1a1a" }}>Size Guide</span>
-              <button onClick={() => setShowSizeGuide(false)} style={{ background:"none",border:"none",cursor:"pointer",fontSize:"1.2rem",color:"#888",lineHeight:1 }}>✕</button>
+            <div style={{ padding: "1.2rem 1.1rem .8rem", borderBottom: "1px solid rgba(229,93,106,.1)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <span style={{ fontWeight: 800, fontSize: "1rem", color: "#1a1a1a" }}>Size Guide</span>
+              <button onClick={() => setShowSizeGuide(false)} style={{ background: "none", border: "none", cursor: "pointer", fontSize: "1.2rem", color: "#888", lineHeight: 1 }}>✕</button>
             </div>
-            {/* unit toggle */}
-            <div style={{ display:"flex", justifyContent:"flex-end", padding:".7rem 1.1rem", borderBottom:"1px solid rgba(229,93,106,.07)" }}>
-              <div style={{ display:"flex", borderRadius:50, overflow:"hidden", border:"1.5px solid rgba(229,93,106,.25)", background:"#f9f9f9" }}>
-                {["cm","in"].map(u => (
+            <div style={{ display: "flex", justifyContent: "flex-end", padding: ".7rem 1.1rem", borderBottom: "1px solid rgba(229,93,106,.07)" }}>
+              <div style={{ display: "flex", borderRadius: 50, overflow: "hidden", border: "1.5px solid rgba(229,93,106,.25)", background: "#f9f9f9" }}>
+                {["cm", "in"].map(u => (
                   <button key={u} onClick={() => setSizeUnit(u)}
-                    style={{ padding:".3rem .85rem", border:"none", background: sizeUnit===u ? BRAND : "transparent", color: sizeUnit===u ? "#fff" : "#999", fontFamily:"'DM Sans',sans-serif", fontSize:".78rem", fontWeight:700, cursor:"pointer" }}>
+                    style={{ padding: ".3rem .85rem", border: "none", background: sizeUnit === u ? BRAND : "transparent", color: sizeUnit === u ? "#fff" : "#999", fontFamily: "'DM Sans',sans-serif", fontSize: ".78rem", fontWeight: 700, cursor: "pointer" }}>
                     {u}
                   </button>
                 ))}
               </div>
             </div>
-            <div className="sg-row sg-header"><div/><div>EURO</div><div>UK</div><div>US</div><div>Foot ({sizeUnit})</div></div>
+            <div className="sg-row sg-header"><div /><div>EURO</div><div>UK</div><div>US</div><div>Foot ({sizeUnit})</div></div>
             {SIZE_GUIDE.map(row => {
-              const isSel = String(row.uk)===String(selSize) || String(row.euro)===String(selSize) || String(row.us)===String(selSize);
+              const isSel = String(row.uk) === String(selSize) || String(row.euro) === String(selSize) || String(row.us) === String(selSize);
               return (
-                <div key={row.euro} className={`sg-row${isSel?" sg-sel":""}`}
+                <div key={row.euro} className={`sg-row${isSel ? " sg-sel" : ""}`}
                   onClick={() => { setSelSize(row.uk); setShowSizeGuide(false); }}>
-                  <div>{isSel && <span style={{ width:8,height:8,borderRadius:"50%",background:BRAND,display:"inline-block" }}/>}</div>
-                  <div style={{ fontWeight:isSel?700:400, color:isSel?BRAND:"#333", fontSize:".88rem" }}>{row.euro}</div>
-                  <div style={{ fontWeight:isSel?700:400, color:isSel?BRAND:"#333", fontSize:".88rem" }}>{row.uk}</div>
-                  <div style={{ fontWeight:isSel?700:400, color:isSel?BRAND:"#333", fontSize:".88rem" }}>{row.us}</div>
-                  <div style={{ fontWeight:isSel?700:400, color:isSel?BRAND:"#333", fontSize:".88rem" }}>{sizeUnit==="cm"?row.cm:row.inch}</div>
+                  <div>{isSel && <span style={{ width: 8, height: 8, borderRadius: "50%", background: BRAND, display: "inline-block" }} />}</div>
+                  <div style={{ fontWeight: isSel ? 700 : 400, color: isSel ? BRAND : "#333", fontSize: ".88rem" }}>{row.euro}</div>
+                  <div style={{ fontWeight: isSel ? 700 : 400, color: isSel ? BRAND : "#333", fontSize: ".88rem" }}>{row.uk}</div>
+                  <div style={{ fontWeight: isSel ? 700 : 400, color: isSel ? BRAND : "#333", fontSize: ".88rem" }}>{row.us}</div>
+                  <div style={{ fontWeight: isSel ? 700 : 400, color: isSel ? BRAND : "#333", fontSize: ".88rem" }}>{sizeUnit === "cm" ? row.cm : row.inch}</div>
                 </div>
               );
             })}
-            <div style={{ margin:"1rem 1.1rem 0", padding:".85rem", background:"rgba(229,93,106,.05)", borderRadius:10, border:"1px solid rgba(229,93,106,.12)", fontSize:".76rem", color:"#888", lineHeight:1.6 }}>
+            <div style={{ margin: "1rem 1.1rem 0", padding: ".85rem", background: "rgba(229,93,106,.05)", borderRadius: 10, border: "1px solid rgba(229,93,106,.12)", fontSize: ".76rem", color: "#888", lineHeight: 1.6 }}>
               💡 Stand on flat surface, measure heel to longest toe. If between sizes, go up.
             </div>
           </div>
@@ -416,25 +458,25 @@ export default function ProductModal({ product, onClose }) {
 
           {sent ? (
             /* ── SUCCESS ── */
-            <div style={{ padding:"3rem 1.5rem", textAlign:"center" }}>
-              <div style={{ fontSize:"3.5rem", marginBottom:".75rem", animation:"succPop .5s ease forwards" }}>✅</div>
-              <h2 style={{ fontFamily:"'Playfair Display',serif", fontSize:"1.7rem", color:"#1a1a1a", marginBottom:".6rem" }}>Order Placed!</h2>
-              <p style={{ color:"#666", marginBottom:".5rem" }}>
+            <div style={{ padding: "3rem 1.5rem", textAlign: "center" }}>
+              <div style={{ fontSize: "3.5rem", marginBottom: ".75rem", animation: "succPop .5s ease forwards" }}>✅</div>
+              <h2 style={{ fontFamily: "'Playfair Display',serif", fontSize: "1.7rem", color: "#1a1a1a", marginBottom: ".6rem" }}>Order Placed!</h2>
+              <p style={{ color: "#666", marginBottom: ".5rem" }}>
                 Thank you <strong>{form.name}</strong>! Your order for <strong>{product.name}</strong> is confirmed.
               </p>
               {placedOrderId && (
-                <div style={{ margin:"1rem auto", padding:".65rem 1rem", background:"rgba(229,93,106,.07)", borderRadius:10, border:`1.5px solid rgba(229,93,106,.2)`, display:"inline-block" }}>
-                  <span style={{ color:"#aaa", fontSize:".75rem" }}>Order ID: </span>
-                  <strong style={{ color:BRAND, fontFamily:"monospace", fontSize:"1rem" }}>{placedOrderId}</strong>
+                <div style={{ margin: "1rem auto", padding: ".65rem 1rem", background: "rgba(229,93,106,.07)", borderRadius: 10, border: `1.5px solid rgba(229,93,106,.2)`, display: "inline-block" }}>
+                  <span style={{ color: "#aaa", fontSize: ".75rem" }}>Order ID: </span>
+                  <strong style={{ color: BRAND, fontFamily: "monospace", fontSize: "1rem" }}>{placedOrderId}</strong>
                 </div>
               )}
-              <p style={{ color:"#888", fontSize:".85rem", marginBottom:"1.5rem" }}>
+              <p style={{ color: "#888", fontSize: ".85rem", marginBottom: "1.5rem" }}>
                 We'll contact you at <strong>{form.phone}</strong> for delivery.
               </p>
-              <div style={{ background:"rgba(229,93,106,.05)", border:`1.5px solid rgba(229,93,106,.15)`, borderRadius:12, padding:"1.25rem", maxWidth:340, margin:"0 auto 1.5rem", textAlign:"left" }}>
-                {[["Product",product.name],["Size",selSize],["Color",selColor?.name||"—"],["Qty",qty],["Payment","💳 Online"],["Total",`₹${(product.offerPrice*qty).toLocaleString()}`]].map(([k,v])=>(
-                  <div key={k} style={{ display:"flex", justifyContent:"space-between", fontSize:".82rem", color:"#888", marginBottom:".35rem" }}>
-                    <span>{k}</span><strong style={{ color:"#1a1a1a" }}>{v}</strong>
+              <div style={{ background: "rgba(229,93,106,.05)", border: `1.5px solid rgba(229,93,106,.15)`, borderRadius: 12, padding: "1.25rem", maxWidth: 340, margin: "0 auto 1.5rem", textAlign: "left" }}>
+                {[["Product", product.name], ["Size", selSize], ["Color", selColor?.name || "—"], ["Qty", qty], ["Payment", "💳 Online"], ["Total", `₹${(product.offerPrice * qty).toLocaleString()}`]].map(([k, v]) => (
+                  <div key={k} style={{ display: "flex", justifyContent: "space-between", fontSize: ".82rem", color: "#888", marginBottom: ".35rem" }}>
+                    <span>{k}</span><strong style={{ color: "#1a1a1a" }}>{v}</strong>
                   </div>
                 ))}
               </div>
@@ -443,59 +485,57 @@ export default function ProductModal({ product, onClose }) {
 
           ) : orderForm ? (
             /* ── ORDER FORM ── */
-            <div style={{ padding:"1.25rem 1rem 2rem" }}>
+            <div style={{ padding: "1.25rem 1rem 2rem" }}>
               <button onClick={() => setOrderForm(false)}
-                style={{ background:"none", border:"none", cursor:"pointer", color:"#888", fontSize:".82rem", fontWeight:600, marginBottom:"1.25rem", display:"flex", alignItems:"center", gap:".35rem" }}>
+                style={{ background: "none", border: "none", cursor: "pointer", color: "#888", fontSize: ".82rem", fontWeight: 600, marginBottom: "1.25rem", display: "flex", alignItems: "center", gap: ".35rem" }}>
                 ← Back
               </button>
               {user && (
-                <div style={{ display:"inline-flex", alignItems:"center", gap:".45rem", background:"rgba(22,163,74,.08)", border:"1px solid rgba(22,163,74,.2)", borderRadius:20, padding:".25rem .85rem", marginBottom:"1.1rem", fontSize:".75rem" }}>
-                  <span style={{ color:"#16a34a", fontWeight:700 }}>✓ Signed in</span>
-                  <span style={{ color:"#555" }}>{user.primaryEmailAddress?.emailAddress}</span>
+                <div style={{ display: "inline-flex", alignItems: "center", gap: ".45rem", background: "rgba(22,163,74,.08)", border: "1px solid rgba(22,163,74,.2)", borderRadius: 20, padding: ".25rem .85rem", marginBottom: "1.1rem", fontSize: ".75rem" }}>
+                  <span style={{ color: "#16a34a", fontWeight: 700 }}>✓ Signed in</span>
+                  <span style={{ color: "#555" }}>{user.primaryEmailAddress?.emailAddress}</span>
                 </div>
               )}
-              <h2 style={{ fontFamily:"'Playfair Display',serif", fontSize:"1.4rem", color:"#1a1a1a", marginBottom:"1rem" }}>Delivery Details</h2>
+              <h2 style={{ fontFamily: "'Playfair Display',serif", fontSize: "1.4rem", color: "#1a1a1a", marginBottom: "1rem" }}>Delivery Details</h2>
 
-              {/* Product summary */}
-              <div style={{ background:"rgba(229,93,106,.05)", border:`1.5px solid rgba(229,93,106,.15)`, borderRadius:12, padding:"1rem", marginBottom:"1.25rem", display:"flex", gap:".85rem", alignItems:"center" }}>
+              <div style={{ background: "rgba(229,93,106,.05)", border: `1.5px solid rgba(229,93,106,.15)`, borderRadius: 12, padding: "1rem", marginBottom: "1.25rem", display: "flex", gap: ".85rem", alignItems: "center" }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={imgs[0]} alt={product.name} style={{ width:60, height:60, objectFit:"cover", borderRadius:8, flexShrink:0 }}/>
-                <div style={{ flex:1, minWidth:0 }}>
-                  <div style={{ fontWeight:700, color:"#1a1a1a", fontSize:".88rem", marginBottom:".2rem", whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{product.name}</div>
-                  <div style={{ fontSize:".75rem", color:"#888" }}>Size: <strong>{selSize}</strong> · Color: <strong>{selColor?.name||"—"}</strong> · Qty: <strong>{qty}</strong></div>
-                  <div style={{ fontWeight:800, color:BRAND, marginTop:".2rem", fontSize:".9rem" }}>₹{(product.offerPrice*qty).toLocaleString()}</div>
+                <img src={imgs[0]} alt={product.name} style={{ width: 60, height: 60, objectFit: "cover", borderRadius: 8, flexShrink: 0 }} />
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontWeight: 700, color: "#1a1a1a", fontSize: ".88rem", marginBottom: ".2rem", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{product.name}</div>
+                  <div style={{ fontSize: ".75rem", color: "#888" }}>Size: <strong>{selSize}</strong> · Color: <strong>{selColor?.name || "—"}</strong> · Qty: <strong>{qty}</strong></div>
+                  <div style={{ fontWeight: 800, color: BRAND, marginTop: ".2rem", fontSize: ".9rem" }}>₹{(product.offerPrice * qty).toLocaleString()}</div>
                 </div>
               </div>
 
-              {/* Form fields */}
-              <div style={{ display:"flex", flexDirection:"column", gap:".85rem" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: ".85rem" }}>
                 {[
-                  { key:"name",    label:"Full Name",        placeholder:"Your full name",         type:"text" },
-                  { key:"phone",   label:"Phone Number",     placeholder:"10-digit mobile number", type:"tel"  },
-                  { key:"address", label:"Delivery Address", placeholder:"House no, street, area", type:"text" },
-                  { key:"city",    label:"City",             placeholder:"City",                   type:"text" },
-                  { key:"state",   label:"State",            placeholder:"State",                  type:"text" },
-                  { key:"pincode", label:"Pincode",          placeholder:"6-digit pincode",        type:"text" },
+                  { key: "name",    label: "Full Name",        placeholder: "Your full name",         type: "text" },
+                  { key: "phone",   label: "Phone Number",     placeholder: "10-digit mobile number", type: "tel"  },
+                  { key: "address", label: "Delivery Address", placeholder: "House no, street, area", type: "text" },
+                  { key: "city",    label: "City",             placeholder: "City",                   type: "text" },
+                  { key: "state",   label: "State",            placeholder: "State",                  type: "text" },
+                  { key: "pincode", label: "Pincode",          placeholder: "6-digit pincode",        type: "text" },
                 ].map(({ key, label, placeholder, type }) => (
                   <div key={key}>
-                    <label style={{ fontSize:".78rem", fontWeight:700, color:"#1a1a1a", display:"block", marginBottom:".3rem" }}>{label}</label>
+                    <label style={{ fontSize: ".78rem", fontWeight: 700, color: "#1a1a1a", display: "block", marginBottom: ".3rem" }}>{label}</label>
                     <input
-                      className={`f-input${formErr[key]?" err":""}`}
+                      className={`f-input${formErr[key] ? " err" : ""}`}
                       type={type} placeholder={placeholder} value={form[key]}
-                      onChange={e => { setForm(p=>({...p,[key]:e.target.value})); setFormErr(p=>({...p,[key]:""})); }}
+                      onChange={e => { setForm(p => ({ ...p, [key]: e.target.value })); setFormErr(p => ({ ...p, [key]: "" })); }}
                     />
                     {formErr[key] && <div className="f-err">{formErr[key]}</div>}
                   </div>
                 ))}
               </div>
 
-              <button className="btn-atc" style={{ marginTop:"1.5rem", borderRadius:10, display:"flex", alignItems:"center", justifyContent:"center", gap:".5rem" }}
+              <button className="btn-atc" style={{ marginTop: "1.5rem", borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", gap: ".5rem" }}
                 onClick={handleOrder} disabled={sending}>
                 {sending ? (
-                  <><div style={{ width:16,height:16,borderRadius:"50%",border:"2px solid rgba(255,255,255,.35)",borderTop:"2px solid #fff",animation:"spin 1s linear infinite" }}/>Processing…</>
-                ) : `💳 Pay Now — ₹${(product.offerPrice*qty).toLocaleString()}`}
+                  <><div style={{ width: 16, height: 16, borderRadius: "50%", border: "2px solid rgba(255,255,255,.35)", borderTop: "2px solid #fff", animation: "spin 1s linear infinite" }} />Processing…</>
+                ) : `💳 Pay Now — ₹${(product.offerPrice * qty).toLocaleString()}`}
               </button>
-              <p style={{ textAlign:"center", color:"#bbb", fontSize:".7rem", marginTop:".6rem" }}>
+              <p style={{ textAlign: "center", color: "#bbb", fontSize: ".7rem", marginTop: ".6rem" }}>
                 Secure payment via Razorpay · UPI, Cards, Net Banking
               </p>
             </div>
@@ -508,103 +548,124 @@ export default function ProductModal({ product, onClose }) {
               <div className="m-gallery">
                 <div className="m-main-img">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={imgs[activeImg]} alt={product.name} key={activeImg}/>
-                  <span style={{ position:"absolute",top:10,left:10,background:BRAND,color:"#fff",fontSize:".62rem",fontWeight:800,padding:".18rem .5rem",borderRadius:20 }}>
+                  <img src={imgs[activeImg]} alt={product.name} key={`${product.id}-${activeImg}`} />
+                  <span style={{ position: "absolute", top: 10, left: 10, background: BRAND, color: "#fff", fontSize: ".62rem", fontWeight: 800, padding: ".18rem .5rem", borderRadius: 20 }}>
                     {discount}% OFF
                   </span>
                 </div>
                 <div className="m-thumbs">
-                  {imgs.map((img,i) => (
+                  {imgs.map((img, i) => (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img key={i} src={img} alt={`view ${i+1}`}
-                      className={`m-thumb${i===activeImg?" active":""}`}
-                      onClick={() => setActiveImg(i)}/>
+                    <img key={i} src={img} alt={`view ${i + 1}`}
+                      className={`m-thumb${i === activeImg ? " active" : ""}`}
+                      onClick={() => setActiveImg(i)} />
                   ))}
                 </div>
-                <div style={{ textAlign:"center", marginTop:".5rem", fontSize:".65rem", color:"#bbb", fontWeight:600, letterSpacing:".08em", textTransform:"uppercase" }}>
-                  View {activeImg+1} of {imgs.length} · Multiple Angles
+                <div style={{ textAlign: "center", marginTop: ".5rem", fontSize: ".65rem", color: "#bbb", fontWeight: 600, letterSpacing: ".08em", textTransform: "uppercase" }}>
+                  View {activeImg + 1} of {imgs.length} · Multiple Angles
                 </div>
               </div>
 
               {/* ── Info ── */}
               <div className="m-info">
-                {/* breadcrumb */}
-                <div style={{ fontSize:".65rem", color:"#bbb", marginBottom:".6rem" }}>
-                  Home / {product.category} / <span style={{ color:BRAND }}>{product.name}</span>
+                <div style={{ fontSize: ".65rem", color: "#bbb", marginBottom: ".6rem" }}>
+                  Home / {product.category} / <span style={{ color: BRAND }}>{product.name}</span>
                 </div>
 
-                <span style={{ fontSize:".65rem", color:BRAND, fontWeight:800, letterSpacing:".12em", textTransform:"uppercase" }}>{product.category}</span>
-                <h1 style={{ fontFamily:"'Playfair Display',serif", fontSize:"1.4rem", fontWeight:900, color:"#1a1a1a", lineHeight:1.25, margin:".35rem 0 .5rem" }}>
+                <span style={{ fontSize: ".65rem", color: BRAND, fontWeight: 800, letterSpacing: ".12em", textTransform: "uppercase" }}>{product.category}</span>
+                <h1 style={{ fontFamily: "'Playfair Display',serif", fontSize: "1.4rem", fontWeight: 900, color: "#1a1a1a", lineHeight: 1.25, margin: ".35rem 0 .5rem" }}>
                   {product.name}
                 </h1>
 
-                {/* Rating */}
-                <div style={{ display:"flex", alignItems:"center", gap:".4rem", marginBottom:".85rem" }}>
-                  <div>{"★★★★★".split("").map((s,i) => <span key={i} className="star">{s}</span>)}</div>
-                  <span style={{ fontSize:".75rem", color:"#666", fontWeight:600 }}>4.8 (124 reviews)</span>
-                  <span style={{ fontSize:".68rem", color:"#16a34a", fontWeight:700, background:"rgba(22,163,74,.1)", padding:".12rem .45rem", borderRadius:20 }}>✓ In Stock</span>
+                <div style={{ display: "flex", alignItems: "center", gap: ".4rem", marginBottom: ".85rem" }}>
+                  <div>{"★★★★★".split("").map((s, i) => <span key={i} className="star">{s}</span>)}</div>
+                  <span style={{ fontSize: ".75rem", color: "#666", fontWeight: 600 }}>4.8 (124 reviews)</span>
+                  <span style={{ fontSize: ".68rem", color: "#16a34a", fontWeight: 700, background: "rgba(22,163,74,.1)", padding: ".12rem .45rem", borderRadius: 20 }}>✓ In Stock</span>
                 </div>
 
-                {/* Price */}
-                <div style={{ display:"flex", alignItems:"baseline", gap:".65rem", marginBottom:"1rem", padding:".85rem", background:"rgba(229,93,106,.05)", borderRadius:10, border:`1px solid rgba(229,93,106,.12)` }}>
-                  <span style={{ fontSize:"1.7rem", fontWeight:900, color:BRAND }}>₹{product.offerPrice.toLocaleString()}</span>
-                  <span style={{ fontSize:".9rem", color:"#ccc", textDecoration:"line-through" }}>₹{product.price.toLocaleString()}</span>
-                  <span style={{ fontSize:".72rem", color:"#16a34a", fontWeight:800, background:"rgba(22,163,74,.12)", padding:".15rem .5rem", borderRadius:20 }}>
-                    Save ₹{(product.price-product.offerPrice).toLocaleString()} ({discount}%)
+                <div style={{ display: "flex", alignItems: "baseline", gap: ".65rem", marginBottom: "1rem", padding: ".85rem", background: "rgba(229,93,106,.05)", borderRadius: 10, border: `1px solid rgba(229,93,106,.12)` }}>
+                  <span style={{ fontSize: "1.7rem", fontWeight: 900, color: BRAND }}>₹{product.offerPrice.toLocaleString()}</span>
+                  <span style={{ fontSize: ".9rem", color: "#ccc", textDecoration: "line-through" }}>₹{product.price.toLocaleString()}</span>
+                  <span style={{ fontSize: ".72rem", color: "#16a34a", fontWeight: 800, background: "rgba(22,163,74,.12)", padding: ".15rem .5rem", borderRadius: 20 }}>
+                    Save ₹{(product.price - product.offerPrice).toLocaleString()} ({discount}%)
                   </span>
                 </div>
 
-                {/* Colors */}
-                {product.colorOptions && (
-                  <div style={{ marginBottom:".85rem" }}>
-                    <div style={{ fontSize:".76rem", fontWeight:700, color:"#1a1a1a", marginBottom:".45rem" }}>
-                      Color: <span style={{ color:BRAND }}>{selColor?.name}</span>
+                {/* ── COLOR VARIANTS (with thumbnail previews) ── */}
+                {product.colorOptions && product.colorOptions.length > 0 && (
+                  <div style={{ marginBottom: ".85rem" }}>
+                    <div style={{ fontSize: ".76rem", fontWeight: 700, color: "#1a1a1a", marginBottom: ".6rem" }}>
+                      More Colors: <span style={{ color: BRAND }}>{selColor?.name}</span>
                     </div>
-                    <div style={{ display:"flex", gap:".5rem" }}>
-                      {product.colorOptions.map(c => (
-                        <button key={c.hex} className={`c-dot${selColor?.hex===c.hex?" active":""}`}
-                          style={{ background:c.hex, border:"3px solid transparent" }} title={c.name}
-                          onClick={() => setSelColor(c)}/>
-                      ))}
+                    <div style={{ display: "flex", gap: ".6rem", flexWrap: "wrap" }}>
+                      {product.colorOptions.map(c => {
+                        const isActive = c.productId === product.id;
+                        // Get thumbnail from the linked product
+                        const linkedProduct = PRODUCTS.find(p => p.id === c.productId);
+                        const thumbSrc = linkedProduct?.images?.[0] || linkedProduct?.image || null;
+                        return (
+                          <button
+                            key={c.hex}
+                            className={`c-swatch${isActive ? " active" : ""}`}
+                            onClick={() => handleColorClick(c)}
+                            title={c.name}
+                            style={{ background: "none", border: "none", padding: 0 }}
+                          >
+                            {thumbSrc ? (
+                              // eslint-disable-next-line @next/next/no-img-element
+                              <img
+                                src={thumbSrc}
+                                alt={c.name}
+                                className="c-swatch-img"
+                              />
+                            ) : (
+                              <div
+                                className="c-swatch-img"
+                                style={{ background: c.hex, display: "flex", alignItems: "center", justifyContent: "center" }}
+                              />
+                            )}
+                            <span className="c-swatch-label">{c.name}</span>
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
                 )}
 
                 {/* Sizes */}
-                <div style={{ marginBottom:".85rem" }}>
-                  <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:".45rem" }}>
-                    <span style={{ fontSize:".76rem", fontWeight:700, color:"#1a1a1a" }}>
-                      Select Size (UK Size): <span style={{ color:BRAND }}>{selSize}</span>
-                      
+                <div style={{ marginBottom: ".85rem" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: ".45rem" }}>
+                    <span style={{ fontSize: ".76rem", fontWeight: 700, color: "#1a1a1a" }}>
+                      Select Size (UK Size): <span style={{ color: BRAND }}>{selSize}</span>
                     </span>
                     <button onClick={() => setShowSizeGuide(true)}
-                      style={{ background:"none", border:"none", cursor:"pointer", color:BRAND, fontSize:".72rem", fontWeight:700, padding:0, display:"flex", alignItems:"center", gap:".25rem" }}>
+                      style={{ background: "none", border: "none", cursor: "pointer", color: BRAND, fontSize: ".72rem", fontWeight: 700, padding: 0, display: "flex", alignItems: "center", gap: ".25rem" }}>
                       📏 Size Guide →
                     </button>
                   </div>
-                  <div style={{ display:"flex", gap:".4rem", flexWrap:"wrap" }}>
+                  <div style={{ display: "flex", gap: ".4rem", flexWrap: "wrap" }}>
                     {product.sizes.map(s => (
-                      <button key={s} className={`sz-btn${selSize===s?" active":""}`} onClick={() => setSelSize(s)}>{s}</button>
+                      <button key={s} className={`sz-btn${selSize === s ? " active" : ""}`} onClick={() => setSelSize(s)}>{s}</button>
                     ))}
                   </div>
                 </div>
 
                 {/* Qty */}
-                <div style={{ marginBottom:"1rem" }}>
-                  <div style={{ fontSize:".76rem", fontWeight:700, color:"#1a1a1a", marginBottom:".45rem" }}>Quantity</div>
-                  <div style={{ display:"flex", alignItems:"center", gap:".6rem" }}>
-                    <button className="qty-btn" onClick={() => setQty(q => Math.max(1,q-1))}>−</button>
-                    <span style={{ fontWeight:800, fontSize:"1rem", color:"#1a1a1a", minWidth:"1.25rem", textAlign:"center" }}>{qty}</span>
-                    <button className="qty-btn" onClick={() => setQty(q => q+1)}>+</button>
-                    <span style={{ fontSize:".74rem", color:"#888", marginLeft:".2rem" }}>
-                      Total: <strong style={{ color:BRAND }}>₹{(product.offerPrice*qty).toLocaleString()}</strong>
+                <div style={{ marginBottom: "1rem" }}>
+                  <div style={{ fontSize: ".76rem", fontWeight: 700, color: "#1a1a1a", marginBottom: ".45rem" }}>Quantity</div>
+                  <div style={{ display: "flex", alignItems: "center", gap: ".6rem" }}>
+                    <button className="qty-btn" onClick={() => setQty(q => Math.max(1, q - 1))}>−</button>
+                    <span style={{ fontWeight: 800, fontSize: "1rem", color: "#1a1a1a", minWidth: "1.25rem", textAlign: "center" }}>{qty}</span>
+                    <button className="qty-btn" onClick={() => setQty(q => q + 1)}>+</button>
+                    <span style={{ fontSize: ".74rem", color: "#888", marginLeft: ".2rem" }}>
+                      Total: <strong style={{ color: BRAND }}>₹{(product.offerPrice * qty).toLocaleString()}</strong>
                     </span>
                   </div>
                 </div>
 
                 {/* Action buttons */}
-                <div style={{ display:"flex", flexDirection:"column", gap:".6rem", marginBottom:"1rem" }}>
-                  <button className={`btn-atc${added?" added":""}`} onClick={handleAdd}>
+                <div style={{ display: "flex", flexDirection: "column", gap: ".6rem", marginBottom: "1rem" }}>
+                  <button className={`btn-atc${added ? " added" : ""}`} onClick={handleAdd}>
                     {added ? "✓ Added to Cart!" : "🛒 Add to Cart"}
                   </button>
                   {isSignedIn ? (
@@ -619,10 +680,10 @@ export default function ProductModal({ product, onClose }) {
                 </div>
 
                 {/* Delivery */}
-                <div style={{ background:"rgba(229,93,106,.04)", border:`1px solid rgba(229,93,106,.1)`, borderRadius:10, padding:".85rem", fontSize:".76rem", color:"#888" }}>
-                  <div style={{ fontWeight:700, color:"#1a1a1a", marginBottom:".4rem" }}>Delivery & Returns</div>
-                  {["🚚 Free delivery · Ships in 24hrs","↩️ 7-day hassle-free returns","💳 Online payment accepted","📦 Premium packaging included"].map(t => (
-                    <div key={t} style={{ marginBottom:".28rem" }}>{t}</div>
+                <div style={{ background: "rgba(229,93,106,.04)", border: `1px solid rgba(229,93,106,.1)`, borderRadius: 10, padding: ".85rem", fontSize: ".76rem", color: "#888" }}>
+                  <div style={{ fontWeight: 700, color: "#1a1a1a", marginBottom: ".4rem" }}>Delivery & Returns</div>
+                  {["🚚 Free delivery · Ships in 24hrs", "↩️ 7-day hassle-free returns", "💳 Online payment accepted", "📦 Premium packaging included"].map(t => (
+                    <div key={t} style={{ marginBottom: ".28rem" }}>{t}</div>
                   ))}
                 </div>
               </div>
