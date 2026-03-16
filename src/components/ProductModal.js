@@ -6,12 +6,12 @@ import { useCart } from "../context/CartContext";
 const BRAND = "#e55d6a";
 
 const SIZE_GUIDE = [
-  { euro: 36, uk: 3,  cm: 22.7, inch: 8.9  },
-  { euro: 37, uk: 4,  cm: 23.3, inch: 9.2  },
-  { euro: 38, uk: 5,  cm: 24.0, inch: 9.4  },
-  { euro: 39, uk: 6,  cm: 24.7, inch: 9.7  },
-  { euro: 40, uk: 7,  cm: 25.3, inch: 10.0 },
-  { euro: 41, uk: 8,  cm: 26.0, inch: 10.2 },
+  { euro: 36, uk: 3, us: 5,  cm: 22.7, inch: 8.9  },
+  { euro: 37, uk: 4, us: 6,  cm: 23.3, inch: 9.2  },
+  { euro: 38, uk: 5, us: 7,  cm: 24.0, inch: 9.4  },
+  { euro: 39, uk: 6, us: 8,  cm: 24.7, inch: 9.7  },
+  { euro: 40, uk: 7, us: 9,  cm: 25.3, inch: 10.0 },
+  { euro: 41, uk: 8, us: 10,  cm: 26.0, inch: 10.2 },
 ];
 
 export default function ProductModal({ product, onClose }) {
@@ -350,7 +350,7 @@ export default function ProductModal({ product, onClose }) {
         }
         .sg-row {
           display: grid;
-          grid-template-columns: 32px 1fr 1fr 1fr;
+          grid-template-columns: 32px 1fr 1fr 1fr 1fr;
           gap: .4rem; align-items: center;
           padding: .6rem 1.1rem;
           border-bottom: 1px solid rgba(229,93,106,.07);
@@ -388,15 +388,16 @@ export default function ProductModal({ product, onClose }) {
                 ))}
               </div>
             </div>
-            <div className="sg-row sg-header"><div/><div>EURO</div><div>UK</div><div>Foot ({sizeUnit})</div></div>
+            <div className="sg-row sg-header"><div/><div>EURO</div><div>UK</div><div>US</div><div>Foot ({sizeUnit})</div></div>
             {SIZE_GUIDE.map(row => {
-              const isSel = String(row.uk)===String(selSize) || String(row.euro)===String(selSize);
+              const isSel = String(row.uk)===String(selSize) || String(row.euro)===String(selSize) || String(row.us)===String(selSize);
               return (
                 <div key={row.euro} className={`sg-row${isSel?" sg-sel":""}`}
                   onClick={() => { setSelSize(row.uk); setShowSizeGuide(false); }}>
                   <div>{isSel && <span style={{ width:8,height:8,borderRadius:"50%",background:BRAND,display:"inline-block" }}/>}</div>
                   <div style={{ fontWeight:isSel?700:400, color:isSel?BRAND:"#333", fontSize:".88rem" }}>{row.euro}</div>
                   <div style={{ fontWeight:isSel?700:400, color:isSel?BRAND:"#333", fontSize:".88rem" }}>{row.uk}</div>
+                  <div style={{ fontWeight:isSel?700:400, color:isSel?BRAND:"#333", fontSize:".88rem" }}>{row.us}</div>
                   <div style={{ fontWeight:isSel?700:400, color:isSel?BRAND:"#333", fontSize:".88rem" }}>{sizeUnit==="cm"?row.cm:row.inch}</div>
                 </div>
               );
