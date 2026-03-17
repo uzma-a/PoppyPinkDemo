@@ -57,8 +57,8 @@ export default function Home({ dbProducts }) {
   return (
     <>
       <Head>
-        <title>POPPYPINK — Premium Women's Sandals</title>
-        <meta name="description" content="Step into elegance with POPPYPINK premium sandals." />
+       <title>POPPYPINK — Women's Sandals & Heels | Shop Online India</title>
+        <meta name="description" content="Shop trendy women's sandals, wedge heels & party wear at POPPYPINK. Free delivery across India." />
         <meta name="viewport"    content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content={BRAND} />
       </Head>

@@ -31,8 +31,8 @@ export default function ProductsPage({ allProducts }) {
   return (
     <>
       <Head>
-        <title>Products — POPPYPINK</title>
-        <meta name="description" content="Browse all POPPYPINK premium women's sandals." />
+        <title>Shop Women's Sandals & Heels — POPPYPINK</title>
+        <meta name="description" content="Browse POPPYPINK's full collection — wedge sandals, block heels, party wear & more. All sizes available. Free delivery." />
         <style suppressHydrationWarning>{`
 
         .products-page *,
@@ -146,7 +146,7 @@ export default function ProductsPage({ allProducts }) {
       </Head>
 
       {/* ✅ Add products-page class so box-sizing scoping works */}
-      <main className="products-page" style={{ minHeight:"100vh", background:"#FFF8F5", paddingTop:"68px" }}>
+      <main className="products-page" style={{ minHeight: "100vh", background: "#FFF8F5", paddingTop: "68px" }}>
 
         {/* ── Hero strip ── */}
         <div style={{
@@ -154,7 +154,7 @@ export default function ProductsPage({ allProducts }) {
           padding: "3rem 2rem 2.5rem",
           borderBottom: "1px solid rgba(229,93,106,.1)",
         }}>
-         <div className="pp-grid-container pp-page-enter">
+          <div className="pp-grid-container pp-page-enter">
             <p style={{ color: BRAND, fontSize: ".72rem", fontWeight: 800, letterSpacing: ".22em", textTransform: "uppercase", marginBottom: ".5rem" }}>
               ✦ COLLECTION ✦
             </p>
