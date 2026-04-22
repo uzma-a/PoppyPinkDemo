@@ -6,8 +6,8 @@ export const PRODUCTS = [
     id: 1,
     name: "Women Embellished Wedge",
     category: "Wedges Sandal",
-    price: 4499,
-    offerPrice: 1835,
+    price: 5000,
+    offerPrice: 2500,
     image: "/assets/Gold-12151/1.JPG",
     images: [
       "/assets/Gold-12151/1.JPG",
@@ -30,7 +30,7 @@ export const PRODUCTS = [
     name: "Women Embellished Wedge",
     category: "Wedges Sandal",
     price: 4999,
-    offerPrice: 1835,
+    offerPrice: 2499,
     image: "/assets/Rose-Gold-12151/1.JPG",
     images: [
       "/assets/Rose-Gold-12151/1.JPG",
@@ -54,7 +54,7 @@ export const PRODUCTS = [
     name: "Women Embellished Strappy",
     category: "Wedge Heel Sandals",
     price: 4999,
-    offerPrice: 1835,
+    offerPrice: 2499,
     image: "/assets/RoseGold-12113/1.JPG",
     images: [
       "/assets/RoseGold-12113/1.JPG",
@@ -77,7 +77,7 @@ export const PRODUCTS = [
     name: "Women Embellished Strappy",
     category: "Wedge Heel Sandals",
     price: 4999,
-    offerPrice: 1835,
+    offerPrice: 2499,
     image: "/assets/Silver-12113/1.jpg",
     images: [
       "/assets/Silver-12113/1.jpg",
@@ -100,7 +100,7 @@ export const PRODUCTS = [
     name: "Women Embellished Wedge",
     category: "Wedges Sandal",
     price: 4999,
-    offerPrice: 1835,
+    offerPrice: 2499,
     image: "/assets/Silver-12151/1.JPG",
     images: [
       "/assets/Silver-12151/1.JPG",
@@ -123,7 +123,7 @@ export const PRODUCTS = [
     name: "Women Embellished Regular",
     category: "Party Block Heel Sandals",
     price: 3299,
-    offerPrice: 1324,
+    offerPrice: 1649,
     image: "/assets/Gold-12133/1.JPG",
     images: [
       "/assets/Gold-12133/1.JPG",
@@ -147,7 +147,7 @@ export const PRODUCTS = [
     name: "Women Embellished Regular",
     category: "Party Block Heel Sandals",
     price: 3299,
-    offerPrice: 1324,
+    offerPrice: 1649,
     image: "/assets/Silver-12133/1.JPG",
     images: [
       "/assets/Silver-12133/1.JPG",
@@ -170,7 +170,7 @@ export const PRODUCTS = [
     name: "Women Embellished Regular",
     category: "Party Block Heel Sandals",
     price: 3299,
-    offerPrice: 1324,
+    offerPrice: 1649,
     image: "/assets/RoseGold-12133/0.JPG",
     images: [
       "/assets/RoseGold-12133/0.JPG",
