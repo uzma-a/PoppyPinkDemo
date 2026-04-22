@@ -44,7 +44,7 @@ export const PRODUCTS = [
     sizes: ["3", "4", "5", "6", "7", "8"],
     colorOptions: [
       { name: "Gold",      hex: "#FFB300", productId: 1 }, // links to id:1
-      { name: "Rose Gold", hex: "#C9956C", productId: 2 }, // self
+      { name: "Rose Gold", hex: "#C9956C", productId: 2 },
       { name: "Silver",    hex: "#C0C0C0", productId: 5 }, // links to id:5
     ],
   },
