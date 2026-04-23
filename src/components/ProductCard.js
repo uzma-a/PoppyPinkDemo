@@ -313,10 +313,10 @@ export default function ProductCard({ product, index = 0 }) {
           <div className="pp-brand">POPPYPINK</div>
           <div className="pp-name">{product.name}</div>
           <div className="pp-price-row">
-            <span className="pp-offer">₹{product.offerPrice.toLocaleString()}</span>
             {product.price > product.offerPrice && (
               <span className="pp-orig">₹{product.price.toLocaleString()}</span>
             )}
+            <span className="pp-offer">₹{product.offerPrice.toLocaleString()}</span>
           </div>
           {product.colorOptions?.length > 0 && (
             <div className="pp-color-row">
