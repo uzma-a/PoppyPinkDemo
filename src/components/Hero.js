@@ -355,7 +355,7 @@ export default function Hero({ shopRef }) {
           <div key={`st-${current}`} className={txtAnim==="in"?"txt-in":"txt-out"} style={{ animationDelay:".32s" }}>
             <div className="hero-stat-row" style={{ display:"flex", gap:".8rem", flexWrap:"wrap", marginBottom:"2rem" }}>
               {[
-                { icon:"👟", num:"100+", lbl:"Styles" },
+                
                 { icon:"⭐", num:"4.9",  lbl:"Rating" },
                 { icon:"🚚", num:"Free", lbl:"Shipping" },
               ].map(s => (
