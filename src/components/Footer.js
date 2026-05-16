@@ -76,7 +76,7 @@ const Footer = forwardRef(function Footer(_, ref) {
               {[
                 ["📞","Phone",  "+91-9773948133"],
                 ["✉️","Email",  "Poppypink001@gmail.com"],
-                ["📍","Address","New Delhi, India"],
+                ["📍","Address","WZ 257 CA, Madipur Village, West Punjabi Bagh, Madipur, New Delhi, 110063"],
               ].map(([ic,lb,val]) => (
                 <div key={val} className="contact-item">
                   <span style={{ fontSize:"1.05rem", flexShrink:0 }}>{ic}</span>
