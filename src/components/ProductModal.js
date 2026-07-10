@@ -7,11 +7,11 @@ import { PRODUCTS } from "../data/products";
 const BRAND = "#e55d6a";
 
 const SIZE_GUIDE = [
-  { euro: 36, uk: 3, us: 5,  cm: 22.7, inch: 8.9  },
-  { euro: 37, uk: 4, us: 6,  cm: 23.3, inch: 9.2  },
-  { euro: 38, uk: 5, us: 7,  cm: 24.0, inch: 9.4  },
-  { euro: 39, uk: 6, us: 8,  cm: 24.7, inch: 9.7  },
-  { euro: 40, uk: 7, us: 9,  cm: 25.3, inch: 10.0 },
+  { euro: 36, uk: 3, us: 5, cm: 22.7, inch: 8.9 },
+  { euro: 37, uk: 4, us: 6, cm: 23.3, inch: 9.2 },
+  { euro: 38, uk: 5, us: 7, cm: 24.0, inch: 9.4 },
+  { euro: 39, uk: 6, us: 8, cm: 24.7, inch: 9.7 },
+  { euro: 40, uk: 7, us: 9, cm: 25.3, inch: 10.0 },
   { euro: 41, uk: 8, us: 10, cm: 26.0, inch: 10.2 },
 ];
 
@@ -22,33 +22,34 @@ export default function ProductModal({ product: initialProduct, onClose }) {
   // ── Active product (can switch on color click) ──
   const [product, setProduct] = useState(initialProduct);
 
-  const [activeImg,     setActiveImg]     = useState(0);
-  const [selSize,       setSelSize]       = useState(product.sizes[2] || product.sizes[0]);
-  const [selColor,      setSelColor]      = useState(
+  const [activeImg, setActiveImg] = useState(0);
+  const [selSize, setSelSize] = useState(product.sizes[2] || product.sizes[0]);
+  const [selColor, setSelColor] = useState(
     // highlight the color dot that matches this product
     product.colorOptions?.find(c => c.productId === product.id) || product.colorOptions?.[0] || null
   );
-  const [qty,           setQty]           = useState(1);
-  const [added,         setAdded]         = useState(false);
-  const [orderForm,     setOrderForm]     = useState(false);
-  const [sending,       setSending]       = useState(false);
-  const [sent,          setSent]          = useState(false);
+  const [qty, setQty] = useState(1);
+  const [added, setAdded] = useState(false);
+  const [orderForm, setOrderForm] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
   const [placedOrderId, setPlacedOrderId] = useState(null);
   const [showSizeGuide, setShowSizeGuide] = useState(false);
-  const [sizeUnit,      setSizeUnit]      = useState("cm");
+  const [sizeUnit, setSizeUnit] = useState("cm");
+  const [showProductDetails, setShowProductDetails] = useState(false);
 
-  const [form,    setForm]    = useState({ name: "", phone: "", address: "", pincode: "", city: "", state: "" });
+  const [form, setForm] = useState({ name: "", phone: "", address: "", pincode: "", city: "", state: "" });
   const [formErr, setFormErr] = useState({});
 
-  const imgs     = product.images || [product.image];
+  const imgs = product.images || [product.image];
   const discount = Math.round((1 - product.offerPrice / product.price) * 100);
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
-    const check = () => {};
+    const check = () => { };
     if (!document.getElementById("razorpay-script")) {
       const s = document.createElement("script");
-      s.id  = "razorpay-script";
+      s.id = "razorpay-script";
       s.src = "https://checkout.razorpay.com/v1/checkout.js";
       document.body.appendChild(s);
     }
@@ -79,7 +80,7 @@ export default function ProductModal({ product: initialProduct, onClose }) {
   const handleOpenOrderForm = () => {
     setForm(prev => ({
       ...prev,
-      name:  prev.name  || user?.fullName || "",
+      name: prev.name || user?.fullName || "",
       phone: prev.phone || user?.primaryPhoneNumber?.phoneNumber || "",
     }));
     setOrderForm(true);
@@ -93,12 +94,12 @@ export default function ProductModal({ product: initialProduct, onClose }) {
 
   const validate = () => {
     const err = {};
-    if (!form.name.trim())    err.name    = "Name required";
+    if (!form.name.trim()) err.name = "Name required";
     if (!form.phone.trim() || !/^\d{10}$/.test(form.phone.trim())) err.phone = "Valid 10-digit phone required";
     if (!form.address.trim()) err.address = "Address required";
     if (!form.pincode.trim()) err.pincode = "Pincode required";
-    if (!form.city.trim())    err.city    = "City required";
-    if (!form.state.trim())   err.state   = "State required";
+    if (!form.city.trim()) err.city = "City required";
+    if (!form.state.trim()) err.state = "State required";
     return err;
   };
 
@@ -108,9 +109,9 @@ export default function ProductModal({ product: initialProduct, onClose }) {
     setSending(true);
     try {
       const customerEmail = user?.primaryEmailAddress?.emailAddress || "";
-      const colorName     = selColor?.name || "—";
-      const article       = product.article || "—";
-      const orderTotal    = product.offerPrice * qty;
+      const colorName = selColor?.name || "—";
+      const article = product.article || "—";
+      const orderTotal = product.offerPrice * qty;
       const orderData = {
         customerName: form.name, customerPhone: form.phone, customerEmail,
         userId: user?.id || "",
@@ -118,7 +119,7 @@ export default function ProductModal({ product: initialProduct, onClose }) {
         product: { id: product.id, name: product.name, article: product.article || "", category: product.category, size: selSize, color: colorName, qty, price: product.offerPrice, image: product.images?.[0] || product.image || "" },
         totalAmount: orderTotal,
       };
-      const rzRes  = await fetch("/api/razorpay/create-order", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ amount: orderTotal, receipt: `modal_${Date.now()}` }) });
+      const rzRes = await fetch("/api/razorpay/create-order", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ amount: orderTotal, receipt: `modal_${Date.now()}` }) });
       const rzData = await rzRes.json();
       if (!rzRes.ok) throw new Error(rzData.error || "Could not initiate payment");
       setSending(false);
@@ -132,7 +133,7 @@ export default function ProductModal({ product: initialProduct, onClose }) {
         handler: async (response) => {
           setSending(true);
           try {
-            const verifyRes  = await fetch("/api/razorpay/verify", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ razorpay_order_id: response.razorpay_order_id, razorpay_payment_id: response.razorpay_payment_id, razorpay_signature: response.razorpay_signature, orderData }) });
+            const verifyRes = await fetch("/api/razorpay/verify", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ razorpay_order_id: response.razorpay_order_id, razorpay_payment_id: response.razorpay_payment_id, razorpay_signature: response.razorpay_signature, orderData }) });
             const verifyData = await verifyRes.json();
             if (!verifyRes.ok) throw new Error(verifyData.error || "Payment verification failed");
             const newOrderId = verifyData.orderId;
@@ -146,7 +147,7 @@ export default function ProductModal({ product: initialProduct, onClose }) {
                 payload.append("from_name", "POPPYPINK Store");
                 payload.append("message", [`━━━━━━━━━━━━━━━━━━━━━━━━━`, "💳  PAID ORDER — POPPYPINK", `━━━━━━━━━━━━━━━━━━━━━━━━━`, `Order ID : ${newOrderId}`, `Product  : ${product.name}`, `Article  : ${article}`, `Color    : ${colorName}`, `Size     : ${selSize}`, `Qty      : ${qty}`, `Total    : ₹${orderTotal.toLocaleString()}`, `Payment  : Online (Razorpay) ✅`, "", `📦 CUSTOMER`, `━━━━━━━━━━━━━━━━━━━━━━━━━`, `Name    : ${form.name}`, `Phone   : ${form.phone}`, `Address : ${form.address}, ${form.city}, ${form.state} - ${form.pincode}`, "", `Time    : ${new Date().toLocaleString("en-IN")}`].join("\n"));
                 await fetch("https://api.web3forms.com/submit", { method: "POST", body: payload });
-              } catch (_) {}
+              } catch (_) { }
             }
             setSent(true);
           } catch (e) {
@@ -510,12 +511,12 @@ export default function ProductModal({ product: initialProduct, onClose }) {
 
               <div style={{ display: "flex", flexDirection: "column", gap: ".85rem" }}>
                 {[
-                  { key: "name",    label: "Full Name",        placeholder: "Your full name",         type: "text" },
-                  { key: "phone",   label: "Phone Number",     placeholder: "10-digit mobile number", type: "tel"  },
+                  { key: "name", label: "Full Name", placeholder: "Your full name", type: "text" },
+                  { key: "phone", label: "Phone Number", placeholder: "10-digit mobile number", type: "tel" },
                   { key: "address", label: "Delivery Address", placeholder: "House no, street, area", type: "text" },
-                  { key: "city",    label: "City",             placeholder: "City",                   type: "text" },
-                  { key: "state",   label: "State",            placeholder: "State",                  type: "text" },
-                  { key: "pincode", label: "Pincode",          placeholder: "6-digit pincode",        type: "text" },
+                  { key: "city", label: "City", placeholder: "City", type: "text" },
+                  { key: "state", label: "State", placeholder: "State", type: "text" },
+                  { key: "pincode", label: "Pincode", placeholder: "6-digit pincode", type: "text" },
                 ].map(({ key, label, placeholder, type }) => (
                   <div key={key}>
                     <label style={{ fontSize: ".78rem", fontWeight: 700, color: "#1a1a1a", display: "block", marginBottom: ".3rem" }}>{label}</label>
@@ -584,7 +585,7 @@ export default function ProductModal({ product: initialProduct, onClose }) {
                 </div>
 
                 <div style={{ display: "flex", alignItems: "baseline", gap: ".65rem", marginBottom: "1rem", padding: ".85rem", background: "rgba(229,93,106,.05)", borderRadius: 10, border: `1px solid rgba(229,93,106,.12)` }}>
-                  <span style={{ fontSize: "1.7rem", fontWeight: 900, color: BRAND }}>₹{product.offerPrice.toLocaleString()}</span>
+                  <span style={{ fontSize: "1.7rem", fontWeight: 900, color: "black" }}>₹{product.offerPrice.toLocaleString()}</span>
                   <span style={{ fontSize: ".9rem", color: "#ccc", textDecoration: "line-through" }}>₹{product.price.toLocaleString()}</span>
                   <span style={{ fontSize: ".72rem", color: "#16a34a", fontWeight: 800, background: "rgba(22,163,74,.12)", padding: ".15rem .5rem", borderRadius: 20 }}>
                     Save ₹{(product.price - product.offerPrice).toLocaleString()} ({discount}%)
@@ -665,6 +666,7 @@ export default function ProductModal({ product: initialProduct, onClose }) {
 
                 {/* Action buttons */}
                 <div style={{ display: "flex", flexDirection: "column", gap: ".6rem", marginBottom: "1rem" }}>
+
                   <button className={`btn-atc${added ? " added" : ""}`} onClick={handleAdd}>
                     {added ? "✓ Added to Cart!" : "🛒 Add to Cart"}
                   </button>
@@ -676,6 +678,67 @@ export default function ProductModal({ product: initialProduct, onClose }) {
                     <SignInButton mode="modal" afterSignInUrl={typeof window !== "undefined" ? window.location.pathname : "/"}>
                       <button className="btn-signin">🔒 Sign In to Buy Now</button>
                     </SignInButton>
+                  )}
+                </div>
+
+
+                {/* Product Details Accordion */}
+                <div style={{ borderTop: "1px solid rgba(229,93,106,.12)", borderBottom: "1px solid rgba(229,93,106,.12)", marginBottom: "1rem" }}>
+                  <button
+                    onClick={() => setShowProductDetails(v => !v)}
+                    style={{
+                      width: "100%",
+                      background: "none",
+                      border: "none",
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      padding: ".9rem 0",
+                    }}
+                  >
+                    <span style={{ fontFamily: "'Playfair Display',serif", fontWeight: 800, fontSize: "1.05rem", color: "#1a1a1a" }}>
+                      Product Details
+                    </span>
+                    <span style={{
+                      width: 26, height: 26, borderRadius: "50%",
+                      border: `1.5px solid ${BRAND}`, color: BRAND,
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      fontSize: "1rem", fontWeight: 700, lineHeight: 1, flexShrink: 0,
+                    }}>
+                      {showProductDetails ? "−" : "+"}
+                    </span>
+                  </button>
+
+                  {showProductDetails && (
+                    <div style={{ paddingBottom: "1.1rem" }}>
+                      {product.details ? (
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", rowGap: "1rem", columnGap: "1rem" }}>
+                          <div>
+                            <div style={{ fontWeight: 700, fontSize: ".82rem", color: "#1a1a1a", marginBottom: ".2rem" }}>Material</div>
+                            <div style={{ fontSize: ".82rem", color: "#888" }}>{product.details.Material || "—"}</div>
+                          </div>
+                          <div>
+                            <div style={{ fontWeight: 700, fontSize: ".82rem", color: "#1a1a1a", marginBottom: ".2rem" }}>Heel Type</div>
+                            <div style={{ fontSize: ".82rem", color: "#888" }}>{product.details.heelType || "—"}</div>
+                          </div>
+                          <div>
+                            <div style={{ fontWeight: 700, fontSize: ".82rem", color: "#1a1a1a", marginBottom: ".2rem" }}>Heel Height (in inches)</div>
+                            <div style={{ fontSize: ".82rem", color: "#888" }}>{product.details.heelHeight || "—"}</div>
+                          </div>
+                          <div>
+                            <div style={{ fontWeight: 700, fontSize: ".82rem", color: "#1a1a1a", marginBottom: ".2rem" }}>Color</div>
+                            <div style={{ fontSize: ".82rem", color: "#888" }}>{product.details.color || "—"}</div>
+                          </div>
+                          {/* <div>
+                            <div style={{ fontWeight: 700, fontSize: ".82rem", color: "#1a1a1a", marginBottom: ".2rem" }}>Material & Care</div>
+                            <div style={{ fontSize: ".82rem", color: "#888" }}>{product.details.care || "—"}</div>
+                          </div> */}
+                        </div>
+                      ) : (
+                        <div style={{ fontSize: ".8rem", color: "#888" }}>Details coming soon for this product.</div>
+                      )}
+                    </div>
                   )}
                 </div>
 
