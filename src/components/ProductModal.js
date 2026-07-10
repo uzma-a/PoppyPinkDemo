@@ -580,7 +580,7 @@ export default function ProductModal({ product: initialProduct, onClose }) {
 
                 <div style={{ display: "flex", alignItems: "center", gap: ".4rem", marginBottom: ".85rem" }}>
                   <div>{"★★★★★".split("").map((s, i) => <span key={i} className="star">{s}</span>)}</div>
-                  <span style={{ fontSize: ".75rem", color: "#666", fontWeight: 600 }}>4.8 (124 reviews)</span>
+                  
                   <span style={{ fontSize: ".68rem", color: "#16a34a", fontWeight: 700, background: "rgba(22,163,74,.1)", padding: ".12rem .45rem", borderRadius: 20 }}>✓ In Stock</span>
                 </div>
 
