@@ -18,16 +18,16 @@ export async function getServerSideProps() {
     const dbProducts = await ProductModel.find({ isActive: true }).sort({ createdAt: -1 }).lean();
 
     const normalized = dbProducts.map(p => ({
-      id:           p._id.toString(),
-      name:         p.name,
-      category:     p.category,
-      price:        p.price,
-      offerPrice:   p.offerPrice,
-      sizes:        p.sizes  || [],
-      images:       p.images || [],
-      image:        p.images?.[0] || "",
+      id: p._id.toString(),
+      name: p.name,
+      category: p.category,
+      price: p.price,
+      offerPrice: p.offerPrice,
+      sizes: p.sizes || [],
+      images: p.images || [],
+      image: p.images?.[0] || "",
       colorOptions: p.colorOptions || [],
-      badge:        p.badge || "",
+      badge: p.badge || "",
     }));
 
     const allProducts = [...normalized, ...PRODUCTS];
@@ -39,10 +39,10 @@ export async function getServerSideProps() {
 }
 
 export default function Home({ dbProducts }) {
-  const [loaded,    setLoaded] = useState(false);
-  const [filter,    setFilter] = useState(null);
-  const shopRef     = useRef(null);
-  const footerRef   = useRef(null);
+  const [loaded, setLoaded] = useState(false);
+  const [filter, setFilter] = useState(null);
+  const shopRef = useRef(null);
+  const footerRef = useRef(null);
   const productsRef = useRef(null);
 
   const allProducts = dbProducts.length > 0 ? dbProducts : PRODUCTS;
@@ -57,9 +57,12 @@ export default function Home({ dbProducts }) {
   return (
     <>
       <Head>
-       <title>POPPYPINK — Women's Sandals & Heels | Shop Online India</title>
-        <meta name="description" content="Shop trendy women's sandals, wedge heels & party wear at POPPYPINK. Free delivery across India." />
-        <meta name="viewport"    content="width=device-width, initial-scale=1" />
+        <title>Poppy Pink Shoes | Women’s Footwear in Delhi | Sandals, Heels & Sliders</title>
+        <meta
+          name="description"
+          content="Poppy Pink Shoes is a women's footwear brand in Delhi offering trendy sandals, heels, sliders and stylish pink shoes. Shop affordable women's footwear online in India."
+        />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content={BRAND} />
       </Head>
 
@@ -71,7 +74,7 @@ export default function Home({ dbProducts }) {
           <Hero shopRef={shopRef} />
 
           {/* ── PRODUCTS ── */}
-          <section ref={productsRef} style={{ padding:"3rem 0.5rem 5rem", background:"#FFF8F5" }}>
+          <section ref={productsRef} style={{ padding: "3rem 0.5rem 5rem", background: "#FFF8F5" }}>
             <style>{`
               .home-products-inner{
                 max-width:1200px;
@@ -116,25 +119,25 @@ export default function Home({ dbProducts }) {
             <div className="home-products-inner">
 
               {/* ── Header row ── */}
-              <div style={{ display:"flex", alignItems:"flex-end", justifyContent:"space-between", marginBottom:"1.5rem", flexWrap:"wrap", gap:"1rem", padding:"0 4px" }}>
+              <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: "1.5rem", flexWrap: "wrap", gap: "1rem", padding: "0 4px" }}>
                 <div>
-                  <p style={{ color:BRAND, fontSize:".75rem", fontWeight:800, letterSpacing:".22em", textTransform:"uppercase", marginBottom:".5rem" }}>
+                  <p style={{ color: BRAND, fontSize: ".75rem", fontWeight: 800, letterSpacing: ".22em", textTransform: "uppercase", marginBottom: ".5rem" }}>
                     ✦ COLLECTION ✦
                   </p>
-                  <h2 style={{ fontFamily:"'Playfair Display',serif", fontSize:"clamp(1.8rem,4vw,3rem)", fontWeight:900, color:"#1A0500" }}>
+                  <h2 style={{ fontFamily: "'Playfair Display',serif", fontSize: "clamp(1.8rem,4vw,3rem)", fontWeight: 900, color: "#1A0500" }}>
                     {filter
-                      ? <em style={{ fontStyle:"italic", background:`linear-gradient(135deg,${BRAND},#C42E15)`, WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent" }}>{filter}</em>
-                      : <>All <em style={{ fontStyle:"italic", background:`linear-gradient(135deg,${BRAND},#e55d6a)`, WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent" }}>Sandals</em></>
+                      ? <em style={{ fontStyle: "italic", background: `linear-gradient(135deg,${BRAND},#C42E15)`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>{filter}</em>
+                      : <>All <em style={{ fontStyle: "italic", background: `linear-gradient(135deg,${BRAND},#e55d6a)`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Sandals</em></>
                     }
                   </h2>
-                  <p style={{ color:"#d0a69c", fontSize:".85rem", marginTop:".4rem" }}>
+                  <p style={{ color: "#d0a69c", fontSize: ".85rem", marginTop: ".4rem" }}>
                     {filtered.length} style{filtered.length !== 1 ? "s" : ""} — Click any to view details
                   </p>
                 </div>
                 {filter && (
                   <button
                     onClick={() => setFilter(null)}
-                    style={{ padding:".5rem 1.3rem", fontSize:".8rem", background:"none", border:"1.5px solid #e55d6a", color:"#e55d6a", borderRadius:50, cursor:"pointer", fontWeight:700, fontFamily:"'DM Sans',sans-serif" }}
+                    style={{ padding: ".5rem 1.3rem", fontSize: ".8rem", background: "none", border: "1.5px solid #e55d6a", color: "#e55d6a", borderRadius: 50, cursor: "pointer", fontWeight: 700, fontFamily: "'DM Sans',sans-serif" }}
                   >
                     ✕ Clear Filter
                   </button>
@@ -152,16 +155,16 @@ export default function Home({ dbProducts }) {
           </section>
 
           {/* ── BRAND STORY BANNER ── */}
-          <section style={{ padding:"5rem 2rem", background:`linear-gradient(135deg,${BRAND} 0%,#A82410 100%)`, position:"relative", overflow:"hidden" }}>
-            <div style={{ position:"absolute", inset:0, backgroundImage:"radial-gradient(circle,rgba(255,255,255,.07) 1.5px,transparent 1.5px)", backgroundSize:"36px 36px" }}/>
-            <div style={{ maxWidth:700, margin:"0 auto", textAlign:"center", position:"relative" }}>
-              <p style={{ color:"rgba(255,255,255,.7)", fontSize:".75rem", fontWeight:800, letterSpacing:".22em", textTransform:"uppercase", marginBottom:"1rem" }}>
+          <section style={{ padding: "5rem 2rem", background: `linear-gradient(135deg,${BRAND} 0%,#A82410 100%)`, position: "relative", overflow: "hidden" }}>
+            <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(circle,rgba(255,255,255,.07) 1.5px,transparent 1.5px)", backgroundSize: "36px 36px" }} />
+            <div style={{ maxWidth: 700, margin: "0 auto", textAlign: "center", position: "relative" }}>
+              <p style={{ color: "rgba(255,255,255,.7)", fontSize: ".75rem", fontWeight: 800, letterSpacing: ".22em", textTransform: "uppercase", marginBottom: "1rem" }}>
                 ✦ OUR STORY ✦
               </p>
-              <h2 style={{ fontFamily:"'Playfair Display',serif", fontStyle:"italic", fontSize:"clamp(2rem,5vw,3.5rem)", fontWeight:900, color:"#fff", marginBottom:"1.5rem", lineHeight:1.2 }}>
+              <h2 style={{ fontFamily: "'Playfair Display',serif", fontStyle: "italic", fontSize: "clamp(2rem,5vw,3.5rem)", fontWeight: 900, color: "#fff", marginBottom: "1.5rem", lineHeight: 1.2 }}>
                 Crafted for the Modern Woman
               </h2>
-              <p style={{ color:"rgba(255,255,255,.7)", lineHeight:1.8, fontSize:"1rem", marginBottom:"2rem" }}>
+              <p style={{ color: "rgba(255,255,255,.7)", lineHeight: 1.8, fontSize: "1rem", marginBottom: "2rem" }}>
                 Every POPPYPINK sandal is designed with passion, precision, and love. From sunrise walks to midnight parties — we have a pair for every moment.
               </p>
             </div>

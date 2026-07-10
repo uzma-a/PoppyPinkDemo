@@ -188,4 +188,107 @@ export const PRODUCTS = [
       { name: "Rose Gold", hex: "#C9956C", productId: 8 }, // self
     ],
   },
+  {
+    id: 9,
+    name: "Women Block Mules",
+    category: "Block Heel Mules",
+    price: 3999,
+    offerPrice: 990,
+    image: "/assets/Black-12159/1.jpeg",
+    images: [
+      "/assets/Black-12159/1.jpeg",
+      "/assets/Black-12159/2.jpeg",
+      "/assets/Black-12159/3.jpeg",
+      "/assets/Black-12159/4.jpeg",
+      "/assets/Black-12159/5.jpeg",
+
+    ],
+    sizes: ["3", "4", "5", "6", "7", "8"],
+    colorOptions: [
+      { name: "Black",      hex: "#000000", productId: 9 }, 
+      { name: "Brown",    hex: "rgb(61, 42, 14)", productId: 10 }, 
+    ],
+  },
+  {
+    id: 10,
+    name: "Women Block Mules",
+    category: "Block Heel Mules",
+    price: 3999,
+    offerPrice: 990,
+    image: "/assets/Brown-12159/1.jpeg",
+    images: [
+      "/assets/Brown-12159/1.jpeg",
+      "/assets/Brown-12159/2.jpeg",
+      "/assets/Brown-12159/3.jpeg",
+      "/assets/Brown-12159/4.jpeg",
+
+    ],
+    sizes: ["3", "4", "5", "6", "7", "8"],
+    colorOptions: [
+      { name: "Black",      hex: "#000000", productId: 9 }, 
+      { name: "Brown",    hex: "rgb(49, 32, 7)", productId: 10 }, 
+    ],
+  },
+  {
+    id: 11,
+    name: "Party Block Mules",
+    category: "Party Block Mules",
+    price: 3999,
+    offerPrice: 999,
+    image: "/assets/Black-12160/1.jpeg",
+    images: [
+      "/assets/Black-12160/1.jpeg",
+      "/assets/Black-12160/2.jpeg",
+      "/assets/Black-12160/3.jpeg",
+      "/assets/Black-12160/4.jpeg",
+      "/assets/Black-12160/5.jpeg",
+    ],
+    sizes: ["3", "4", "5", "6", "7", "8"],
+    colorOptions: [
+      { name: "Black",      hex: "#000000", productId: 11 }, // links to id:6
+      { name: "Cream",    hex: "#f1d4af", productId: 12 }, // links to id:7
+      { name: "Cherry", hex: "#421010", productId: 13 }, // self
+    ],
+  },
+  {
+    id: 12,
+    name: "Party Block Mules",
+    category: "Party Block Mules",
+    price: 3999,
+    offerPrice: 999,
+    image: "/assets/Cream-12160/2.jpeg",
+    images: [
+      "/assets/Cream-12160/2.jpeg",
+      "/assets/Cream-12160/1.jpeg",
+      "/assets/Cream-12160/3.jpeg",
+      "/assets/Cream-12160/4.jpeg",
+      "/assets/Cream-12160/5.jpeg",
+    ],
+    sizes: ["3", "4", "5", "6", "7", "8"],
+    colorOptions: [
+      { name: "Black",      hex: "#000000", productId: 11 }, // links to id:6
+      { name: "Cream",    hex: "#f1d4af", productId: 12 }, // links to id:7
+      { name: "Cherry", hex: "#421010", productId: 13 }, // self
+    ],
+  },
+  {
+    id: 13,
+    name: "Party Block Mules",
+    category: "Party Block Mules",
+    price: 3999,
+    offerPrice: 999,
+    image: "/assets/Cherry-12160/1.jpeg",
+    images: [
+      "/assets/Cherry-12160/1.jpeg",
+      "/assets/Cherry-12160/2.jpeg",
+      "/assets/Cherry-12160/3.jpeg",
+      "/assets/Cherry-12160/4.jpeg",
+    ],
+    sizes: ["3", "4", "5", "6", "7", "8"],
+    colorOptions: [
+      { name: "Black",      hex: "#000000", productId: 11 }, // links to id:6
+      { name: "Cream",    hex: "#f1d4af", productId: 12 }, // links to id:7
+      { name: "Cherry", hex: "#421010", productId: 13 }, // self
+    ],
+  },
 ];

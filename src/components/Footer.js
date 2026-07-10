@@ -97,7 +97,7 @@ const Footer = forwardRef(function Footer(_, ref) {
           paddingTop:"1.5rem",
           display:"flex", justifyContent:"space-between", flexWrap:"wrap", gap:"1rem",
         }}>
-          <p style={{ color:"#adabab", fontSize:".76rem" }}>© 2025 POPPYPINK. All rights reserved.</p>
+          <p style={{ color:"#adabab", fontSize:".76rem" }}>© 2025 POPPY PINK SHOES. All rights reserved.</p>
           <p style={{ color:"#adabab", fontSize:".76rem" }}>
             Made with <span style={{ color:BRAND }}>♥</span> for bold, beautiful women
           </p>
