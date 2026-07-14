@@ -145,7 +145,7 @@ export default function ProductModal({ product: initialProduct, onClose }) {
                 payload.append("access_key", w3fKey);
                 payload.append("subject", `🛍️ Paid Order ${newOrderId}: ${product.name} — POPPYPINK`);
                 payload.append("from_name", "POPPYPINK Store");
-                payload.append("message", [`━━━━━━━━━━━━━━━━━━━━━━━━━`, "💳  PAID ORDER — POPPYPINK", `━━━━━━━━━━━━━━━━━━━━━━━━━`, `Order ID : ${newOrderId}`, `Product  : ${product.name}`, `Article  : ${article}`, `Color    : ${colorName}`, `Size     : ${selSize}`, `Qty      : ${qty}`, `Total    : ₹${orderTotal.toLocaleString()}`, `Payment  : Online (Razorpay) ✅`, "", `📦 CUSTOMER`, `━━━━━━━━━━━━━━━━━━━━━━━━━`, `Name    : ${form.name}`, `Phone   : ${form.phone}`, `Address : ${form.address}, ${form.city}, ${form.state} - ${form.pincode}`, "", `Time    : ${new Date().toLocaleString("en-IN")}`].join("\n"));
+                payload.append("message", [`━━━━━━━━━━━━━━━━━━━━━━━━━`, "💳  PAID ORDER — POPPYPINK", `━━━━━━━━━━━━━━━━━━━━━━━━━`, `Order ID : ${newOrderId}`, `Product  : ${product.name}`, `Article  : ${article}`, `Color    : ${colorName}`, `Size (UK)     : ${selSize}`, `Qty      : ${qty}`, `Total    : ₹${orderTotal.toLocaleString()}`, `Payment  : Online (Razorpay) ✅`, "", `📦 CUSTOMER`, `━━━━━━━━━━━━━━━━━━━━━━━━━`, `Name    : ${form.name}`, `Phone   : ${form.phone}`, `Address : ${form.address}, ${form.city}, ${form.state} - ${form.pincode}`, "", `Time    : ${new Date().toLocaleString("en-IN")}`].join("\n"));
                 await fetch("https://api.web3forms.com/submit", { method: "POST", body: payload });
               } catch (_) { }
             }

@@ -3,7 +3,36 @@
 
 export const PRODUCTS = [
   {
+    id: 14,
+    article: 12160,
+    name: "Party Block Mules",
+    category: "Slim Heeled Pumps",
+    price: 3999,
+    offerPrice: 9,
+    image: "/assets/Cream-12160/2.jpeg",
+    images: [
+      "/assets/Cream-12160/2.jpeg",
+      "/assets/Cream-12160/1.jpeg",
+      "/assets/Cream-12160/3.jpeg",
+      "/assets/Cream-12160/4.jpeg",
+      "/assets/Cream-12160/5.jpeg",
+    ],
+    sizes: ["3", "4", "5", "6", "7", "8"],
+    colorOptions: [
+      { name: "Black", hex: "#000000", productId: 11 }, // links to id:6
+      { name: "Cream", hex: "#f1d4af", productId: 12 }, // links to id:7
+      { name: "Cherry", hex: "#421010", productId: 13 }, // self
+    ],
+    details: {
+      Material: "Synthetic",
+      heelType: "Slim",
+      heelHeight: "2 inches",
+      color: "Cream",
+    },
+  },
+  {
     id: 12,
+    article: 12160,
     name: "Party Block Mules",
     category: "Slim Heeled Pumps",
     price: 3999,
@@ -31,6 +60,7 @@ export const PRODUCTS = [
   },
   {
     id: 3,
+    article: 12113,
     name: "Women Embellished Strappy",
     category: "Wedge Heel Sandals",
     price: 4499,
@@ -59,6 +89,7 @@ export const PRODUCTS = [
   },
   {
     id: 1,
+    article: 12151,
     name: "Women Embellished Wedge",
     category: "Wedges Sandal",
     price: 4499,
@@ -87,6 +118,7 @@ export const PRODUCTS = [
   },
   {
     id: 13,
+    article: 12160,
     name: "Party Block Mules",
     category: "Slim Heeled Pumps",
     price: 3999,
@@ -113,6 +145,7 @@ export const PRODUCTS = [
   },
   {
     id: 2,
+    article: 12151,
     name: "Women Embellished Wedge",
     category: "Wedges Sandal",
     price: 4499,
@@ -144,6 +177,7 @@ export const PRODUCTS = [
   
 {
     id: 11,
+    article: 12160,
     name: "Party Block Mules",
     category: "Slim Heeled Pumps",
     price: 3999,
@@ -171,6 +205,7 @@ export const PRODUCTS = [
   },
   {
     id: 4,
+    article: 12113,
     name: "Women Embellished Strappy",
     category: "Wedge Heel Sandals",
     price: 4499,
@@ -199,6 +234,7 @@ export const PRODUCTS = [
   },
   {
     id: 10,
+    article: 12159,
     name: "Women Block Mules",
     category: "Block Heel Mules",
     price: 3999,
@@ -226,6 +262,7 @@ export const PRODUCTS = [
  
   {
     id: 5,
+    article: 12151,
     name: "Women Embellished Wedge",
     category: "Wedges Sandal",
     price: 4499,
@@ -255,6 +292,7 @@ export const PRODUCTS = [
 
   {
     id: 6,
+    article: 12133,
     name: "Women Embellished Regular",
     category: "Party Block Heel Sandals",
     price: 3299,
@@ -285,6 +323,7 @@ export const PRODUCTS = [
   
  {
     id: 9,
+    article: 12159,
     name: "Women Block Mules",
     category: "Block Heel Mules",
     price: 3999,
@@ -311,6 +350,7 @@ export const PRODUCTS = [
   },
   {
     id: 7,
+    article: 12133,
     name: "Women Embellished Regular",
     category: "Party Block Heel Sandals",
     price: 3299,
@@ -340,6 +380,7 @@ export const PRODUCTS = [
 
   {
     id: 8,
+    article: 12133,
     name: "Women Embellished Regular",
     category: "Party Block Heel Sandals",
     price: 3299,
