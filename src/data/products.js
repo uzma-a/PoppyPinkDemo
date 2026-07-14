@@ -3,34 +3,6 @@
 
 export const PRODUCTS = [
   {
-    id: 14,
-    article: 12160,
-    name: "Party Block Mules",
-    category: "Slim Heeled Pumps",
-    price: 3999,
-    offerPrice: 9,
-    image: "/assets/Cream-12160/2.jpeg",
-    images: [
-      "/assets/Cream-12160/2.jpeg",
-      "/assets/Cream-12160/1.jpeg",
-      "/assets/Cream-12160/3.jpeg",
-      "/assets/Cream-12160/4.jpeg",
-      "/assets/Cream-12160/5.jpeg",
-    ],
-    sizes: ["3", "4", "5", "6", "7", "8"],
-    colorOptions: [
-      { name: "Black", hex: "#000000", productId: 11 }, // links to id:6
-      { name: "Cream", hex: "#f1d4af", productId: 12 }, // links to id:7
-      { name: "Cherry", hex: "#421010", productId: 13 }, // self
-    ],
-    details: {
-      Material: "Synthetic",
-      heelType: "Slim",
-      heelHeight: "2 inches",
-      color: "Cream",
-    },
-  },
-  {
     id: 12,
     article: 12160,
     name: "Party Block Mules",
