@@ -8,7 +8,7 @@ export const PRODUCTS = [
     name: "Party Block Mules",
     category: "Slim Heeled Pumps",
     price: 3999,
-    offerPrice: 999,
+    offerPrice: 1399,
     image: "/assets/Cream-12160/2.jpeg",
     images: [
       "/assets/Cream-12160/2.jpeg",
@@ -94,7 +94,7 @@ export const PRODUCTS = [
     name: "Party Block Mules",
     category: "Slim Heeled Pumps",
     price: 3999,
-    offerPrice: 999,
+    offerPrice: 1399,
     image: "/assets/Cherry-12160/1.jpeg",
     images: [
       "/assets/Cherry-12160/1.jpeg",
@@ -145,7 +145,6 @@ export const PRODUCTS = [
       color: "Rose-Gold",
     },
   },
-
   
 {
     id: 11,
@@ -153,7 +152,7 @@ export const PRODUCTS = [
     name: "Party Block Mules",
     category: "Slim Heeled Pumps",
     price: 3999,
-    offerPrice: 999,
+    offerPrice: 1399,
     image: "/assets/Black-12160/1.jpeg",
     images: [
       "/assets/Black-12160/1.jpeg",
@@ -210,7 +209,7 @@ export const PRODUCTS = [
     name: "Women Block Mules",
     category: "Block Heel Mules",
     price: 3999,
-    offerPrice: 990,
+    offerPrice: 1399,
     image: "/assets/Brown-12159/1.jpeg",
     images: [
       "/assets/Brown-12159/1.jpeg",
@@ -299,7 +298,7 @@ export const PRODUCTS = [
     name: "Women Block Mules",
     category: "Block Heel Mules",
     price: 3999,
-    offerPrice: 990,
+    offerPrice: 1399,
     image: "/assets/Black-12159/1.jpeg",
     images: [
       "/assets/Black-12159/1.jpeg",
