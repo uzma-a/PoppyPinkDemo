@@ -6,7 +6,7 @@ import Link from "next/link";
 
 const BRAND = "#e55d6a";
 const BRAND_DARK = "#c9404d";
-const ADMIN_EMAILS = ["aasiauzma22@gmail.com"];; // 🔴 your admin email
+const ADMIN_EMAILS = [process.env.NEXT_PUBLIC_ADMIN_EMAIL]; // 🔴 your admin email
 
 const SIZE_OPTIONS = ["3", "4", "5", "6", "7", "8"];
 const CATEGORY_OPTIONS = ["Heels", "Flats", "Sandals", "Wedges", "Boots", "Sneakers", "Loafers", "Mules", "Platforms", "Others"];
