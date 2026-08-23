@@ -174,7 +174,7 @@ export default function AdminPage() {
   const [users, setUsers] = useState([]);
   const [usersLoading, setUsersLoading] = useState(false);
 
-  const emptyForm = { name: "", category: "", price: "", offerPrice: "", sizes: [], images: [], colorOptions: [], badge: "" };
+  const emptyForm = { name: "", category: "", article: "", price: "", offerPrice: "", sizes: [], images: [], color: "", colorHex: "#e55d6a", material: "", heelType: "", heelHeight: "", colorOptions: [], badge: "" };
   const [form, setForm] = useState(emptyForm);
   const [formErr, setFormErr] = useState({});
   const [saving, setSaving] = useState(false);
@@ -241,7 +241,13 @@ export default function AdminPage() {
 
   const openAdd = () => { setForm(emptyForm); setEditProduct(null); setFormErr({}); setShowForm(true); };
   const openEdit = (p) => {
-    setForm({ name: p.name, category: p.category, price: String(p.price), offerPrice: String(p.offerPrice), sizes: p.sizes || [], images: p.images || [], colorOptions: p.colorOptions || [], badge: p.badge || "" });
+    setForm({
+      name: p.name, category: p.category, article: p.article ? String(p.article) : "",
+      price: String(p.price), offerPrice: String(p.offerPrice), sizes: p.sizes || [], images: p.images || [],
+      color: p.color || "", colorHex: p.colorHex || "#e55d6a",
+      material: p.material || "", heelType: p.heelType || "", heelHeight: p.heelHeight || "",
+      colorOptions: p.colorOptions || [], badge: p.badge || ""
+    });
     setEditProduct(p); setFormErr({}); setShowForm(true);
   };
 
@@ -249,6 +255,7 @@ export default function AdminPage() {
     const err = {};
     if (!form.name.trim()) err.name = "Required";
     if (!form.category) err.category = "Required";
+    if (!form.article) err.article = "Required";   // ✅ naya
     if (!form.price) err.price = "Required";
     if (!form.offerPrice) err.offerPrice = "Required";
     if (form.images.length === 0) err.images = "At least one image required";
@@ -260,7 +267,7 @@ export default function AdminPage() {
       const method = editProduct ? "PUT" : "POST";
       const r = await fetch(url, {
         method, headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, price: Number(form.price), offerPrice: Number(form.offerPrice) }),
+        body: JSON.stringify({ ...form, article: Number(form.article), price: Number(form.price), offerPrice: Number(form.offerPrice) }),
       });
       const d = await r.json();
       if (!r.ok) throw new Error(d.error);
@@ -269,7 +276,6 @@ export default function AdminPage() {
     } catch (e) { alert("Save failed: " + e.message); }
     setSaving(false);
   };
-
   const handleDeleteProduct = async (id) => {
     if (!confirm("Delete this product?")) return;
     try { await fetch(`/api/products/${id}`, { method: "DELETE" }); fetchProducts(); }
@@ -595,6 +601,29 @@ export default function AdminPage() {
                 {formErr.name && <div className="field-err">{formErr.name}</div>}
               </div>
 
+              {/* Article Number */}
+              <div>
+                <label style={{ fontSize: ".8rem", fontWeight: 700, color: "#1a1a1a", display: "block", marginBottom: ".3rem" }}>Article Number *</label>
+                <input className={`form-input ${formErr.article ? "err" : ""}`} type="number" placeholder="e.g. 12160"
+                  value={form.article} onChange={e => { setForm(p => ({ ...p, article: e.target.value })); setFormErr(p => ({ ...p, article: "" })); }} />
+                {formErr.article && <div className="field-err">{formErr.article}</div>}
+                <p style={{ fontSize: ".7rem", color: "#aaa", marginTop: ".25rem" }}>
+                  💡 Same article number for different colors of the SAME shoe — links them automatically
+                </p>
+              </div>
+
+              {/* Color name + hex */}
+              <div>
+                <label style={{ fontSize: ".8rem", fontWeight: 700, color: "#1a1a1a", display: "block", marginBottom: ".3rem" }}>Color Name <span style={{ color: "#aaa", fontWeight: 400 }}>(optional)</span></label>
+                <div style={{ display: "flex", gap: ".5rem" }}>
+                  <input className="form-input" placeholder="e.g. Black, Cream, Rose Gold" style={{ flex: 1 }}
+                    value={form.color} onChange={e => setForm(p => ({ ...p, color: e.target.value }))} />
+                  <input type="color" value={form.colorHex || "#e55d6a"} title="Pick actual shade"
+                    style={{ width: 40, height: 38, borderRadius: 8, border: "1.5px solid rgba(229,93,106,.2)", cursor: "pointer", padding: 2, flexShrink: 0 }}
+                    onChange={e => setForm(p => ({ ...p, colorHex: e.target.value }))} />
+                </div>
+              </div>
+
               {/* Category */}
               <div>
                 <label style={{ fontSize: ".8rem", fontWeight: 700, color: "#1a1a1a", display: "block", marginBottom: ".3rem" }}>Category *</label>
@@ -604,6 +633,25 @@ export default function AdminPage() {
                   {CATEGORY_OPTIONS.map(c => <option key={c} value={c}>{c}</option>)}
                 </select>
                 {formErr.category && <div className="field-err">{formErr.category}</div>}
+              </div>
+
+              {/* Product Details fields */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: ".75rem" }}>
+                <div>
+                  <label style={{ fontSize: ".8rem", fontWeight: 700, color: "#1a1a1a", display: "block", marginBottom: ".3rem" }}>Material</label>
+                  <input className="form-input" placeholder="e.g. Synthetic, Leather"
+                    value={form.material} onChange={e => setForm(p => ({ ...p, material: e.target.value }))} />
+                </div>
+                <div>
+                  <label style={{ fontSize: ".8rem", fontWeight: 700, color: "#1a1a1a", display: "block", marginBottom: ".3rem" }}>Heel Type</label>
+                  <input className="form-input" placeholder="e.g. Block, Slim, Wedge"
+                    value={form.heelType} onChange={e => setForm(p => ({ ...p, heelType: e.target.value }))} />
+                </div>
+              </div>
+              <div>
+                <label style={{ fontSize: ".8rem", fontWeight: 700, color: "#1a1a1a", display: "block", marginBottom: ".3rem" }}>Heel Height</label>
+                <input className="form-input" placeholder="e.g. 2 inches"
+                  value={form.heelHeight} onChange={e => setForm(p => ({ ...p, heelHeight: e.target.value }))} />
               </div>
 
               {/* Price row */}
@@ -640,28 +688,6 @@ export default function AdminPage() {
                     </button>
                   ))}
                 </div>
-              </div>
-
-              {/* Color options */}
-              <div>
-                <label style={{ fontSize: ".8rem", fontWeight: 700, color: "#1a1a1a", display: "block", marginBottom: ".4rem" }}>
-                  Color Options <span style={{ color: "#aaa", fontWeight: 400 }}>(optional)</span>
-                </label>
-                {form.colorOptions.map((c, i) => (
-                  <div key={i} style={{ display: "flex", gap: ".5rem", marginBottom: ".4rem", alignItems: "center" }}>
-                    <input className="form-input" placeholder="Color name" value={c.name} style={{ flex: 2 }}
-                      onChange={e => { const co = [...form.colorOptions]; co[i] = { ...co[i], name: e.target.value }; setForm(p => ({ ...p, colorOptions: co })); }} />
-                    <input type="color" value={c.hex || "#e55d6a"} title="Pick color"
-                      style={{ width: 40, height: 38, borderRadius: 8, border: "1.5px solid rgba(229,93,106,.2)", cursor: "pointer", padding: 2, flexShrink: 0 }}
-                      onChange={e => { const co = [...form.colorOptions]; co[i] = { ...co[i], hex: e.target.value }; setForm(p => ({ ...p, colorOptions: co })); }} />
-                    <button type="button" onClick={() => setForm(p => ({ ...p, colorOptions: p.colorOptions.filter((_, j) => j !== i) }))}
-                      style={{ background: "none", border: "none", cursor: "pointer", color: "#aaa", fontSize: "1.1rem", flexShrink: 0 }}>✕</button>
-                  </div>
-                ))}
-                <button type="button" onClick={() => setForm(p => ({ ...p, colorOptions: [...p.colorOptions, { name: "", hex: "#e55d6a" }] }))}
-                  style={{ background: "rgba(229,93,106,.07)", border: "1.5px dashed rgba(229,93,106,.3)", color: BRAND, borderRadius: 10, padding: ".4rem 1rem", fontSize: ".8rem", fontWeight: 700, cursor: "pointer", width: "100%" }}>
-                  + Add Color
-                </button>
               </div>
 
               {/* Save button */}

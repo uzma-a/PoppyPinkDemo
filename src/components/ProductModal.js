@@ -2,7 +2,6 @@
 import { useState, useEffect } from "react";
 import { useUser, SignInButton } from "@clerk/nextjs";
 import { useCart } from "../context/CartContext";
-import { PRODUCTS } from "../data/products";
 
 const BRAND = "#e55d6a";
 
@@ -15,7 +14,8 @@ const SIZE_GUIDE = [
   { euro: 41, uk: 8, us: 10, cm: 26.0, inch: 10.2 },
 ];
 
-export default function ProductModal({ product: initialProduct, onClose }) {
+export default function ProductModal({ product: initialProduct, allProducts = [], onClose }) {
+
   const { addToCart } = useCart();
   const { isSignedIn, user } = useUser();
 
@@ -64,15 +64,12 @@ export default function ProductModal({ product: initialProduct, onClose }) {
   // ── Color variant switch ──
   const handleColorClick = (colorOption) => {
     if (!colorOption.productId || colorOption.productId === product.id) {
-      // Same product, just update selected color display
       setSelColor(colorOption);
       return;
     }
-    // Switch to a different product variant
-    const nextProduct = PRODUCTS.find(p => p.id === colorOption.productId);
+    const nextProduct = allProducts.find(p => p.id === colorOption.productId);   // ✅ _id → id
     if (!nextProduct) return;
     setProduct(nextProduct);
-    // Set the active color dot to the one matching the new product
     const matchingColor = nextProduct.colorOptions?.find(c => c.productId === nextProduct.id) || nextProduct.colorOptions?.[0] || null;
     setSelColor(matchingColor);
   };
@@ -580,7 +577,7 @@ export default function ProductModal({ product: initialProduct, onClose }) {
 
                 <div style={{ display: "flex", alignItems: "center", gap: ".4rem", marginBottom: ".85rem" }}>
                   <div>{"★★★★★".split("").map((s, i) => <span key={i} className="star">{s}</span>)}</div>
-                  
+
                   <span style={{ fontSize: ".68rem", color: "#16a34a", fontWeight: 700, background: "rgba(22,163,74,.1)", padding: ".12rem .45rem", borderRadius: 20 }}>✓ In Stock</span>
                 </div>
 
@@ -602,7 +599,7 @@ export default function ProductModal({ product: initialProduct, onClose }) {
                       {product.colorOptions.map(c => {
                         const isActive = c.productId === product.id;
                         // Get thumbnail from the linked product
-                        const linkedProduct = PRODUCTS.find(p => p.id === c.productId);
+                        const linkedProduct = allProducts.find(p => p.id === c.productId);
                         const thumbSrc = linkedProduct?.images?.[0] || linkedProduct?.image || null;
                         return (
                           <button
@@ -730,10 +727,7 @@ export default function ProductModal({ product: initialProduct, onClose }) {
                             <div style={{ fontWeight: 700, fontSize: ".82rem", color: "#1a1a1a", marginBottom: ".2rem" }}>Color</div>
                             <div style={{ fontSize: ".82rem", color: "#888" }}>{product.details.color || "—"}</div>
                           </div>
-                          {/* <div>
-                            <div style={{ fontWeight: 700, fontSize: ".82rem", color: "#1a1a1a", marginBottom: ".2rem" }}>Material & Care</div>
-                            <div style={{ fontSize: ".82rem", color: "#888" }}>{product.details.care || "—"}</div>
-                          </div> */}
+                          
                         </div>
                       ) : (
                         <div style={{ fontSize: ".8rem", color: "#888" }}>Details coming soon for this product.</div>

@@ -19,7 +19,7 @@ export default function Navbar({ footerRef }) {
 
   const isAdmin = isSignedIn && (
     user?.publicMetadata?.role === "admin" ||
-    (process.env.NEXT_PUBLIC_ADMIN_EMAILS || "").split(",")
+    (process.env.NEXT_PUBLIC_ADMIN_EMAIL || "").split(",")
       .map(e => e.trim().toLowerCase())
       .includes(user?.primaryEmailAddress?.emailAddress?.toLowerCase())
   );

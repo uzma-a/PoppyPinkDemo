@@ -1,6 +1,6 @@
 // src/pages/api/products/[id].js
 import dbConnect from "../../../lib/dbConnect";
-import Product from "../../../models/Order";
+import Product from "../../../models/Product";
 
 export default async function handler(req, res) {
   await dbConnect();
@@ -8,7 +8,27 @@ export default async function handler(req, res) {
 
   if (req.method === "PUT") {
     try {
-      const updated = await Product.findByIdAndUpdate(id, req.body, { new: true });
+      const { name, category, price, offerPrice, sizes, images, colorOptions, badge, article, color, colorHex, material, heelType, heelHeight } = req.body;
+
+      const updated = await Product.findByIdAndUpdate(
+        id,
+        {
+          name, category,
+          article: article !== undefined ? Number(article) : undefined,
+          color: color || "",
+          colorHex: colorHex || "#e55d6a",
+          material: material || "",
+          heelType: heelType || "",
+          heelHeight: heelHeight || "",
+          price: Number(price),
+          offerPrice: Number(offerPrice),
+          sizes: sizes || [],
+          images: images || [],
+          colorOptions: colorOptions || [],
+          badge: badge || "",
+        },
+        { new: true }
+      );
       if (!updated) return res.status(404).json({ error: "Product not found" });
       return res.status(200).json({ product: updated });
     } catch (e) {
@@ -28,5 +48,5 @@ export default async function handler(req, res) {
   }
 
   res.setHeader("Allow", ["PUT", "DELETE"]);
-  res.status(405).json({ error: `Method ${req.method} not allowed` });
+  return res.status(405).json({ error: `Method ${req.method} not allowed` });
 }

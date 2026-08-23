@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useCart } from "../context/CartContext";
 import ProductModal from "./ProductModal";
 
-export default function ProductCard({ product, index = 0 }) {
+export default function ProductCard({ product, index = 0, allProducts = [] }) {
   const [wished, setWished] = useState(false);
   const [modal, setModal] = useState(false);
 
@@ -318,20 +318,15 @@ export default function ProductCard({ product, index = 0 }) {
             )}
             <span className="pp-offer">₹{product.offerPrice.toLocaleString()}</span>
           </div>
-          {product.colorOptions?.length > 0 && (
+          {product.colorOptions?.length > 1 && (
             <div className="pp-color-row">
-              {product.colorOptions.slice(0, 4).map(c => (
-                <div key={c.hex} className="pp-dot" style={{ background: c.hex }} title={c.name} />
-              ))}
-              {product.colorOptions.length > 1 && (
-                <span className="pp-color-count">{product.colorOptions.length} colors</span>
-              )}
+              <span className="pp-color-count">{product.colorOptions.length} colors available</span>
             </div>
           )}
         </div>
       </div>
 
-      {modal && <ProductModal product={product} onClose={() => setModal(false)} />}
+      {modal && <ProductModal product={product} allProducts={allProducts} onClose={() => setModal(false)} />}
     </>
   );
 }

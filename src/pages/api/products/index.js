@@ -2,6 +2,7 @@
 import dbConnect from "../../../lib/dbConnect";
 import Product from "../../../models/Product";
 
+
 export default async function handler(req, res) {
   await dbConnect();
 
@@ -16,25 +17,28 @@ export default async function handler(req, res) {
 
   if (req.method === "POST") {
     try {
-      const {
-        name, category, price, offerPrice,
-        sizes, images, colorOptions, badge,
-      } = req.body;
+      const { name, category, price, offerPrice, sizes, images, colorOptions, badge, article, color, colorHex, material, heelType, heelHeight } = req.body;
 
-      if (!name || !category || !price || !offerPrice) {
-        return res.status(400).json({ error: "name, category, price, offerPrice are required" });
+      if (!name || !category || !price || !offerPrice || !article) {
+        return res.status(400).json({ error: "name, category, price, offerPrice, article are required" });
       }
 
+
       const product = await Product.create({
-        name,
-        category,
-        price:       Number(price),
-        offerPrice:  Number(offerPrice),
-        sizes:       sizes || [],
-        images:      images || [],
+        name, category,
+        article: Number(article),
+        color: color || "",
+        colorHex: colorHex || "#e55d6a",
+        material: material || "",
+        heelType: heelType || "",
+        heelHeight: heelHeight || "",
+        price: Number(price),
+        offerPrice: Number(offerPrice),
+        sizes: sizes || [],
+        images: images || [],
         colorOptions: colorOptions || [],
-        badge:       badge || "",
-        isActive:    true,
+        badge: badge || "",
+        isActive: true,
       });
 
       return res.status(201).json({ product });

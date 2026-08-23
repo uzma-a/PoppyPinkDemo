@@ -6,7 +6,7 @@ import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
 import ProductCard from "../components/ProductCard";
 import Footer from "../components/Footer";
-import { PRODUCTS } from "../data/products";
+// import { PRODUCTS } from "../data/products";
 import dbConnect from "../lib/dbConnect";
 import ProductModel from "../models/Product";
 
@@ -21,17 +21,38 @@ export async function getServerSideProps() {
       id: p._id.toString(),
       name: p.name,
       category: p.category,
+      article: p.article || null,
+      color: p.color || "",
+      colorHex: p.colorHex || "#e55d6a",
       price: p.price,
       offerPrice: p.offerPrice,
       sizes: p.sizes || [],
       images: p.images || [],
       image: p.images?.[0] || "",
-      colorOptions: p.colorOptions || [],
       badge: p.badge || "",
+      details: {
+        Material: p.material || "",
+        heelType: p.heelType || "",
+        heelHeight: p.heelHeight || "",
+        color: p.color || "",
+      },
     }));
 
-    const allProducts = [...normalized, ...PRODUCTS];
-    return { props: { dbProducts: JSON.parse(JSON.stringify(allProducts)) } };
+    const withColorOptions = normalized.map(p => {
+      if (!p.article) return { ...p, colorOptions: [] };
+      const variants = normalized.filter(v => v.article === p.article);
+      if (variants.length <= 1) return { ...p, colorOptions: [] };
+      return {
+        ...p,
+        colorOptions: variants.map(v => ({
+          name: v.color || v.name,
+          hex: v.colorHex,   // ✅ hardcoded hataya
+          productId: v.id,
+        })),
+      };
+    });
+
+    return { props: { dbProducts: JSON.parse(JSON.stringify(withColorOptions)) } };
   } catch (e) {
     console.error("index getServerSideProps error:", e.message);
     return { props: { dbProducts: [] } };
@@ -147,7 +168,7 @@ export default function Home({ dbProducts }) {
               {/* ── Grid ── */}
               <div className="product-grid">
                 {filtered.map((p, i) => (
-                  <ProductCard key={p.id} product={p} index={i} />
+                  <ProductCard key={p.id} product={p} index={i} allProducts={allProducts} />
                 ))}
               </div>
 
