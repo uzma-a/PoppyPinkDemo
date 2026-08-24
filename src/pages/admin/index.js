@@ -180,6 +180,8 @@ export default function AdminPage() {
   const [saving, setSaving] = useState(false);
 
   const isAdmin = isLoaded && user && ADMIN_EMAILS.includes(user.primaryEmailAddress?.emailAddress);
+  console.log("DEBUG — logged in email:", JSON.stringify(user?.primaryEmailAddress?.emailAddress));
+  console.log("DEBUG — admin emails array:", JSON.stringify(ADMIN_EMAILS));
 
   const fetchOrders = useCallback(async () => {
     setOrdersLoading(true);
