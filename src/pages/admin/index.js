@@ -179,7 +179,9 @@ export default function AdminPage() {
   const [formErr, setFormErr] = useState({});
   const [saving, setSaving] = useState(false);
 
-  const isAdmin = isLoaded && user && ADMIN_EMAILS.includes(user.primaryEmailAddress?.emailAddress);
+  const isAdmin = isLoaded && user && ADMIN_EMAILS.some(
+    e => e?.trim().toLowerCase() === user.primaryEmailAddress?.emailAddress?.trim().toLowerCase()
+  );
   console.log("DEBUG — logged in email:", JSON.stringify(user?.primaryEmailAddress?.emailAddress));
   console.log("DEBUG — admin emails array:", JSON.stringify(ADMIN_EMAILS));
 
