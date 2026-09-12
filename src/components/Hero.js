@@ -3,14 +3,14 @@ import { useRouter } from "next/router";
 
 const SLIDES = [
   {
-    imgDesktop: "/assets/hero-partywear.png",
-    imgMobile: "/assets/hero-partywear-mb.png",
-    ctaLink: "/products?categories=Party Block Heel Sandals,Wedges Sandal,Wedge Heel Sandals",
-  },
-  {
     imgDesktop: "/assets/hero-casual.png",
     imgMobile: "/assets/hero-casual-mb.png",
     ctaLink: "/products?categories=Block Heel Mules,Slim Heeled Pumps",
+  },
+  {
+    imgDesktop: "/assets/hero-partywear.png",
+    imgMobile: "/assets/hero-partywear-mb.png",
+    ctaLink: "/products?categories=Party Block Heel Sandals,Wedges Sandal,Wedge Heel Sandals",
   },
 ];
 

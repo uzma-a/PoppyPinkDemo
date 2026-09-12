@@ -48,7 +48,7 @@ export default function Navbar({ footerRef }) {
   return (
     <>
       <style suppressHydrationWarning>{`
-        .nlink { color:hsla(354, 72%, 63%, 0.91); font-size:.9rem; font-weight:600; letter-spacing:.05em; cursor:pointer; background:${BRAND_BG}; border:none; font-family:'DM Sans',sans-serif; transition:all .2s; text-decoration:none; padding:.3rem .6rem; border-radius:6px; }
+        .nlink { color:#e55d6ae8; font-size:.9rem; font-weight:600; letter-spacing:.05em; cursor:pointer; background:${BRAND_BG}; border:none; font-family:'DM Sans',sans-serif; transition:all .2s; text-decoration:none; padding:.3rem .6rem; border-radius:6px; }
         .nlink:hover { background:hsla(356, 68%, 95%, 0.91)}
         .cart-btn { position:relative; background:${BRAND_BG}; border:none; cursor:pointer; color:hsla(354, 72%, 63%, 0.91); padding:.4rem; display:flex; align-items:center; transition:all .2s; border-radius:8px; }
         .cart-btn:hover { background:hsla(354, 72%, 63%, 0.91); color:${BRAND_NAV}; }
