@@ -56,7 +56,6 @@ export default function Hero() {
       style={{
         position: "relative",
         width: "100%",
-        marginTop: "50px",
         overflow: "hidden",
         background: "#f0e5da",
       }}
@@ -75,22 +74,6 @@ export default function Hero() {
     .hero-fade-in  { opacity: 1; }
     .hero-fade-out { opacity: 0; }
   `}</style>
-    
-{/* 
-      <img
-        key={current}
-        src={slide.img}
-        alt="Hero banner"
-        className={`hero-img ${fade ? "hero-fade-in" : "hero-fade-out"}`}
-        onClick={() => router.push(slide.ctaLink)}
-        style={{
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-          objectPosition: "center",
-          cursor: "pointer",
-        }}
-      /> */}
 
       <div style={{ position: "relative", width: "100%", height: "100%" }}>
         <picture>
