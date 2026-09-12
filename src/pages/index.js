@@ -6,7 +6,7 @@ import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
 import ProductCard from "../components/ProductCard";
 import Footer from "../components/Footer";
-// import { PRODUCTS } from "../data/products";
+import { PRODUCTS } from "../data/products";
 import dbConnect from "../lib/dbConnect";
 import ProductModel from "../models/Product";
 

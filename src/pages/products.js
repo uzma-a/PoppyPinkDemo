@@ -1,5 +1,6 @@
 // src/pages/products.js
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+import { useRouter } from "next/router";
 import Head from "next/head";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -19,6 +20,7 @@ export async function getServerSideProps() {
       id: p._id.toString(),
       name: p.name,
       category: p.category,
+      type: p.type || "casual",
       article: p.article || null,
       color: p.color || "",
       colorHex: p.colorHex || "#e55d6a",
@@ -58,14 +60,25 @@ export async function getServerSideProps() {
 }
 
 export default function ProductsPage({ allProducts }) {
+  const router = useRouter();
   const [filter, setFilter] = useState(null);
   const [search, setSearch] = useState("");
+  const [multiCategories, setMultiCategories] = useState(null); // ✅ naya
   const footerRef = useRef(null);
+
+  useEffect(() => {
+    if (router.query.categories) {
+      setMultiCategories(router.query.categories.split(","));
+      setFilter(null); // single filter clear kar do jab URL se aaye
+    }
+  }, [router.query.categories]);
 
   const categories = [...new Set(allProducts.map(p => p.category).filter(Boolean))];
 
   const filtered = allProducts.filter(p => {
-    const matchCat = filter ? p.category === filter : true;
+    const matchCat = multiCategories
+      ? multiCategories.includes(p.category)
+      : filter ? p.category === filter : true;
     const matchSearch = search
       ? p.name.toLowerCase().includes(search.toLowerCase()) ||
       p.category.toLowerCase().includes(search.toLowerCase())
@@ -75,6 +88,7 @@ export default function ProductsPage({ allProducts }) {
 
   return (
     <>
+    <Navbar footerRef={footerRef} />
       <Head>
         <title>Shop Women's Sandals & Heels — POPPYPINK</title>
         <meta name="description" content="Browse POPPYPINK's full collection — wedge sandals, block heels, party wear & more. All sizes available. Free delivery." />
@@ -247,14 +261,14 @@ export default function ProductsPage({ allProducts }) {
 
             {/* Category chips */}
             <div style={{ display: "flex", gap: ".5rem", flexWrap: "wrap", flex: 1 }}>
-              <button className={`filter-chip ${!filter ? "active" : ""}`} onClick={() => setFilter(null)}>
+              <button className={`filter-chip ${!filter && !multiCategories ? "active" : ""}`} onClick={() => { setFilter(null); setMultiCategories(null); }}>
                 All
               </button>
               {categories.map(cat => (
                 <button
                   key={cat}
                   className={`filter-chip ${filter === cat ? "active" : ""}`}
-                  onClick={() => setFilter(filter === cat ? null : cat)}
+                  onClick={() => { setFilter(filter === cat ? null : cat); setMultiCategories(null); }}
                 >
                   {cat}
                 </button>
