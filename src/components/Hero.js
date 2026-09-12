@@ -2,11 +2,19 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 
 const SLIDES = [
-  { img: "/assets/hero-partywear.png", ctaLink: "/products?categories=Party Block Heel Sandals,Wedges Sandal,Wedge Heel Sandals" },
-  { img: "/assets/hero-casual.png", ctaLink: "/products?categories=Block Heel Mules,Slim Heeled Pumps" },
+  {
+    imgDesktop: "/assets/hero-partywear.png",
+    imgMobile: "/assets/hero-partywear-mb.png",
+    ctaLink: "/products?categories=Party Block Heel Sandals,Wedges Sandal,Wedge Heel Sandals",
+  },
+  {
+    imgDesktop: "/assets/hero-casual.png",
+    imgMobile: "/assets/hero-casual-mb.png",
+    ctaLink: "/products?categories=Block Heel Mules,Slim Heeled Pumps",
+  },
 ];
 
-const DURATION = 5000;
+const DURATION = 4000;
 
 export default function Hero() {
   const [current, setCurrent] = useState(0);
@@ -48,24 +56,27 @@ export default function Hero() {
       style={{
         position: "relative",
         width: "100%",
-        height: "100%",
-        // aspectRatio: "2400 / 1000",
+        marginTop: "50px",
         overflow: "hidden",
         background: "#f0e5da",
       }}
+      className="hero-section"
     >
       <style>{`
+    .hero-section { aspect-ratio: 2400 / 1080; }
+    
+    @media (max-width: 700px) {
+      .hero-section { 
+        aspect-ratio: 1080 / 1350;  
+      }
+    }
+    
     .hero-img { transition: opacity .5s ease; }
     .hero-fade-in  { opacity: 1; }
     .hero-fade-out { opacity: 0; }
-    .hero-dot {
-      width: 34px; height: 4px; border-radius: 2px;
-      background: rgba(255,255,255,.5); cursor: pointer;
-      transition: background .3s ease; border: none; padding: 0;
-    }
-    .hero-dot.active { background: #fff; }
   `}</style>
-
+    
+{/* 
       <img
         key={current}
         src={slide.img}
@@ -79,16 +90,26 @@ export default function Hero() {
           objectPosition: "center",
           cursor: "pointer",
         }}
-      />
+      /> */}
 
-      <div style={{ position: "absolute", bottom: "1.5rem", left: "6vw", zIndex: 6, display: "flex", gap: ".5rem" }}>
-        {SLIDES.map((_, i) => (
-          <button
-            key={i}
-            className={`hero-dot ${i === current ? "active" : ""}`}
-            onClick={(e) => { e.stopPropagation(); goTo(i); }}
+      <div style={{ position: "relative", width: "100%", height: "100%" }}>
+        <picture>
+          <source media="(max-width: 700px)" srcSet={slide.imgMobile} />
+          <img
+            key={current}
+            src={slide.imgDesktop}
+            alt="Hero banner"
+            className={`hero-img ${fade ? "hero-fade-in" : "hero-fade-out"}`}
+            onClick={() => router.push(slide.ctaLink)}
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              objectPosition: "center",
+              cursor: "pointer",
+            }}
           />
-        ))}
+        </picture>
       </div>
     </section>
   );
