@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useUser, SignInButton } from "@clerk/nextjs";
 import { useCart } from "../context/CartContext";
+import { useRouter } from "next/router";
 
 const BRAND = "#e55d6a";
 
@@ -16,6 +17,7 @@ const SIZE_GUIDE = [
 
 export default function ProductModal({ product: initialProduct, allProducts = [], onClose }) {
 
+  const router = useRouter();
   const { addToCart } = useCart();
   const { isSignedIn, user } = useUser();
 

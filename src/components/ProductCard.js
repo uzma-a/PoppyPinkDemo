@@ -1,11 +1,14 @@
 // src/components/ProductCard.js
 import { useState } from "react";
 import { useCart } from "../context/CartContext";
+import { useRouter } from "next/router";
 import ProductModal from "./ProductModal";
 
 export default function ProductCard({ product, index = 0, allProducts = [] }) {
   const [wished, setWished] = useState(false);
   const [modal, setModal] = useState(false);
+
+  const router = useRouter();
 
   const imgs = product.images || [product.image];
   const discount = Math.round((1 - product.offerPrice / product.price) * 100);
@@ -270,7 +273,7 @@ export default function ProductCard({ product, index = 0, allProducts = [] }) {
       <div
         className="pp-card pp-anim"
         style={{ animationDelay: `${Math.min(index, 10) * 0.04}s` }}
-        onClick={() => setModal(true)}
+        onClick={() => router.push(`/products/${product.id}`)}
       >
         {/* Image */}
         <div className="pp-img-wrap">
@@ -326,7 +329,7 @@ export default function ProductCard({ product, index = 0, allProducts = [] }) {
         </div>
       </div>
 
-      {modal && <ProductModal product={product} allProducts={allProducts} onClose={() => setModal(false)} />}
+       {modal && <ProductModal product={product} allProducts={allProducts} onClose={() => setModal(false)} />}
     </>
   );
 }

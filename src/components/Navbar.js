@@ -151,7 +151,7 @@ export default function Navbar({ footerRef }) {
                   )}
                 </>
               ) : (
-                <Link href="/sign-in" className="nlink" style={{ background: "rgba(229,93,106,.1)", color: BRAND_NAV, borderRadius: 8, padding: ".3rem .85rem" }}>
+                <Link href="/sign-in" className="mlink" style={{ background: "#e55d6ae8", color: BRAND_NAV, borderRadius: 8, padding: ".3rem .85rem" }}>
                   Sign In
                 </Link>
               )}

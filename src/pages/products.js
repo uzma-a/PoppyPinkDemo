@@ -88,7 +88,7 @@ export default function ProductsPage({ allProducts }) {
 
   return (
     <>
-    <Navbar footerRef={footerRef} />
+      <Navbar footerRef={footerRef} />
       <Head>
         <title>Shop Women's Sandals & Heels — POPPYPINK</title>
         <meta name="description" content="Browse POPPYPINK's full collection — wedge sandals, block heels, party wear & more. All sizes available. Free delivery." />
