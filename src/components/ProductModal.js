@@ -23,6 +23,7 @@ export default function ProductModal({ product: initialProduct, allProducts = []
 
   // ── Active product (can switch on color click) ──
   const [product, setProduct] = useState(initialProduct);
+  console.log("PRODUCT DATA:", product);
 
   const [activeImg, setActiveImg] = useState(0);
   const [selSize, setSelSize] = useState(product.sizes[2] || product.sizes[0]);
@@ -682,7 +683,13 @@ export default function ProductModal({ product: initialProduct, allProducts = []
 
 
                 {/* Product Details Accordion */}
-                <div style={{ borderTop: "1px solid rgba(229,93,106,.12)", borderBottom: "1px solid rgba(229,93,106,.12)", marginBottom: "1rem" }}>
+
+                {/* Product Details Accordion */}
+                <div style={{
+                  borderTop: "1px solid rgba(229,93,106,.12)",
+                  borderBottom: "1px solid rgba(229,93,106,.12)",
+                  marginBottom: "1rem"
+                }}>
                   <button
                     onClick={() => setShowProductDetails(v => !v)}
                     style={{
@@ -696,14 +703,26 @@ export default function ProductModal({ product: initialProduct, allProducts = []
                       padding: ".9rem 0",
                     }}
                   >
-                    <span style={{ fontFamily: "'Playfair Display',serif", fontWeight: 800, fontSize: "1.05rem", color: "#1a1a1a" }}>
+                    <span style={{
+                      fontFamily: "'Playfair Display',serif",
+                      fontWeight: 800,
+                      fontSize: "1.05rem",
+                      color: "#1a1a1a"
+                    }}>
                       Product Details
                     </span>
+
                     <span style={{
-                      width: 26, height: 26, borderRadius: "50%",
-                      border: `1.5px solid ${BRAND}`, color: BRAND,
-                      display: "flex", alignItems: "center", justifyContent: "center",
-                      fontSize: "1rem", fontWeight: 700, lineHeight: 1, flexShrink: 0,
+                      width: 26,
+                      height: 26,
+                      borderRadius: "50%",
+                      border: `1.5px solid ${BRAND}`,
+                      color: BRAND,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "1rem",
+                      fontWeight: 700,
                     }}>
                       {showProductDetails ? "−" : "+"}
                     </span>
@@ -711,32 +730,48 @@ export default function ProductModal({ product: initialProduct, allProducts = []
 
                   {showProductDetails && (
                     <div style={{ paddingBottom: "1.1rem" }}>
-                      {product.details ? (
-                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", rowGap: "1rem", columnGap: "1rem" }}>
-                          <div>
-                            <div style={{ fontWeight: 700, fontSize: ".82rem", color: "#1a1a1a", marginBottom: ".2rem" }}>Material</div>
-                            <div style={{ fontSize: ".82rem", color: "#888" }}>{product.details.Material || "—"}</div>
+                      {(() => {
+                        const details = product.details || {};
+
+                        const fields = [
+                          ["Material", details.material ?? details.Material ?? product.material],
+                          ["Heel Type", details.heelType ?? product.heelType],
+                          ["Heel Height", details.heelHeight ?? product.heelHeight],
+                          ["Color", details.color ?? product.color],
+                        ];
+
+                        return (
+                          <div style={{
+                            display: "grid",
+                            gridTemplateColumns: "1fr 1fr",
+                            gap: "1rem"
+                          }}>
+                            {fields.map(([label, value]) => (
+                              <div key={label}>
+                                <div style={{
+                                  fontWeight: 700,
+                                  fontSize: ".82rem",
+                                  color: "#1a1a1a",
+                                  marginBottom: ".2rem"
+                                }}>
+                                  {label}
+                                </div>
+
+                                <div style={{
+                                  fontSize: ".82rem",
+                                  color: "#888"
+                                }}>
+                                  {value || "—"}
+                                </div>
+                              </div>
+                            ))}
                           </div>
-                          <div>
-                            <div style={{ fontWeight: 700, fontSize: ".82rem", color: "#1a1a1a", marginBottom: ".2rem" }}>Heel Type</div>
-                            <div style={{ fontSize: ".82rem", color: "#888" }}>{product.details.heelType || "—"}</div>
-                          </div>
-                          <div>
-                            <div style={{ fontWeight: 700, fontSize: ".82rem", color: "#1a1a1a", marginBottom: ".2rem" }}>Heel Height (in inches)</div>
-                            <div style={{ fontSize: ".82rem", color: "#888" }}>{product.details.heelHeight || "—"}</div>
-                          </div>
-                          <div>
-                            <div style={{ fontWeight: 700, fontSize: ".82rem", color: "#1a1a1a", marginBottom: ".2rem" }}>Color</div>
-                            <div style={{ fontSize: ".82rem", color: "#888" }}>{product.details.color || "—"}</div>
-                          </div>
-                          
-                        </div>
-                      ) : (
-                        <div style={{ fontSize: ".8rem", color: "#888" }}>Details coming soon for this product.</div>
-                      )}
+                        );
+                      })()}
                     </div>
                   )}
                 </div>
+
 
                 {/* Delivery */}
                 <div style={{ background: "rgba(229,93,106,.04)", border: `1px solid rgba(229,93,106,.1)`, borderRadius: 10, padding: ".85rem", fontSize: ".76rem", color: "#888" }}>

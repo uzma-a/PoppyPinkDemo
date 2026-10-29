@@ -9,42 +9,82 @@ import { useRef } from "react";
 import dbConnect from "../../lib/dbConnect";
 import ProductModel from "../../models/Product";
 
+
 export async function getServerSideProps({ params }) {
-    const { id } = params;
+  const { id } = params;
 
-    // Static products check
-    const staticProduct = PRODUCTS.find(p => String(p.id) === String(id));
-    if (staticProduct) {
-        return { props: { product: staticProduct } };
+  // Check static products first
+  const staticProduct = PRODUCTS.find(
+    p => String(p.id) === String(id)
+  );
+
+  if (staticProduct) {
+    return { props: { product: staticProduct } };
+  }
+
+  // Fetch product from MongoDB
+  try {
+    await dbConnect();
+
+    // Validate MongoDB ObjectId
+    if (!/^[a-f\d]{24}$/i.test(id)) {
+      return { notFound: true };
     }
 
-    // MongoDB check
-    try {
-        await dbConnect();
-        const dbProduct = await ProductModel.findById(id).lean();
-        if (dbProduct) {
-            return {
-                props: {
-                    product: JSON.parse(JSON.stringify({
-                        id: dbProduct._id.toString(),
-                        name: dbProduct.name,
-                        category: dbProduct.category,
-                        price: dbProduct.price,
-                        offerPrice: dbProduct.offerPrice,
-                        sizes: dbProduct.sizes || [],
-                        images: dbProduct.images || [],
-                        image: dbProduct.images?.[0] || "",
-                        colorOptions: dbProduct.colorOptions || [],
-                    }))
-                }
-            };
-        }
-    } catch (e) {
-        console.error(e.message);
+    const dbProduct = await ProductModel.findById(id).lean();
+
+    if (!dbProduct || !dbProduct.isActive) {
+      return { notFound: true };
     }
+
+    const product = {
+      id: dbProduct._id.toString(),
+      name: dbProduct.name,
+      category: dbProduct.category,
+
+      // Product information
+      article: dbProduct.article || null,
+      color: dbProduct.color || "",
+      colorHex: dbProduct.colorHex || "#e55d6a",
+
+      // Pricing
+      price: dbProduct.price,
+      offerPrice: dbProduct.offerPrice,
+
+      // Images and sizes
+      sizes: dbProduct.sizes || [],
+      images: dbProduct.images || [],
+      image: dbProduct.images?.[0] || "",
+
+      // Additional information
+      badge: dbProduct.badge || "",
+      colorOptions: dbProduct.colorOptions || [],
+
+      // Product Details Accordion
+      details: {
+        Material: dbProduct.material || "",
+        heelType: dbProduct.heelType || "",
+        heelHeight: dbProduct.heelHeight || "",
+        color: dbProduct.color || "",
+      },
+    };
+
+    return {
+      props: {
+        product: JSON.parse(JSON.stringify(product)),
+      },
+    };
+
+  } catch (error) {
+    console.error(
+      "Product fetch error:",
+      error.message
+    );
 
     return { notFound: true };
+  }
 }
+
 
 export default function ProductPage({ product }) {
     const footerRef = useRef(null);
