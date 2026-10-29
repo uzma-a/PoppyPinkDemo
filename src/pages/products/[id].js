@@ -116,8 +116,6 @@ export async function getServerSideProps({ params }) {
   }
 }
 
-
-
 export default function ProductPage({ product, allProducts = [] }) {
   const footerRef = useRef(null);
   const router = useRouter();

@@ -6,7 +6,7 @@ export default function Document() {
     <Html lang="en">
       <Head>
         {/* ── Favicon ── */}
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/logo.png" />
 
         {/* ── Fonts ── */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
